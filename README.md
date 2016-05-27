@@ -17,6 +17,7 @@
  - 个人信息(stu_info CRUD)
    - stu_id, stu_name, stu_tel, stu_mail, stu_want, resume_path, my_meet
  - 浏览职位
+
 ### 管理员（待定）
 
 ## 独立于角色的功能
