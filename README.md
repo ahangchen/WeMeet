@@ -17,6 +17,7 @@
  - 个人信息(stu_info CRUD)
    - stu_id, stu_name, stu_tel, stu_mail, stu_want, resume_path, my_meet
  - 浏览职位
+ - 投递建立 
 
 ### 管理员（待定）
 
@@ -26,5 +27,5 @@
 ### 文件机制
 上传下载文件
 ### 登录机制
-基于学号
+基于华工邮箱？或者普通邮箱认证？
 
