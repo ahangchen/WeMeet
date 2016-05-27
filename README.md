@@ -3,7 +3,7 @@
 > 连接创业团队和学有余力的学生的校内招聘平台
 
 ## 角色
-### 创业团队
+### 创业团队（扩展为社团，企业）
 - 注册团队
   - 团队信息（Team_info CRUD）
     - team_id, team_name, team_manager, team_desc, team_tel, team_mail
