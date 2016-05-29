@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show</title>
+</head>
+<body>
+    <h1>show all</h1>
+    {% for student in student_list %}
+        stu_id:      {{ student.stu_id }}<br>
+        stu_name:    {{ student.stu_name }}<br>
+        stu_tel:     {{ student.stu_tel }} <br>
+        stu_mail:    {{ student.stu_mail }}<br>
+        stu_want:    {{ student.stu_want }}<br>
+        resume_path: {{ student.resume_path }}<br>
+        my_meet:     {{ student.my_meet }}<br>
+        <br>
+    {% endfor %}
+
+</body>
+</html>
