@@ -1,141 +1,118 @@
-from django.shortcuts import render
-from django.http import Http404
+# coding=utf8
 from django.views.decorators.csrf import csrf_exempt
-from student.models import StuInfo
+from django.http import HttpResponse
+from student.BLL import stu_info_op
+from student.Utility.tag import *
+import json
+
+# for test...
+from django.shortcuts import render
+def post(request):
+    return render(request, 'POST.html')
 
 
-#show all the student info
-def show_all(request):
-    student_list = StuInfo.objects.all()
-    return render(request, 'show_all.html', {'student_list': student_list})
-
-#direct to insert page
-def insert_page(request):
-    return render(request, 'insert_page.html')
-
-
-#receive post form insert_page
-#insert in to databas
-#redirect to show all page
 @csrf_exempt
-def insert(request):
-    if request.POST:
+def register_stu(request):
+    if request.method == "POST":
         stu_id = request.POST.get('stu_id')
-        #if post contain stu_id
-        if stu_id != '':
-            stu_id = int(stu_id)
-        stu_name = request.POST.get('stu_name')
-        stu_tel = request.POST.get('stu_tel')
-        stu_mail = request.POST.get('stu_mail')
-        stu_want = request.POST.get('stu_want')
-        resume_path = request.POST.get('resume_path')
-        my_meet = int(request.POST.get('my_meet'))
-        if stu_id == '':
-            #if post dostn't contain stu_id
-            new_student = StuInfo(stu_name = stu_name,
-                                  stu_tel = stu_tel,
-                                  stu_mail = stu_mail,
-                                  stu_want = stu_want,
-                                  resume_path = resume_path,
-                                  my_meet = my_meet)
+        psw = request.POST.get('psw')
+
+        tag = stu_info_op.register(stu_id=stu_id, psw=psw)
+        if tag == GOOD_REGISTER:
+            err = '0'
+            msg = 'register succeed'
         else:
-            #if post contain stu_id
-            new_student = StuInfo(stu_id, stu_name, stu_tel, stu_mail,
-                                   stu_want, resume_path, my_meet)
-        new_student.save()
-        return show_all(request)
+            err = '-1'
+            msg = 'stu_id exists'
+
+        json_ctx = {'err': err, 'msg': msg}
+        return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
+    json_ctx = {'err': '-2', 'msg': "wrong method"}
+    return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
 
 
-#direct to delete page
-def delete_page(request):
-    return render(request, 'delete_page.html')
-
-#receive post from delete page
-#delte the student infor in database
-#redirect to show all page
 @csrf_exempt
-def delete(request):
-    if request.POST:
-        stu_id = int(request.POST.get('stu_id'))
-        try:
-            delete_student = StuInfo.objects.all().get(stu_id=stu_id)
-            delete_student.delete()
-        except StuInfo.DoesNotExist:
-            raise Http404
-    return show_all(request)
+def update_stu_info(request):
+    if request.method == "POST":
+        stu_id = request.POST.get('stu_id', NO_INPUT)
+        # check if stu_id is posted
+        if stu_id == NO_INPUT:
+            json_ctx = {'err': '-3', 'msg': 'post does not contain stu_id'}
+            return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
 
+        # if stu_id is posted
+        stu_name = request.POST.get('stu_name', NO_INPUT)
+        stu_school = request.POST.get('stu_school', NO_INPUT)
+        stu_tel = request.POST.get('stu_tel', NO_INPUT)
+        stu_mail = request.POST.get('mail', NO_INPUT)
 
+        tag = stu_info_op.update_info(stu_id=stu_id,
+                                      stu_name=stu_name,
+                                      stu_school=stu_school,
+                                      stu_tel=stu_tel,
+                                      stu_mail=stu_mail)
 
-#direct to page select
-def select_page(request):
-    return render(request, 'select_page.html')
-
-#receive post from select page
-#select student infor from database
-#redirect to page show one  if stu_id is not empty
-@csrf_exempt
-def select(request):
-    if request.POST:
-        stu_id = request.POST.get('stu_id')
-        if stu_id == '':
-            #if stu_id is empty
-            return select_page(request)
+        if tag == GOOD_UPDATE_INFO:
+            err = '0'
+            msg = 'update_stu_info succeed'
         else:
-            #if stu_id isn't empty
-            stu_id = int(stu_id)
-            try:
-                select_student = StuInfo.objects.all().get(stu_id=stu_id)
-                return render(request, 'show_one.html', {'student': select_student})
-            except StuInfo.DoesNotExist:
-                raise Http404;
+            err = '-1'
+            msg = 'stu_id does not exist'
+
+        json_ctx = {'err': err, 'msg': msg}
+        return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
+
+    # if request method is get
+    json_ctx = {'err': '-2', 'msg': 'wrong method'}
+    return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
 
 
-
-#receive post form page show one
-#direct to page update_page
 @csrf_exempt
-def update_page(request):
-    if request.POST:
-        stu_id = request.POST.get('stu_id')
-        if stu_id == '':
-            #if stu_id is empty
-            return select_page(request)
-        else:
-            #if stu_id isn't empty
-            stu_id = int(stu_id)
-            try:
-                select_student = StuInfo.objects.all().get(stu_id=stu_id)
-                return render(request, 'update_page.html', {'student': select_student})
-            except StuInfo.DoesNotExist:
-                raise Http404
+def get_stu_info(request):
+    if request.method == "POST":
+        stu_id = request.POST.get('stu_id', NO_INPUT)
+        # check if stu_id is posted
+        if stu_id == NO_INPUT:
+            json_ctx = {'err': '-3', 'msg': 'post does not contain stu_id'}
+            return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
+
+        # if stu_id is posted
+        temp = stu_info_op.get_info(stu_id)
+        # if stu_id exists and return a Stuinfo
+        if temp != ERROR_GET_INFO:
+            err = '0'
+            msg = 'get_stu_info succeed'
+            json_ctx = {'err': err,
+                        'msg': msg,
+                        'stu_id': temp.stu_id,
+                        'stu_name': temp.stu_name,
+                        'stu_school': temp.stu_school,
+                        'stu_tel': temp.stu_tel,
+                        'stu_mail': temp.stu_mail}
+            return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
+
+        # if stu_id does not exist
+        json_ctx = {'err': '-1', 'msg': 'stu_id does not exist'}
+        return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
+
+    # if post method is get
+    json_ctx = {'err': '-2', 'msg': 'wrong method'}
+    return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
 
 
-#receive post from update page
-#update student infor in database
-#redirect to show all page
-@csrf_exempt
-def update(request):
-    if request.POST:
-        post = request.POST
-        stu_id = post.get('stu_id')
-        if stu_id != '':
-            stu_id = int(stu_id)
-            try:
-                update_student = StuInfo.objects.all().filter(stu_id=stu_id)
-                stu_name = post.get('stu_name')
-                stu_tel = post.get('stu_tel')
-                stu_mail = post.get('stu_mail')
-                stu_want = post.get('stu_want')
-                resume_path = post.get('resume_path')
-                my_meet = post.get('my_meet')
-                update_student.update(stu_name = stu_name,
-                                      stu_tel = stu_tel,
-                                      stu_mail = stu_mail,
-                                      stu_want = stu_want,
-                                      resume_path = resume_path,
-                                      my_meet = my_meet)
-            except StuInfo.DoesNotExist:
-                raise Http404
-    return show_all(request)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

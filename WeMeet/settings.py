@@ -79,14 +79,14 @@ WSGI_APPLICATION = 'WeMeet.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'mydb',  
-#        'USER': 'hjf',  
-#        'PASSWORD': 'Aa123456789',   
-#        'HOST': 'localhost',  
-#        'PORT': '3306',  
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydb',
+        'USER': 'hjf',
+        'PASSWORD': 'Aa123456789',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -114,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
 
 TIME_ZONE = 'UTC'
 
