@@ -13,6 +13,7 @@
 
 - 浏览人才（需要实现条件查询，后期要有模糊匹配）
 
+
 ### 学生
  - 个人信息(stu_info CRUD)
    - stu_id, stu_name, stu_tel, stu_mail, stu_want, resume_path, my_meet
