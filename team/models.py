@@ -1,11 +1,9 @@
 from django.db import models
 
 # Create your models here.
-from student.models import StuInfo
 
 
 class Team(models.Model):
-    id = models.AutoField(primary_key=True)
     about = models.CharField(max_length=600)
     logo_path = models.CharField(max_length=200)
     strength = models.CharField(max_length=600)
@@ -14,8 +12,11 @@ class Team(models.Model):
 
 
 class TeamStu(models.Model):
+    # 防止没有primary key，所以不设置unique_together，用自动生成的id作为主键
     team = models.ForeignKey(Team)
-    stu = models.ForeignKey(StuInfo)
+    # http://stackoverflow.com/questions/5680414/django-import-error-from-foreign-key-in-another-application-model
+    # 多app外键最好用字符串引用防止循环import
+    stu = models.ForeignKey('student.StuInfo')
 
 
 class Product(models.Model):
@@ -24,7 +25,6 @@ class Product(models.Model):
 
 
 class Job(models.Model):
-    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField()
