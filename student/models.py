@@ -14,7 +14,7 @@ class JobApply(models.Model):
     # By default, id = models.AutoField(primary_key=True)
     stu = models.ForeignKey('StuInfo', models.DO_NOTHING)
     job_id = models.CharField(max_length=45)
-    stu_job_state = models.CharField(max_length=45)
+    state = models.CharField(max_length=45)
     resume = models.ForeignKey('Resume', models.DO_NOTHING)
     team_id = models.CharField(max_length=45)
     resume_type = models.IntegerField()
