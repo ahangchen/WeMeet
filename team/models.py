@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
-    SHORT_TEXT_LENGTH
+    SHORT_TEXT_LENGTH, SIMPLE_TEXT_LENGTH
 
 
 # mysql 要求char字段需要有default
@@ -20,6 +20,14 @@ class Team(models.Model):
     history = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     # 团队类型，枚举，用于分类搜索
     b_type = models.IntegerField(default=0)
+
+
+class Pwd(models.Model):
+    team = models.ForeignKey(Team)
+    pwd_hash = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    invite_code = models.CharField(max_length=SIMPLE_TEXT_LENGTH, default='')
+    # 账户状态，0表示可用，1表示未激活，2表示锁定
+    state = models.IntegerField(default=0)
 
 
 class TeamStu(models.Model):
