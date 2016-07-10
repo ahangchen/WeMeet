@@ -31,6 +31,7 @@ class Resume(models.Model):
     resume_project = models.CharField(max_length=1000, blank=True, null=True)
     resume_stu_work = models.CharField(max_length=600, blank=True, null=True)
     resume_award = models.CharField(max_length=300, blank=True, null=True)
+    # 附件地址
 
     class Meta:
         db_table = 'resume'
@@ -44,6 +45,11 @@ class StuInfo(models.Model):
     tel = models.CharField(max_length=20, blank=True, null=True)
     mail = models.CharField(max_length=45, blank=True, null=True)
     avatar_path = models.CharField(max_length=45, blank=True, null=True)
+    is_activated = models.BooleanField(default=False)
+    edu_background = models.CharField(max_length=20, blank=True, null=True)
+    grade = models.CharField(max_length=20, blank=True, null=True)
+    major = models.CharField(max_length=45, blank=True, null=True)
+    location = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         db_table = 'stu_info'
