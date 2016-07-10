@@ -1,31 +1,61 @@
-SUCCEED = '1'
-SUCCEED_REGISTER_MSG = 'register succeed'
-SUCCEED_UPDATE_STU_MSG = 'update student info succeed'
-SUCCEED_GET_STU_MSG = 'get student info succeed'
+SUCCEED = '0'
 
 ERROR_METHOD = '-1'
-ERROR_METHOD_MSG = 'wrong method'
+ERROR_METHOD_MSG = '请求方法错误'
 
 ERROR_REGISTER_IDEXIST = '-2'
-ERROR_REGISTER_IDEXIST_MSG = 'register err: stu_id already exists'
+ERROR_REGISTER_IDEXIST_MSG = '账号已存在'  # 用在注册
 
-ERROR_UPDATE_STU_IDMISS = '-3'
-ERROR_UPDATE_STU_IDMISS_MSG = 'update err: post does not contain stu_id'
+ERROR_ACCOUNT_DOESNOTEXIST = '-3'
+ERROR_ACCOUNT_DOESNOTEXIST_MSG = '账号不存在'  # 用在邮件验证/登陆/重置密码的邮件的发送请求/修改密码
 
-ERROR_UPDATE_STU_AVATAR_SAVE_FAILED = '-4'
-ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG = 'update err: avatar file save failed'
+ERROR_LOGIN_STU_WRONG_PWD = '-4'
+ERROR_LOGIN_STU_WRONG_PWD_MSG = '密码错误'
+ERROR_LOGIN_STU_NONACTIVATED = '-5'
+ERROR_LOGIN_STU_NONACTIVATED_MSG = '账号未激活'
 
-ERROR_UPDATE_STU_AVATAR_INVALID = '-5'
-ERROR_UPDATE_STU_AVATAR_INVALID_MSG = 'update err: avatar file invalid'
+ERROR_WRONG_CREDENTIAL = '-6'
+ERROR_WRONG_CREDENTIAL_MSG = '凭据错误'  # 用在修改密码
 
-ERROR_UPDATE_STU_DOESNOTEXIST = '-6'
-ERROR_UPDATE_STU_DOESNOTEXIST_MSG = 'update err: stu_id does not exist'
+ERROR_STU_DOESNOTEXIST = '-7'
+ERROR_STU_DOESNOTEXIST_MSG = '学生不存在'  # 用在获取学生信息
 
-ERROR_GET_STU_IDMISS = '-7'
-ERROR_GET_STU_IDMISS_MSG = 'get err: post does not contain stu_id'
 
-ERROR_GET_STU_DOESNOTEXIST = '-8'
-ERROR_GET_STU_DOESNOTEXIST_MSG = 'get err: stu_id does not exist'
+
+
+
+
+
+# ERROR_LOGIN_STU_DOESNOTEXIST = '-5'
+# ERROR_LOGIN_STU_DOESNOTEXIST_MSG = '账号不存在'  # 用以登陆
+
+# ERROR_SEND_RSMAIL_DOESNOTEXIST = '-6'
+# ERROR_SEND_RSMAIL_DOESNOTEXIST_MSG = '账号不存在'  # 用以重置密码的邮件的发送请求
+
+# ERROR_CHANGE_PWD = '-93'
+# ERROR_CHANGE_PWD_MSG = '账号不存在'  # 用以修改密码
+
+# ERROR_UPDATE_STU_IDMISS = '-94'
+# ERROR_UPDATE_STU_IDMISS_MSG = 'update err: post does not contain stu_id'
+#
+# ERROR_UPDATE_STU_AVATAR_SAVE_FAILED = '-95'
+# ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG = 'update err: avatar file save failed'
+#
+# ERROR_UPDATE_STU_AVATAR_INVALID = '-96'
+# ERROR_UPDATE_STU_AVATAR_INVALID_MSG = 'update err: avatar file invalid'
+#
+# ERROR_UPDATE_STU_DOESNOTEXIST = '-97'
+# ERROR_UPDATE_STU_DOESNOTEXIST_MSG = 'update err: stu_id does not exist'
+#
+# ERROR_GET_STU_IDMISS = '-98'
+# ERROR_GET_STU_IDMISS_MSG = 'get err: post does not contain stu_id'
+#
+# ERROR_GET_STU_DOESNOTEXIST = '-99'
+# ERROR_GET_STU_DOESNOTEXIST_MSG = 'get err: stu_id does not exist'
+
+
+
+
 
 
 
