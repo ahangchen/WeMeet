@@ -7,3 +7,5 @@ sudo pip install pillow
 ```
 - 验证码依赖字体
 - mysql数据库依赖pymysql
+
+- 邮件链接中的参数加密依赖PyCrypto2.6.1
