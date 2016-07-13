@@ -9,11 +9,13 @@
     * pwd
     * code: 验证码
 * 返回：  
-    * 成功：
-        * err: 0  
+    * 成功:
+        * JSON: {"err": err} 
+            * err: 0  
     * 失败：
-        * err: -2/-3/-1
-        * msg: 验证码错误/账号已存在/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -2/-3/-1
+            * msg: 验证码错误/账号已存在/请求方法错误
 
 ***
 
@@ -24,10 +26,12 @@
     * account： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
 * 返回：
     * 成功：
-        * err: 0
+        * JSON: {"err": err}
+            * err: 0
     * 失败：
-        * err: -4/-1
-        * msg: 账号不存在/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -4/-1
+            * msg: 账号不存在/请求方法错误
 
 ***
 
@@ -39,24 +43,28 @@
     * pwd
 * 返回：
     * 成功：
-        * err: 0
+        * JSON: {"err": err}
+            * err: 0
     * 失败：
-        * err: -4/-5/-6/-1
-        * msg: 账号不存在/密码错误/账号未激活/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -4/-5/-6/-1
+            * msg: 账号不存在/密码错误/账号未激活/请求方法错误
 
 ***
 
 ###请求发送密码重置邮件
-* http://127.0.0.1:8000/student/rsmail/　　　　　（rsmail: reset mail)
+* http://127.0.0.1:8000/student/rsmail/ 　　　（rsmail: reset mail)
 * POST
 * 参数：
     * account
 * 返回：
     * 成功：
-        * err: 0
+        * JSON: {"err": err}
+            * err: 0
     * 失败：
-        * err: -4/-1
-        * msg: 账号不存在/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -4/-1
+            * msg: 账号不存在/请求方法错误
 
 ***
 
@@ -67,12 +75,14 @@
     * account： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
 * 返回：
     * 成功：
-        * err: 0
-        * credential： 凭据
-        * account : 无加密的账号
+        * JSON: {"err": err, "credential": credential, "account": account}
+            * err: 0
+            * credential： 凭据
+            * account : 无加密的账号
     * 失败：
-        * err: -4/-1
-        * msg: 账号不存在/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -4/-1
+            * msg: 账号不存在/请求方法错误
 
 ***
 
@@ -85,10 +95,12 @@
     * pwd
 * 返回：
     * 成功：
-        * err: 0
+        * JSON: {"err": err}
+            * err: 0
     * 失败：
-        * err: -4/-7/-1
-        * msg: 账号不存在/凭据错误/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -4/-7/-1
+            * msg: 账号不存在/凭据错误/请求方法错误
 
 ***
 
@@ -99,18 +111,22 @@
     * account
 * 返回：
     * 成功：
-        * err: 0
-        * avatar_path
-        * name
-        * school
-        * edu_background
-        * grade
-        * major
-        * loaction
-        * tel
-        * mail
+        * JSON: 　　{"err": err,   
+            　　　　　"avatar_pah": avatar_path,   
+            　　　　　"name": name,   
+            　　　　　"school": school,  
+            　　　　　"edu_background": edu_background,  
+            　　　　　"grade": grade,  
+            　　　　　"major": major,  
+            　　　　　"location": location,  
+            　　　　　"tel": tel,  
+            　　　　　"mail": mail}  
+
+            * err: 0
+            
     * 失败：
-        * err: -8/-1
-        * msg: 学生不存在/请求方法错误
+        * JSON: {"err": err, "msg": msg}
+            * err: -8/-1
+            * msg: 学生不存在/请求方法错误
 
 
