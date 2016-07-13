@@ -2,22 +2,23 @@
 
 ***
 ###注册：  
-* /student/register/  
+* http://127.0.0.1:8000/student/register/  
 * POST  
 * 参数：
     * account: 
     * pwd
+    * code: 验证码
 * 返回：  
     * 成功：
         * err: 0  
     * 失败：
-        * err: -2/-1
-        * msg: 账号已存在/请求方法错误
+        * err: -2/-3/-1
+        * msg: 验证码错误/账号已存在/请求方法错误
 
 ***
 
 ###激活账号：
-* /student/activate/
+* http://127.0.0.1:8000/student/activate/
 * POST
 * 参数：
     * account： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -25,13 +26,13 @@
     * 成功：
         * err: 0
     * 失败：
-        * err: -3/-1
+        * err: -4/-1
         * msg: 账号不存在/请求方法错误
 
 ***
 
 ###登陆：
-* /student/login/
+* http://127.0.0.1:8000/student/login/
 * POST
 * 参数：
     * account
@@ -40,13 +41,13 @@
     * 成功：
         * err: 0
     * 失败：
-        * err: -3/-4/-5/-1
+        * err: -4/-5/-6/-1
         * msg: 账号不存在/密码错误/账号未激活/请求方法错误
 
 ***
 
 ###请求发送密码重置邮件
-* /student/rsmail/　　　　　（rsmail: reset mail)
+* http://127.0.0.1:8000/student/rsmail/　　　　　（rsmail: reset mail)
 * POST
 * 参数：
     * account
@@ -54,13 +55,13 @@
     * 成功：
         * err: 0
     * 失败：
-        * err: -3/-1
+        * err: -4/-1
         * msg: 账号不存在/请求方法错误
 
 ***
 
 ###获取找回密码的凭证（同时重置密码，修改账号状态为未激活）
-* /student/reset/
+* http://127.0.0.1:8000/student/reset/
 * POST
 * 参数：
     * account： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -70,13 +71,13 @@
         * credential： 凭据
         * account : 无加密的账号
     * 失败：
-        * err: -3/-1
+        * err: -4/-1
         * msg: 账号不存在/请求方法错误
 
 ***
 
 ###修改密码
-* /student/cpwd/
+* http://127.0.0.1:8000/student/cpwd/
 * POST
 * 参数：
     * account:
@@ -86,13 +87,13 @@
     * 成功：
         * err: 0
     * 失败：
-        * err: -3/-6/-1
+        * err: -4/-7/-1
         * msg: 账号不存在/凭据错误/请求方法错误
 
 ***
 
 ###获取学生信息
-* /student/info/
+* http://127.0.0.1:8000/student/info/
 * POST
 * 参数：
     * account
@@ -109,7 +110,7 @@
         * tel
         * mail
     * 失败：
-        * err: -7/-1
+        * err: -8/-1
         * msg: 学生不存在/请求方法错误
 
 
