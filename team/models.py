@@ -50,6 +50,7 @@ class Label(models.Model):
 
 
 class Product(models.Model):
+    name = models.CharField(max_length=NAME_MAX_LENGTH, default='')
     team = models.ForeignKey(Team)
     content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     img_path = models.CharField(max_length=PATH_MAX_LENGTH, default='')
@@ -86,6 +87,8 @@ class Job(models.Model):
     work_cmd = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     # 发布状态，0表示待发布，1表示已发布，2表示已下架
     pub_state = models.IntegerField(default=0)
+
+    team = models.ForeignKey(Team)
 
 
 class JobType(models.Model):
