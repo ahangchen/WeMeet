@@ -1,0 +1,5 @@
+SUCCEED = '0'
+ERROR_METHOD = '-1'
+
+ERROR_METHOD_MSG = '请求方法错误'
+ERROR_SEARCHMODEL_MSG = '查询类型出错'
