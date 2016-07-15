@@ -17,33 +17,36 @@
     * keys:
 * 返回：
     * 成功:
-        * JSON: 符合要求model的列表
-        job：
+        JSON: {"err": 0, "msg": 结果列表}
+        当model = job时：
+            pk:对应的ID
             job_name
             job_type
             min_salary
             max_salary
             job_summary
-
             team_name
             team_type
             team_about
-        team:
+
+        当model = team时：
+            pk:对应的ID
             team_name
             team_logo
             team_about
             team_type
-        product:
+
+        当model = product时：
+            pk:对应的ID
             product_name
             product_content
             product_img_path
-
             team_name
-            type
+            team_type
             team_about
     * 失败：
         * JSON: {"err": err, "msg": msg}
             * err: -1
-            * msg: 请求方法错误
+            * msg: 请求方法错误/查询类型错误
 
 ***

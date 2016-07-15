@@ -10,6 +10,7 @@ from django.core import serializers
 from haystack.query import SearchQuerySet
 from django.db.models import Q
 from functools import reduce
+from team.ctrl.err_code_msg import *
 
 import json
 import operator
@@ -34,10 +35,9 @@ def search(request):
     # logging.debug(type())
 
     models = {'job':Job,'team':Team,'product':Product}
-    res = {'err':'-1','message':'请求方法错误'}
-    res = json.dumps(res, ensure_ascii=False)
+    res = {'err':ERROR_METHOD,'message':ERROR_METHOD_MSG}
 
-    if request.method == 'POST':
+    if request.method == 'POST' and request.POST.get('model') in models.keys():
         model = models[request.POST.get('model')]
         search_type = request.POST.get('type')
         content = request.POST.get('keys')
@@ -46,9 +46,18 @@ def search(request):
         logging.debug(condition)
 
         if search_type:
-            result = SearchQuerySet().filter(typy=int(search_type)).filter(condition).models(model)
-            res = serializers.serialize("json",[x.object for x in result])
+            res = SearchQuerySet().filter(typy=int(search_type)).filter(condition).models(model)
         else:
-            result = SearchQuerySet().filter(condition).models(model)
-            res = serializers.serialize("json", [x.object for x in result])
+            res = SearchQuerySet().filter(condition).models(model)
+
+        res_list = []
+        if res.count():
+            res_name = (res[0].__dict__)['_additional_fields']
+            res_name.append('pk')
+            res_list = [ {k:(obj.__dict__)[k] for k in res_name } for obj in res]
+        res = {'err':0,'message':res_list}
+    elif request.method == 'POST':
+        res['message'] = ERROR_SEARCHMODEL_MSG
+
+    res = json.dumps(res, ensure_ascii=False)
     return HttpResponse(res)
