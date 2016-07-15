@@ -1,4 +1,4 @@
-from student.utility.tag import NO_INPUT
+NO_INPUT = -12344555
 
 
 def value(previous_value, input_value):
