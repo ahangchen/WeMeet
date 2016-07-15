@@ -1,7 +1,7 @@
 # from student.utility.tag import NO_INPUT
 
 # from student.data_access.tag import GOOD_UPDATE
-from student.data_access.tag import ERROR_SELECT_DOESNOTEXIST
+# from student.data_access.tag import ERROR_SELECT_DOESNOTEXIST
 
 # from student.bussiness_logic.avatar import check_avatar_file
 # from student.bussiness_logic.avatar import get_avatar_path
@@ -11,26 +11,26 @@ from student.data_access.tag import ERROR_SELECT_DOESNOTEXIST
 # from student.bussiness_logic.tag import ERROR_AVATAR_SAVE_FAILED
 # from student.bussiness_logic.tag import GOOD_UPDATE_INFO
 # from student.bussiness_logic.tag import ERROR_UPDATE_INFO
-from student.bussiness_logic.tag import ERROR_GET_INFO_DOESNOTEXIST
+from student.bussiness_logic.tag import ERR_GET_INFO_NOTEXIST
 
 # from student.data_access.stu_info import update
 from student.data_access.stu_info import select
 
 # from student.utility.file_helper import get_file_type
 
-
-def get(account):
-    """
-    获取学生信息
-     成功：返回学生
-     失败:返回ERROR_GET_INFO_DOESNOTEXIST
-    """
-    result = select(stu_id=account)
-    # 如果学生不存在
-    if result == ERROR_SELECT_DOESNOTEXIST:
-        return ERROR_GET_INFO_DOESNOTEXIST
-    # 如果获取学生信息成功
-    return result
+#
+# def get(account):
+#     """
+#     获取学生信息
+#      成功：返回学生
+#      失败:返回ERROR_GET_INFO_DOESNOTEXIST
+#     """
+#     result = select(stu_id=account)
+#     # 如果学生不存在
+#     if result == ERROR_SELECT_DOESNOTEXIST:
+#         return ERR_GET_INFO_NOTEXIST
+#     # 如果获取学生信息成功
+#     return result
 
 
 

@@ -1,58 +1,77 @@
-# This is an auto-generated Django model module.
-# You'll have to do the following manually to clean this up:
-#   * Rearrange models' order
-#   * Make sure each model has one field with primary_key=True
-#   * Make sure each ForeignKey has `on_delete` set to the desired behavior.
-#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
-# Feel free to rename the models, but don't rename db_table values or field names.
-from __future__ import unicode_literals
-
 from django.db import models
 
-from team.ctrl.defines import PATH_MAX_LENGTH
+from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
+    SHORT_TEXT_LENGTH, DATE_MAX_LENGTH
 
 
 class JobApply(models.Model):
     # By default, id = models.AutoField(primary_key=True)
     stu = models.ForeignKey('StuInfo', models.DO_NOTHING)
-    job_id = models.CharField(max_length=45)
-    state = models.CharField(max_length=45)
+    # 职位
+    job = models.ForeignKey('team.Job')
+    # 投递状态，0表示待查收，1表示面试中，2表示待发offer，3表示已结束
+    state = models.IntegerField(default=0)
+    # 学生简历
     resume = models.ForeignKey('Resume', models.DO_NOTHING)
-    team_id = models.CharField(max_length=45)
-    resume_type = models.IntegerField()
+    # 多app外键最好用字符串引用防止循环import
+    team = models.ForeignKey('team.Team')
+    # 简历类型，0表示网站模板简历，1表示附件简历
+    resume_type = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'job_apply'
 
 
 class Resume(models.Model):
-    resume_id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True)
     stu = models.ForeignKey('StuInfo', models.DO_NOTHING)
-    resume_edu = models.CharField(max_length=600, blank=True, null=True)
-    resume_internship = models.CharField(max_length=1000, blank=True, null=True)
-    resume_project = models.CharField(max_length=1000, blank=True, null=True)
-    resume_stu_work = models.CharField(max_length=600, blank=True, null=True)
-    resume_award = models.CharField(max_length=300, blank=True, null=True)
-    # 附件地址
-    resume_path = models.CharField(max_length=PATH_MAX_LENGTH)
+    resume_edu = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
+    resume_internship = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
+    resume_project = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
+    resume_stu_work = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
+    resume_award = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
+    # 附件路径
+    file_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True)
 
     class Meta:
         db_table = 'resume'
 
 
 class StuInfo(models.Model):
-    id = models.CharField(primary_key=True, max_length=45)
-    pwd = models.CharField(max_length=32)
-    name = models.CharField(max_length=20, blank=True, null=True)
-    school = models.CharField(max_length=45, blank=True, null=True)
-    tel = models.CharField(max_length=20, blank=True, null=True)
-    mail = models.CharField(max_length=45, blank=True, null=True)
-    avatar_path = models.CharField(max_length=45, blank=True, null=True)
-    is_activated = models.BooleanField(default=False)
-    edu_background = models.CharField(max_length=20, blank=True, null=True)
-    grade = models.CharField(max_length=20, blank=True, null=True)
-    major = models.CharField(max_length=45, blank=True, null=True)
-    location = models.CharField(max_length=45, blank=True, null=True)
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    school = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    tel = models.CharField(max_length=TEL_MAX_LENGTH, blank=True, null=True, default='')
+    mail = models.CharField(max_length=MAIL_MAX_LENGTH, blank=True, null=True, default='')
+    # 头像路径
+    avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
+    # 学历
+    edu_background = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
+    # 年级
+    grade = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
+    # 专业
+    major = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
+    # 所在地
+    location = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
 
     class Meta:
         db_table = 'stu_info'
+
+
+class StuAccount(models.Model):
+    # 账号（邮箱）
+    account = models.CharField(primary_key=True, max_length=MAIL_MAX_LENGTH, null=False, blank=False)
+    # 密码
+    pwd = models.CharField(max_length=SHORT_TEXT_LENGTH, null=False, blank=False)
+    # 激活状态
+    is_activated = models.BooleanField(default=False)
+    # 加密的账号
+    ciphertext = models.CharField(max_length=LONGTEXT_MAX_LENGTH, null=True, blank=False)
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，账号级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+    # 上一次重置账号的日期
+    reset_date = models.CharField(max_length=DATE_MAX_LENGTH, null=False, blank=False)
+
+    class Meta:
+        db_table = 'stu_account'
+
