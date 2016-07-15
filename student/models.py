@@ -9,6 +9,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
+from team.ctrl.defines import PATH_MAX_LENGTH
+
 
 class JobApply(models.Model):
     # By default, id = models.AutoField(primary_key=True)
@@ -32,6 +34,7 @@ class Resume(models.Model):
     resume_stu_work = models.CharField(max_length=600, blank=True, null=True)
     resume_award = models.CharField(max_length=300, blank=True, null=True)
     # 附件地址
+    resume_path = models.CharField(max_length=PATH_MAX_LENGTH)
 
     class Meta:
         db_table = 'resume'
