@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+from student.bussiness_logic.mail_settings import *  # 邮件配置文件
 import os
 import logging
 logging.basicConfig(
@@ -140,17 +140,47 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-#邮件配置
-EMAIL_HOST = 'smtp.sina.com'                    # SMTP地址
-EMAIL_PORT = 25                                 # SMTP端口
-EMAIL_HOST_USER = 'm18826076291@sina.com'       # 暂时的邮箱
-EMAIL_HOST_PASSWORD = 'a123456789'              # 邮箱密码
-# EMAIL_SUBJECT_PREFIX = u'[WeMeet]'              # 为邮件Subject-line前缀,默认是'[django]'
-EMAIL_USE_TLS = False                           # 与SMTP服务器通信时，是否启动TLS链接(安全链接)。默认是false
 
 HAYSTACK_CONNECTIONS = {
     'default':{
         'ENGINE': 'whoosh_cn_backend.WhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(message)s'
+        },
+    },
+    'handlers': {
+        'info_f': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/log/stu/info.log',
+            'formatter': 'simple'
+        },
+        'warning_f': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/log/stu/warning.log',
+            'formatter': 'simple'
+        },
+        'error_f': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR+'/log/stu/error.log',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'wemeet.stu': {
+            'handlers': ['warning_f', 'error_f', 'info_f'],
+            'level': 'INFO',
+            'propagate': False,
+        }
+    }
 }
