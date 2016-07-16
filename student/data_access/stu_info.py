@@ -1,9 +1,9 @@
-from student.data_access.tag import ERR_DELETE_MULT
 from student.data_access.tag import ERR_DELETE_NOTEXIST
 from student.data_access.tag import ERR_DELETE_DB
 from student.data_access.tag import ERR_UPDATE_NOTEXIST
 from student.data_access.tag import ERR_INSERT_DB
 from student.data_access.tag import ERR_SELECT_NOTEXIST
+from student.data_access.tag import ERR_SELECT_DB
 from student.data_access.tag import OK_DELETE
 from student.data_access.tag import OK_INSERT
 from student.data_access.tag import OK_UPDATE
@@ -11,26 +11,32 @@ from student.data_access.tag import OK_UPDATE
 from student.models import StuInfo
 
 from student.utility.value_update import value, NO_INPUT
+from student.utility.logger import logger
 
 
-def delete(stu_id):  # TODO(HJF): 改成只返回ERR_DELEET
+def delete(stu_id):
+    """
+    删除
+    成功返回OK_DELETE
+    失败返回ERR_DELETE_DB
+    """
     try:
         delete_stu = StuInfo.objects.all().get(id=stu_id)  # 抛出MultipleObjectsReturned或DoesNotExist
         delete_stu.delete()  # 不抛出异常
         return OK_DELETE
 
     except StuInfo.DoesNotExist:
-        # TODO(hjf): log到日志
-        return ERR_DELETE_NOTEXIST
+        logger.error('尝试删除不存在的学生')
+        return ERR_DELETE_DB
 
     except StuInfo.MultipleObjectsReturned:
-        # TODO(hjf): log到日志
+        logger.info('数据库异常（存在重复记录）')
         StuInfo.objects.all().filter(id=stu_id).delete()  # 不抛异常
-        return ERR_DELETE_MULT
+        return OK_DELETE
 
     # 数据库异常
     except:
-        # TODO(hjf): log到日志，修改返回内容
+        logger.error('数据库异常导致删除学生失败')
         return ERR_DELETE_DB
 
 
@@ -67,17 +73,17 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
 def select(stu_id):
     """
     成功：返回select_stu
-    失败：返回ERROR_SELECT_DOESNOTEXIST
+    失败：返回ERR_SELECT_NOTEXIST
+           或ERR_SELECT_DB
     """
     try:
         select_stu = StuInfo.objects.all().get(id=stu_id)
         return select_stu
     except StuInfo.DoesNotExist:
-        # TODO(hjf): log到日志
         return ERR_SELECT_NOTEXIST
     except:
-        # TODO(hjf): log到日志, 修改返回内容
-        return ERR_SELECT_NOTEXIST
+        logger.error('数据库异常导致查询学生失败')
+        return ERR_SELECT_DB
 
 
 def insert(name, school, tel, mail, avatar_path, edu_background, grade, major, location):

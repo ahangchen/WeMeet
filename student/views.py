@@ -55,6 +55,8 @@ from student.bussiness_logic.tag import OK_REG
 from student.bussiness_logic.tag import REG_FAIL_DB
 from student.bussiness_logic.tag import OK_CHANGE_PWD
 from student.bussiness_logic.tag import OK_RESET_MAIL
+from student.bussiness_logic.tag import ERR_GET_INFO_DB
+from student.bussiness_logic.tag import ERR_GET_INFO_NOTEXIST
 
 
 # from student.utility.tag import NO_INPUT
@@ -69,7 +71,7 @@ def post(request):
 @csrf_exempt
 def register(request):
     if request.method == "POST":
-        # 如果验证码错误 todo:上线后换回
+        # 如果验证码错误
         # if request.session['code'] != request.POST.get('code'):
         if False:
             return HttpResponse(json_helper.dumps(
@@ -146,29 +148,32 @@ def activate(request, cipher):
 def login(request):
     """
     登陆
-    成功：返回 {'err': SUCCEED }
+    成功：返回 {'err': SUCCEED, 'id': stu_id}
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
         acnt = request.POST.get('account')
         pwd = request.POST.get('pwd')
 
-        tag = account.login(acnt=acnt, pwd=pwd)
+        login_rlt = account.login(acnt=acnt, pwd=pwd)
         # 如果登陆成功
-        if tag == OK_LOGIN:
-            json_ctx = {'err': SUCCEED}
+        if login_rlt['tag'] == OK_LOGIN:
+            json_ctx = {'err': SUCCEED,
+                        'id': login_rlt['stu_id']}
+
         # 如果密码错误
-        elif tag == ERR_LOGIN_WRONG_PWD:
+        elif login_rlt['tag'] == ERR_LOGIN_WRONG_PWD:
             json_ctx = {'err': ERR_LOGIN_STU_WRONG_PWD,
                         'msg': ERR_LOGIN_STU_WRONG_PWD_MSG}
         # 如果账号未激活
-        elif tag == ERR_LOGIN_NONACTIVATED:
+        elif login_rlt['tag'] == ERR_LOGIN_NONACTIVATED:
             json_ctx = {'err': ERR_LOGIN_STU_NONACTIVATED,
                         'msg': ERR_LOGIN_STU_NONACTIVATED_MSG}
         # 如果账号不存在
-        elif tag == ERR_LOGIN_NOTEXIST:
+        elif login_rlt['tag'] == ERR_LOGIN_NOTEXIST:
             json_ctx = {'err': ERR_ACCOUNT_NOTEXIST,
                         'msg': ERR_ACCOUNT_NOTEXIST_MSG}
+
         # 如果数据库异常导致登陆失败（tag == ERR_LOGIN_DB)
         else:
             json_ctx = {'err': FAIL,
@@ -310,42 +315,52 @@ def change_pwd(request):
         ))
 
 
+@csrf_exempt
+def get_info(request):
+    """
+    获取学生信息
+    成功： 返回err: SUCCEED，头像路径，姓名，学校，学历，年级，专业，所在地，联系方式（tel），邮箱
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('id')
+        obj = info.get(stu_id=stu_id)
 
-# @csrf_exempt
-# def get_info(request):
-#     """
-#     获取学生信息
-#     成功： 返回err: SUCCEED，头像路径，姓名，学校，学历，年级，专业，所在地，联系方式（tel），邮箱
-#     失败：返回相应的err和msg的JSON
-#     """
-#     if request.method == 'POST':
-#         acnt = request.POST.get('account')
-#         obj = info.get(acnt)
-#         # 如果学生不存在
-#         if obj == ERR_GET_INFO_NOTEXIST:
-#             return HttpResponse(json_helper.dumps(
-#                 {'err': ERR_STU_NOTEXIST, 'msg': ERR_STU_NOTEXIST_MSG}
-#             ))
-#         # 如果获取学生信息成功, 返回前端请求的信息
-#         else:
-#             return HttpResponse(json_helper.dumps(
-#                 {'err': SUCCEED,
-#                  'avatar_path': obj.avatar_path,
-#                  'name': obj.name,
-#                  'school': obj.school,
-#                  'edu_background': obj.edu_background,
-#                  'grade': obj.grade,
-#                  'major': obj.major,
-#                  'location': obj.location,
-#                  'tel': obj.tel,
-#                  'mail': obj.mail}
-#             ))
-#
-#     # 如果请求的方法是GET
-#     else:
-#         return HttpResponse(json_helper.dumps(
-#             {'err': ERR_METHOD, 'msg': ERR_METHOD_MSG}
-#         ))
+        # 如果学生不存在
+        if obj == ERR_GET_INFO_NOTEXIST:
+            return HttpResponse(json_helper.dumps({
+                'err': ERR_STU_NOTEXIST,
+                'msg': ERR_STU_NOTEXIST_MSG
+            }))
+
+        # 如果数据库异常导致无法获取学生信息
+        elif obj == ERR_GET_INFO_DB:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+        # 如果获取学生信息成功, 返回前端请求的信息
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'avatar_path': obj.avatar_path,
+                'name': obj.name,
+                'school': obj.school,
+                'edu_background': obj.edu_background,
+                'grade': obj.grade,
+                'major': obj.major,
+                'location': obj.location,
+                'tel': obj.tel,
+                'mail': obj.mail
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 
