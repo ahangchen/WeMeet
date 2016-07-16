@@ -69,7 +69,7 @@ def post(request):
 @csrf_exempt
 def register(request):
     if request.method == "POST":
-        # 如果验证码错误
+        # 如果验证码错误 todo:上线后换回
         # if request.session['code'] != request.POST.get('code'):
         if False:
             return HttpResponse(json_helper.dumps(
