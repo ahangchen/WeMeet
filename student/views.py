@@ -323,40 +323,44 @@ def get_info(request):
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
-        acnt = request.POST.get('id')
-        obj = info.get(acnt)
+        stu_id = request.POST.get('id')
+        obj = info.get(stu_id=stu_id)
+
         # 如果学生不存在
         if obj == ERR_GET_INFO_NOTEXIST:
             return HttpResponse(json_helper.dumps({
                 'err': ERR_STU_NOTEXIST,
                 'msg': ERR_STU_NOTEXIST_MSG
             }))
+
         # 如果数据库异常导致无法获取学生信息
         elif obj == ERR_GET_INFO_DB:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
                 'msg': FAIL_MSG
             }))
+
         # 如果获取学生信息成功, 返回前端请求的信息
         else:
-            return HttpResponse(json_helper.dumps(
-                {'err': SUCCEED,
-                 'avatar_path': obj.avatar_path,
-                 'name': obj.name,
-                 'school': obj.school,
-                 'edu_background': obj.edu_background,
-                 'grade': obj.grade,
-                 'major': obj.major,
-                 'location': obj.location,
-                 'tel': obj.tel,
-                 'mail': obj.mail}
-            ))
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'avatar_path': obj.avatar_path,
+                'name': obj.name,
+                'school': obj.school,
+                'edu_background': obj.edu_background,
+                'grade': obj.grade,
+                'major': obj.major,
+                'location': obj.location,
+                'tel': obj.tel,
+                'mail': obj.mail
+            }))
 
     # 如果请求的方法是GET
     else:
-        return HttpResponse(json_helper.dumps(
-            {'err': ERR_METHOD, 'msg': ERR_METHOD_MSG}
-        ))
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 
