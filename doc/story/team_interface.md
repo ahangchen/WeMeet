@@ -73,7 +73,7 @@
 ***
 
 ###修改密码
-* http://127.0.0.1:8000/team/new_pwd/
+* http://127.0.0.1:8000/team/update_pwd/
 * POST
 * 参数：
     * account:账号id
