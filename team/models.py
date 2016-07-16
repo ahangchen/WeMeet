@@ -23,9 +23,10 @@ class Team(models.Model):
 
 
 class Pwd(models.Model):
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey(Team, related_name='t2pwd')
     pwd_hash = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
     invite_code = models.CharField(max_length=SIMPLE_TEXT_LENGTH, default='')
+    reset_key = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
     # 账户状态，0表示可用，1表示未激活，2表示锁定
     state = models.IntegerField(default=0)
 
