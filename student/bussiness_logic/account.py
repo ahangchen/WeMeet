@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 from student.data_access.tag import OK_UPDATE
 from student.data_access.tag import ERR_INSERT_DB
 from student.data_access.tag import ERR_UPDATE_NOTEXIST
@@ -40,7 +41,7 @@ from student.data_access.stu_info import select
 from student.data_access import account
 from student.data_access import stu_info
 
-from student.utility.encrypt_decrypt import decrypt
+from student.utility.encrypt_decrypt import decrypt, encrypt
 from student.utility.random_hashcode import get_hashcode
 from student.utility.logger import logger
 from student.utility import date_helper
@@ -69,8 +70,8 @@ def register(acnt, pwd):
 
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', school='', tel='',
-                 mail='', avatar_path=DEFAULT_AVATAR,
-                 edu_background='', grade='', location='', major='')
+                              mail='', avatar_path=DEFAULT_AVATAR,
+                              edu_background='', grade='', location='', major='')
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:
@@ -91,9 +92,30 @@ def register(acnt, pwd):
 
         # 如果插入账号成功
         else:
-            send_mail('WeMeet注册验证邮件', verify_mail.get_content(account=acnt),  # TODO(hjf): 修改邮件内容、收发邮箱
-                      'm18826076291@sina.com', ['961437466@qq.com'])
-            return OK_REG
+            # 记录账号密文
+            ciphertext = encrypt(acnt)
+            update_tag = account.update(account=acnt, ciphertext=ciphertext)
+            # 如果记录密文失败
+            if update_tag != OK_UPDATE:
+                logger.error('记录账号密文失败，注册失败')
+
+                # 记录密文失败，回滚，删除已插入的账号
+                delete_acnt_tag = account.delete(account=acnt)
+                if delete_acnt_tag == ERR_DELETE_DB:
+                    logger.error('注册失败，数据库异常导致无法回滚状态（无法删除已插入的账号）')
+
+                # 删除已插入的学生
+                delete_stu_tag = stu_info.delete(stu_tag.id)
+                if delete_stu_tag == ERR_DELETE_DB:
+                    logger.error('注册失败，数据库异常导致无法回滚状态（无法删除已插入的学生）')
+
+                return ERR_UPDATE_DB
+
+            # 记录账号密文成功
+            else:
+                send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext),  # TODO(hjf): 修改邮件内容、收发邮箱
+                          'm18826076291@sina.com', ['961437466@qq.com'])
+                return OK_REG
 
 
 def activate(account_cipher):
@@ -104,13 +126,20 @@ def activate(account_cipher):
           或ERR_ACTIVATE_DB
     @account_cipher:  加密后的account
     """
-    acnt = decrypt(account_cipher)
-    tag = account.update(account=acnt, is_activated=True)
+    select_rlt = account.select(ciphertext=account_cipher)
+    if select_rlt == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试激活不存在的账号')
+        return ERR_ACTIVATE_NOTEXIST
+    elif select_rlt == ERR_SELECT_DB:
+        logger.error('数据库异常导致无法激活账号')
+        return ERR_ACTIVATE_DB
+
+    tag = account.update(account=select_rlt.account, is_activated=True)
 
     # 如果更新激活状态失败（账号不存在）
     if tag == ERR_UPDATE_NOTEXIST:
-        logger.warning('尝试激活不存在的账号')
-        return ERR_ACTIVATE_NOTEXIST
+        logger.error('在激活账号过程中，账号记录丢失，激活失败')
+        return ERR_ACTIVATE_DB
 
     # 如果更新激活状态失败（数据库异常）
     elif tag == ERR_UPDATE_DB:
@@ -176,8 +205,10 @@ def send_reset_mail(acnt):
         logger.error('数据库异常导致无法发送重置邮件')
         return ERR_RESET_MAIL_DB
 
-    # 如果账号存在，记录邮件发送的日期，并发送邮件
-    update_tag = account.update(account=acnt, reset_date=date_helper.now())
+    # 账号密文
+    ciphertext = encrypt(acnt)
+    # 如果账号存在，记录邮件发送的日期和账号密文，并发送邮件
+    update_tag = account.update(account=acnt, reset_date=date_helper.now(), ciphertext=ciphertext)
 
     # 如果记录日期时，账号记录丢失
     if update_tag == ERR_UPDATE_NOTEXIST:
@@ -190,7 +221,7 @@ def send_reset_mail(acnt):
         return ERR_RESET_MAIL_DB
 
     # 如果日期记录成功，发送邮件
-    send_mail('WeMeet重置密码邮件', reset_mail.get_content(account=acnt),  # TODO(hjf): 修改邮件内容、收发邮箱
+    send_mail('WeMeet重置密码邮件', reset_mail.get_content(ciphertext),  # TODO(hjf): 修改邮件内容、收发邮箱
               'm18826076291@sina.com', ['961437466@qq.com'])
     return OK_RESET_MAIL
 
@@ -203,8 +234,7 @@ def reset(account_cipher):
     失败：返回ERR_RESET_NOTEXIST
            或ERR_SELECT_DB
     """
-    acnt = decrypt(account_cipher)
-    obj = account.select(account=acnt)
+    obj = account.select(ciphertext=account_cipher)
 
     # 如果账号不存在
     if obj == ERR_SELECT_NOTEXIST:
@@ -222,7 +252,7 @@ def reset(account_cipher):
 
     # 如果账号存在，请求未过期，重置状态和密码
     credential = get_hashcode()
-    tag = account.update(account=acnt, is_activated=False, pwd=credential)
+    tag = account.update(account=obj.account, is_activated=False, pwd=credential)
 
     # 如果更新账号时，账号不存在
     if tag == ERR_UPDATE_NOTEXIST:
@@ -234,7 +264,7 @@ def reset(account_cipher):
         logger.error('数据库异常导致无法重置账号账号')
 
     # 如果重置账号成功
-    return {'credential': credential, 'account': acnt}  # 防止credential(哈希值）和ERROR_RESET_DOESNOTEXIST冲突
+    return {'credential': credential, 'account': obj.account}  # 防止credential(哈希值）和ERROR_RESET_DOESNOTEXIST冲突
 
 
 def change_pwd(acnt, credential, pwd):
