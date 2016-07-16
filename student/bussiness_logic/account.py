@@ -153,7 +153,7 @@ def activate(account_cipher):
 def login(acnt, pwd):
     """
     登陆
-    成功：返回OK_LOGIN
+    成功：返回OK_LOGIN和学生id
     失败：返回ERR_LOGIN_NOTEXIST
             或ERR_LOGIN_DB
             或ERR_LOGIN_WRONG_PWD
@@ -166,24 +166,25 @@ def login(acnt, pwd):
 
     # 如果账号不存在
     if obj == ERR_SELECT_NOTEXIST:
-        return ERR_LOGIN_NOTEXIST
+        return {'tag': ERR_LOGIN_NOTEXIST}
 
     # 如果数据库异常
     elif obj == ERR_SELECT_DB:
         logger.error('数据库异常导致登陆失败')
-        return ERR_LOGIN_DB
+        return {'tag': ERR_LOGIN_DB}
 
     # 如果账号未激活
     elif not obj.is_activated:
-        return ERR_LOGIN_NONACTIVATED
+        return {'tag': ERR_LOGIN_NONACTIVATED}
 
     # 如果密码错误
     elif obj.pwd != pwd:
-        return ERR_LOGIN_WRONG_PWD
+        return {'tag': ERR_LOGIN_WRONG_PWD}
 
     # 登陆成功
     else:
-        return OK_LOGIN
+        return {'tag': OK_LOGIN,
+                'stu_id': obj.stu.id}
 
 
 def send_reset_mail(acnt):
