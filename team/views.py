@@ -40,7 +40,7 @@ def search(request):
     # logging.debug(type())
 
     models = {'job': Job, 'team': Team, 'product': Product}
-    res = {'err': ERROR_METHOD, 'message': ERROR_METHOD_MSG}
+    res = {'err': ERROR_METHOD, 'message': MSG_METHOD_ERR}
 
     if request.method == 'POST' and request.POST.get('model') in models.keys():
         model = models[request.POST.get('model')]
@@ -62,7 +62,7 @@ def search(request):
             res_list = [{k: (obj.__dict__)[k] for k in res_name} for obj in res]
         res = {'err': 0, 'message': res_list}
     elif request.method == 'POST':
-        res['message'] = ERROR_SEARCHMODEL_MSG
+        res['message'] = MSG_ERR_SEARCH_TYPE
 
     res = json.dumps(res, ensure_ascii=False)
     return HttpResponse(res)
@@ -75,7 +75,7 @@ def register(request):
     # 如果验证码错误 todo: 上线后启动验证码校验机制
     # if request.session['code'] != request.POST.get('code'):
     if False:
-        return HttpResponse(json_helper.dump_err_msg(ERR_VALID_CODE, ERR_VALID_CODE_MSG))
+        return HttpResponse(json_helper.dump_err_msg(ERR_VALID_CODE, MSG_VALID_CODE_ERR))
     # 如果验证码正确
     acc = request.POST.get('account')
     pwd = request.POST.get('pwd')
@@ -83,10 +83,10 @@ def register(request):
     ret = acc_mng.register(acc, pwd, inv_code)
     # 如果注册成功
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(SUCCEED, SUCC_MSG))
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     # 如果数据库异常导致注册失败
     else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, ERR_ACC_INV_NO_MATCH))
+        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_INV_NO_MATCH))
 
 
 @csrf_exempt
@@ -103,16 +103,16 @@ def login(request):
     ret = acc_mng.login(acnt, pwd)
     # 如果登陆成功
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(SUCC_MSG, SUCC_MSG))
+        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
     # 如果不匹配
     elif ret == LOGIN_FAIL_NO_MATCH:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, ERR_ACC_PWD_NO_MATCH_MSG))
+        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_PWD_NO_MATCH))
     # 如果账号未激活
     elif ret == ACC_UNABLE:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACC_UNABLE, MSG_ACC_UNABLE))
     # 未知错误
     else:
-        return HttpResponse(json_helper.dump_err_msg(FAIL, FAIL_MSG))
+        return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
 
 
 @csrf_exempt
@@ -128,9 +128,9 @@ def reset(request):
     tid = request.POST.get('account')
     ret = acc_mng.send_reset_mail(tid)
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(SUCC_MSG, SUCC_MSG))
+        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
     elif ret == ACC_NO_FOUND:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, ERR_ACCOUNT_NOTEXIST_MSG))
+        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
 
 
 @csrf_exempt
@@ -154,7 +154,7 @@ def update_pwd(request):
     if not is_post(request):
         return resp_method_err()
     if ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(SUCC_MSG, SUCC_MSG))
+        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
     else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, ERR_WRONG_CREDENTIAL_MSG))
+        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_RESET_KEY_ERR))
 
