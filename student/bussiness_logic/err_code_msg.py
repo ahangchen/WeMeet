@@ -30,6 +30,9 @@ FAIL_MSG = '操作失败'
 ERR_OUT_DATE = '-11'  # 用在通过邮件链接重置账号
 ERR_OUT_DATE_MSG = '请求已过期'
 
+AVATAR_INVALID = '-12'  # 用在保存头像
+AVATAR_INVALID_MSG = '头像不合法'
+
 
 
 

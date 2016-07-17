@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from student.bussiness_logic import info
 from student.bussiness_logic import account
+from student.bussiness_logic import avatar
 from student.bussiness_logic.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                                  ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                                  ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -12,6 +13,7 @@ from student.bussiness_logic.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR
                                                  ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
                                                  ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
                                                  ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
+                                                 AVATAR_INVALID, AVATAR_INVALID_MSG,\
                                                  ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                                  ERR_METHOD, ERR_METHOD_MSG, \
                                                  FAIL, FAIL_MSG, \
@@ -57,6 +59,13 @@ from student.bussiness_logic.tag import OK_CHANGE_PWD
 from student.bussiness_logic.tag import OK_RESET_MAIL
 from student.bussiness_logic.tag import ERR_GET_INFO_DB
 from student.bussiness_logic.tag import ERR_GET_INFO_NOTEXIST
+from student.bussiness_logic.tag import OK_SAVE_AVATAR
+from student.bussiness_logic.tag import ERR_SAVE_AVATAR_FAIL
+from student.bussiness_logic.tag import ERR_AVATAR_FILE_INVALID
+from student.bussiness_logic.tag import OK_UPDATE_STU_INFO
+from student.bussiness_logic.tag import ERR_UPDATE_STU_INFO_DB
+
+
 
 
 # from student.utility.tag import NO_INPUT
@@ -363,6 +372,87 @@ def get_info(request):
         }))
 
 
+@csrf_exempt
+def save_avatar(request):
+    """
+    保存上传的头像
+    成功：返回err:SUCCEED, 头像路径
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('id')
+        stu_avatar = request.FILES.get('avatar')
+
+        save_rlt = avatar.save(stu_id=stu_id, avatar=stu_avatar)
+        # 如果保存头像成功
+        if save_rlt['tag'] == OK_SAVE_AVATAR:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'path': save_rlt['path']
+            }))
+
+        # 如果头像不合法
+        elif save_rlt['tag'] == ERR_AVATAR_FILE_INVALID:
+            return HttpResponse(json_helper.dumps({
+                'err': AVATAR_INVALID,
+                'msg': AVATAR_INVALID_MSG
+            }))
+
+        # 如果保存失败 tag == ERR_SAVE_AVATAR_FAIL
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+                'err': ERR_METHOD,
+                'msg': ERR_METHOD_MSG
+            }))
+
+
+@csrf_exempt
+def update_info(request):
+    """
+    修改学生信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('id')
+        avatar_path = request.POST.get('path')
+        name = request.POST.get('name')
+        school = request.POST.get('school')
+        major = request.POST.get('major')
+        location = request.POST.get('location')
+        edu_background = request.POST.get('edu_background')
+        grade = request.POST.get('grade')
+        mail = request.POST.get('mail')
+        tel = request.POST.get('tel')
+
+        tag = info.update(stu_id=stu_id, avatar_path=avatar_path, name=name, school=school,
+                          major=major, location=location, edu_background=edu_background,
+                          grade=grade, mail=mail, tel=tel)
+
+        # 如果更新成功
+        if tag == OK_UPDATE_STU_INFO:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库原因（丢失记录或异常）导致更新失败 tag == ERR_UPDATE_STU_INFO_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 # @csrf_exempt
