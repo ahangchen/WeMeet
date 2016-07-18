@@ -52,7 +52,7 @@ def login(acc, pwd):
 
 
 def reset_mail_content(reset_key):
-    return '<h1>点此重置密码</h1><p>http://127.0.0.1/fetch?reset_key=%s</p>' % reset_key
+    return '<h1>点此重置密码</h1><p>http://110.64.69.66/fetch?reset_key=%s</p>' % reset_key
 
 
 def send_reset_mail(tid):

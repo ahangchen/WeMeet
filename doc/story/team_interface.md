@@ -1,7 +1,7 @@
 ##接口(团队部分)
 
 ### 团队注册  
-* http://127.0.0.1:8000/team/register/  
+* http://110.64.69.66:8081/team/register/
 * POST  
 * 参数：
     * account: 账号id
@@ -23,7 +23,7 @@
 ### 团队账号不需要发邮件激活 
 
 ### 团队登陆：
-* http://127.0.0.1:8000/team/login/
+* http://110.64.69.66:8081/team/login/
 * POST
 * 参数：
     * account：账号id
@@ -41,7 +41,7 @@
 ***
 
 ###请求发送密码重置邮件
-* http://127.0.0.1:8000/team/reset/
+* http://110.64.69.66:8081/team/reset/
 * POST
 * 参数：
     * account
@@ -58,7 +58,7 @@
 ***
 
 ###获取找回密码的凭证（这是一个邮件里的链接，点击进入重置密码页面，这个页面由后端生成）
-* http://127.0.0.1:8000/team/fetch?reset_key=xxxxxxx
+* http://110.64.69.66:8081/team/fetch?reset_key=xxxxxxx
 * POST
 * 参数：
     * reset_key： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -68,7 +68,7 @@
 ***
 
 ###修改密码
-* http://127.0.0.1:8000/team/update_pwd/
+* http://110.64.69.66:8081/team/update_pwd/
 * POST
 * 参数：
     * account:账号id
@@ -95,7 +95,7 @@
 
 ***
 ###搜索模块：
-* http://127.0.0.1:8000/team/search/
+* http://110.64.69.66:8081/team/search/
 * POST
 * 参数：
     * model: job（职位）、team（团队）、项目（product）

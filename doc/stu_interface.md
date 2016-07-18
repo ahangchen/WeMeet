@@ -2,7 +2,7 @@
 
 ***
 ### 1. 学生注册：  
-* http://127.0.0.1:8000/student/register/  
+* http://110.64.69.66:8081/student/register/
 * POST  
 * 参数：
     * account: 
@@ -20,7 +20,7 @@
 ***
 
 ###2. 激活账号：（前端用不到）
-* http://127.0.0.1:8000/student/activate/(cipher)
+* http://110.64.69.66:8081/student/activate/(cipher)
 * GET
 * 参数：
     * cipher： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -36,7 +36,7 @@
 ***
 
 ###3. 登陆：
-* http://127.0.0.1:8000/student/login/
+* http://110.64.69.66:8081/student/login/
 * POST
 * 参数：
     * account
@@ -54,7 +54,7 @@
 ***
 
 ###4. 请求发送密码重置邮件
-* http://127.0.0.1:8000/student/rsmail/ 　　　（rsmail: reset mail)
+* http://110.64.69.66:8081/student/rsmail/ 　　　（rsmail: reset mail)
 * POST
 * 参数：
     * account
@@ -70,7 +70,7 @@
 ***
 
 ###5. 获取找回密码的凭证（同时重置密码，修改账号状态为未激活）
-* http://127.0.0.1:8000/student/reset/
+* http://110.64.69.66:8081/student/reset/
 * POST
 * 参数：
     * account： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -88,7 +88,7 @@
 ***
 
 ###6. 修改密码
-* http://127.0.0.1:8000/student/cpwd/
+* http://110.64.69.66:8081/student/cpwd/
 * POST
 * 参数：
     * account:
@@ -106,7 +106,7 @@
 ***
 
 ###7. 获取学生信息
-* http://127.0.0.1:8000/student/info/
+* http://110.64.69.66:8081/student/info/
 * POST
 * 参数：
     * id： 学生id（由登陆获得）
@@ -133,7 +133,7 @@
 ***
 
 ###8. 上传头像
-* http://127.0.0.1:8000/student/info/avatar/
+* http://110.64.69.66:8081/student/info/avatar/
 * POST
 * 参数：
     * id: 学生id（由登陆获得）
@@ -151,7 +151,7 @@
 ***
 
 ###9. 修改学生信息
-* http://127.0.0.1:8000/student/info/update/
+* http://110.64.69.66:8081/student/info/update/
 * POST
 * 参数： 
     * id: 学生id（由登陆获得）
