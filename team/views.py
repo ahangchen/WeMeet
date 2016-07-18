@@ -104,10 +104,10 @@ def register(request):
     if False:
         return HttpResponse(json_helper.dump_err_msg(ERR_VALID_CODE, MSG_VALID_CODE_ERR))
     # 如果验证码正确
-    acc = request.POST.get('account')
+    mail = request.POST.get('mail')
     pwd = request.POST.get('pwd')
     inv_code = request.POST.get('inv_code')
-    ret = acc_mng.register(acc, pwd, inv_code)
+    ret = acc_mng.register(mail, pwd, inv_code)
     # 如果注册成功
     if ret == ACC_MNG_OK:
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
@@ -127,10 +127,10 @@ def login(request):
         return resp_method_err()
     acnt = request.POST.get('account')
     pwd = request.POST.get('pwd')
-    ret = acc_mng.login(acnt, pwd)
+    ret, tid = acc_mng.login(acnt, pwd)
     # 如果登陆成功
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, str(tid)))
     # 如果不匹配
     elif ret == LOGIN_FAIL_NO_MATCH:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_PWD_NO_MATCH))
@@ -146,16 +146,16 @@ def login(request):
 def reset(request):
     """
     发送账号重置邮件
-    send_rsmail: send reset mail
+    reset: send reset mail
     成功: 返回 {err: SUCCEED}
     失败：返回相应的err和msg的JSON
     """
     if not is_post(request):
         return resp_method_err()
-    tid = request.POST.get('account')
+    tid = request.POST.get('mail')
     ret = acc_mng.send_reset_mail(tid)
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     elif ret == ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
 
@@ -168,7 +168,7 @@ def fetch(request):
                               key: 用户修改密码的凭据; account: 未加密的账号
     失败：返回相应的err和msg
     """
-    return render(request, 'team/fetch.html', {'reset_key': request.GET['reset_key']})
+    return render(request, 'team/fetch.html', {'reset_key': request.GET['reset_key'], 'mail': request.GET['mail']})
 
 
 @csrf_exempt
@@ -180,8 +180,11 @@ def update_pwd(request):
     """
     if not is_post(request):
         return resp_method_err()
-    if ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(MSG_SUCC, MSG_SUCC))
+    mail = request.POST['mail']
+    hash_tid = request.POST['key']
+    pwd = request.POST['pwd']
+    if ACC_MNG_OK == acc_mng.update_pwd(mail, hash_tid, pwd):
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_RESET_KEY_ERR))
 

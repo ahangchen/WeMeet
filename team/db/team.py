@@ -4,8 +4,8 @@ DB_OK = 0
 DB_ACC_NOT_FOUND = 1
 
 
-def is_team_inv_match(team_id, inv_code):
-    return Pwd.objects.filter(team=team_id, invite_code=inv_code) is not None
+def is_team_inv_match(mail, inv_code):
+    return Pwd.objects.filter(team=mail, invite_code=inv_code) is not None
 
 
 def update_team_pwd(team_id, pwd):
@@ -13,8 +13,11 @@ def update_team_pwd(team_id, pwd):
     return DB_OK
 
 
-def team_of_id_pwd(team_id, pwd):
-    return Pwd.objects.filter(team=team_id, pwd_hash=pwd).first()
+def team_of_mail_pwd(mail, pwd):
+    if Pwd.objects.filter(team=mail, pwd_hash=pwd).count() > 0:
+        return Team.objects.filter(contact_mail=mail)
+    else:
+        return None
 
 
 def team_mail(team_id):
@@ -24,12 +27,24 @@ def team_mail(team_id):
     return team['contact_mail']
 
 
-def reset_team(team_id, reset_key):
-    Pwd.objects.filter(team=team_id).update(reset_key=reset_key)
+def mail_team(mail):
+    team = Team.objects.filter(contact_mail=mail).first()
+    if team is None:
+        return None
+    else:
+        return team['id']
 
 
-def update_pwd(tid, hash_tid, new_pwd):
-    team = Pwd.objects.filter(id=tid, reset_key=hash_tid).first()
+def is_mail_valid(mail):
+    return Pwd.objects.filter(team=mail).count() > 0
+
+
+def reset_team(mail, reset_key):
+    Pwd.objects.filter(team=mail).update(reset_key=reset_key)
+
+
+def update_pwd(mail, hash_tid, new_pwd):
+    team = Pwd.objects.filter(team=mail, reset_key=hash_tid).first()
     if team is None:
         return DB_ACC_NOT_FOUND
     else:

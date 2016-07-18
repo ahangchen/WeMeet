@@ -4,7 +4,7 @@
 * http://110.64.69.66:8081/team/register/
 * POST  
 * 参数：
-    * account: 账号id
+    * mail: 用于注册的邮箱
     * pwd:密码的hash值
     * inv_code:邀请码
     * code: 验证码
@@ -30,9 +30,9 @@
     * pwd：密码hash
 * 返回：
     * 成功:
-        * JSON: {"err": err, "msg": "操作成功"} 
+        * JSON: {"err": err, "msg": "团队id"} 
             * err: 0  
-            * msg：操作成功提示
+            * msg： 团队id
     * 失败：
         * JSON: {"err": err, "msg": msg}
             * err: -4/-5/-1/-10
@@ -44,7 +44,7 @@
 * http://110.64.69.66:8081/team/reset/
 * POST
 * 参数：
-    * account
+    * mail：被重置的账号的邮箱 
 * 返回：
     * 成功:
         * JSON: {"err": err, "msg": "操作成功"} 
@@ -71,7 +71,7 @@
 * http://110.64.69.66:8081/team/update_pwd/
 * POST
 * 参数：
-    * account:账号id
+    * mail:账号id
     * key: 凭据
     * pwd:新密码hash值
 * 返回：
