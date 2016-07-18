@@ -114,6 +114,8 @@
             team_name
             team_type
             team_about
+            team_id
+            team_logo_path
 
         当model = team时：
             pk:对应的ID
@@ -130,9 +132,43 @@
             team_name
             team_type
             team_about
+            team_id
+            team_logo_path
     * 失败：
         * JSON: {"err": err, "msg": msg}
             * err: -1
             * msg: 请求方法错误/查询类型错误
 
+***
+
+***
+###热门团队模块：
+* http://110.64.69.66:8081/team/hot_team/
+* GET
+* 返回：
+    * 成功:
+        JSON: {"err": 0, "msg": 团队列表}
+        msg：
+            id: 团队ID
+            name: 团队名
+            about: 团队简介
+            logo_path: 团队logo地址
+    * 失败：
+        * JSON: {"err": err, "msg": msg}
+***
+
+***
+###热门项目模块：
+* http://110.64.69.66:8081/team/hot_product/
+* GET
+* 返回：
+    * 成功:
+        JSON: {"err": 0, "msg": 项目列表}
+        msg：
+            id: 项目ID
+            name: 项目名
+            content: 项目简介
+            img_path: 项目logo地址
+    * 失败：
+        * JSON: {"err": err, "msg": msg}
 ***
