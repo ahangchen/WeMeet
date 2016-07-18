@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^reset/$', views.reset),
     url(r'^cpwd/$', views.change_pwd),  # cpwd: change password
     url(r'^info/$', views.get_info),
+    url(r'^info/avatar/$', views.save_avatar),
+    url(r'^info/update/$', views.update_info),
     url(r'^$', views.post),
 ]

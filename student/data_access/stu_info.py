@@ -1,6 +1,7 @@
 from student.data_access.tag import ERR_DELETE_NOTEXIST
 from student.data_access.tag import ERR_DELETE_DB
 from student.data_access.tag import ERR_UPDATE_NOTEXIST
+from student.data_access.tag import ERR_UPDATE_DB
 from student.data_access.tag import ERR_INSERT_DB
 from student.data_access.tag import ERR_SELECT_NOTEXIST
 from student.data_access.tag import ERR_SELECT_DB
@@ -63,11 +64,11 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
         update_stu.save()
         return OK_UPDATE
     except StuInfo.DoesNotExist:
-        # TODO(hjf): log到日志
+        logger.error('尝试更新不存在的学生')
         return ERR_UPDATE_NOTEXIST
     except:
-        # TODO(hjf): log到日志，修改返回内容（读写发生竞争条件）
-        return ERR_UPDATE_NOTEXIST
+        logger.error('数据库异常导致更新学生失败')
+        return ERR_UPDATE_DB
 
 
 def select(stu_id):

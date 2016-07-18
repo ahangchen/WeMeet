@@ -130,5 +130,46 @@
             * err: -8/-1/-10
             * msg: 学生不存在/请求方法错误/操作失败
 
+***
 
+###8. 上传头像
+* http://127.0.0.1:8000/student/info/avatar/
+* POST
+* 参数：
+    * id: 学生id（由登陆获得）
+    * avatar： 头像文件
+* 返回：
+    * 成功：
+        * JSON: {'err': err, 'path': avatar_path}
+            * err: 0
+            * path: 头像路径
+    * 失败
+        * JSON: {'err': err, 'msg': msg}
+            * err: -12/-1/-10
+            * msg: 头像不合法/请求方法错误/操作失败
+
+***
+
+###9. 修改学生信息
+* http://127.0.0.1:8000/student/info/update/
+* POST
+* 参数： 
+    * id: 学生id（由登陆获得）
+    * path： 头像路径（由上传头像获得） 
+    * name 
+    * school  
+    * major: 专业  
+    * location：所在地  
+    * edu_background： 学历 
+    * grade： 年级 
+    * mail 
+    * tel： 联系方式
+* 返回： 
+    * 成功：
+        * JSON: {"err": err}
+            * err: 0
+    * 失败：
+        * JSON: {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg： 请求方法错误/操作失败
 
