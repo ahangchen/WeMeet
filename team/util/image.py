@@ -8,18 +8,18 @@ _numbers = ''.join(map(str, range(3, 10)))  # 数字
 init_chars = ''.join((_letter_cases, _upper_cases, _numbers))
 
 
-def create_validate_code(size=(120, 30),
+def create_validate_code(size=(100, 35),
                          chars=init_chars,
                          mode="RGB",
                          bg_color=(240, 240, 255),
-                         fg_color=(150, 50, 255),
-                         font_size=18,
+                         fg_color=(50, 150, 55),
+                         font_size=22,
                          font_type="Norasi-BoldItalic.ttf",
                          length=4,
                          draw_lines=True,
-                         n_line=(2, 3),
+                         n_line=(2, 2),
                          draw_points=True,
-                         point_chance=3):
+                         point_chance=2):
     """
     @todo: 生成验证码图片
     @param size: 图片的大小，格式（宽，高），默认为(120, 30)
@@ -96,7 +96,7 @@ def create_validate_code(size=(120, 30),
               0.001,
               float(random.randint(1, 2)) / 500
               ]
-    img = img.transform(size, Image.PERSPECTIVE, params)  # 创建扭曲
+    # img = img.transform(size, Image.PERSPECTIVE, params)  # 创建扭曲
 
     img = img.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强（阈值更大）
 
