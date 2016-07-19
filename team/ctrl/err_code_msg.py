@@ -27,3 +27,6 @@ MSG_FAIL = '操作失败'
 
 ERR_OUT_DATE = '-11'  # 用在通过邮件链接重置账号
 MSG_OUT_DATE = '请求已过期'
+
+ERR_JOB_NOT_FOUND = '-13'  # 用在获取职位信息
+MSG_JOB_NOT_FOUND = '职位不存在'

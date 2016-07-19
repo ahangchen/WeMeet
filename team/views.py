@@ -5,10 +5,12 @@ from django.shortcuts import render
 from team.ctrl import acc_mng
 from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
 from team.ctrl.register import validate
+from team.ctrl import job
+from team.ctrl.job import JOB_NOT_FOUND
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from team.models import Team, Product, Job
-from django.db.models import  Sum
+from django.db.models import Sum
 from haystack.query import SearchQuerySet
 from django.db.models import Q
 from functools import reduce
@@ -187,4 +189,43 @@ def update_pwd(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_RESET_KEY_ERR))
+
+
+@csrf_exempt
+def job_info(request):
+    """
+    获取职位信息
+    成功: 返回职位信息
+    失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+    job_id = request.POST.get('id')
+    rlt = job.info(job_id)
+    if rlt != JOB_NOT_FOUND:
+        return HttpResponse(json_helper.dumps({
+            'err': SUCCEED,
+            'team_id': rlt.team.id,
+            'job_name': rlt.name,
+            'min_salary': rlt.min_salary,
+            'max_salary': rlt.max_salary,
+            'prince': rlt.prince,
+            'city': rlt.city,
+            'town': rlt.town,
+            'address': rlt.address,
+            'edu_cmd': rlt.edu_cmd,
+            'exp_cmd': rlt.exp_cmd,
+            'job_type': rlt.j_type,
+            'work_type': rlt.w_type,
+            'summary': rlt.summary,
+            'pub_date': rlt.pub_date,
+            'pub_state': rlt.pub_state,
+            'job_cmd': rlt.job_cmd,
+            'work_cmd': rlt.work_cmd,
+        }))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(ERR_JOB_NOT_FOUND, MSG_JOB_NOT_FOUND))
+
+
+
 

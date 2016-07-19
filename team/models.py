@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
-    SHORT_TEXT_LENGTH, SIMPLE_TEXT_LENGTH
+    SHORT_TEXT_LENGTH, SIMPLE_TEXT_LENGTH, DATE_MAX_LENGTH
 
 
 # mysql 要求char字段需要有default
@@ -69,7 +69,7 @@ class Job(models.Model):
     # end_time = models.DateTimeField()
     # 职位类型：产品，开发，设计。。。
     j_type = models.IntegerField(default=0)
-    # 工作类型：全职，兼职，实习
+    # 工作类型：0表示全职，1表示兼职，2表示实习
     w_type = models.IntegerField(default=0)
     min_salary = models.FloatField(default=0.0)
     max_salary = models.FloatField(default=0.0)
@@ -88,8 +88,12 @@ class Job(models.Model):
     work_cmd = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     # 发布状态，0表示待发布，1表示已发布，2表示已下架
     pub_state = models.IntegerField(default=0)
+    # 学历要求
+    edu_cmd = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    # 发布日期
+    pub_date = models.CharField(max_length=DATE_MAX_LENGTH, default='')
 
-    team = models.ForeignKey(Team)
+    team = models.ForeignKey('Team')
 
 
 class JobType(models.Model):
