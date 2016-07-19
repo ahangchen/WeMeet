@@ -28,6 +28,7 @@
 * 参数：
     * mail：用户邮箱
     * pwd：密码hash
+    * code：验证码
 * 返回：
     * 成功:
         * JSON: {"err": err, "msg": "团队id"} 
