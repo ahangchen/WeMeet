@@ -239,7 +239,7 @@
         - team_name： 公司名称
         - edu_cmd: 学历要求
         - exp_cmd: 经验要求
-        - work_type: 工作性质
+        - work_type: 工作性质（0表示全职，1表示兼职，2表示实习）
         - summary: 职位突出特点
         - pub_date: 发布日期
         - job_cmd: 岗位要求
