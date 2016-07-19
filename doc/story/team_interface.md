@@ -172,3 +172,38 @@
     * 失败：
         * JSON: {"err": err, "msg": msg}
 ***
+
+### 职位编辑
+- http://110.64.69.66:8081/team/job_update/
+- post
+- 参数：
+  - job_id:职位id
+  - job_name：职位名称
+  - job_type: 职位类型
+  - min_salary: 最低工资
+  - max_salary: 最高工资
+  - prov: 工作地点省份
+  - city: 工作地点城市
+  - town: 工作地点区
+  - exp: 工作经验
+  - work_type: 工作类型
+  - job_cmd：岗位要求
+  - work_cmd: 任职要求
+  
+- 返回：
+  - 成功：
+ ```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+  ```
+  - 失败
+  ```json
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+  ```
+  - err_code: -4/-1/-10
+  - msg: 账号错误/请求方法错误/其他错误
