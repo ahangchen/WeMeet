@@ -232,6 +232,22 @@ def send_rsmail(request):
         }))
 
 
+def reset_page(request, cipher):
+    """
+    渲染前端重置密码的页面
+    method: GET
+    成功：返回渲染页面
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'GET':
+        return render(request, '', {'cipher': cipher})  # TODO(hjf): 修改template
+    # 如果请求的方法是POST
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD, 'msg': ERR_METHOD_MSG
+        }))
+
+
 @csrf_exempt
 def reset(request):
     """
