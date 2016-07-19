@@ -26,7 +26,7 @@
 * http://110.64.69.66:8081/team/login/
 * POST
 * 参数：
-    * account：账号id
+    * mail：用户邮箱
     * pwd：密码hash
 * 返回：
     * 成功:
@@ -58,10 +58,11 @@
 ***
 
 ###获取找回密码的凭证（这是一个邮件里的链接，点击进入重置密码页面，这个页面由后端生成）
-* http://110.64.69.66:8081/team/fetch?reset_key=xxxxxxx
+* http://110.64.69.66:8081/team/fetch?reset_key=xxxxxxx&mail=xxxxx
 * POST
 * 参数：
     * reset_key： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
+    * mail：账号邮箱
 * 返回：
     * 重置密码页面 
 
