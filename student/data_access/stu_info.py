@@ -45,8 +45,9 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
            mail=NO_INPUT, avatar_path=NO_INPUT, edu_background=NO_INPUT,
            grade=NO_INPUT, major=NO_INPUT, location=NO_INPUT):
     """
-    成功：返回GOOD_UPDATE
-    失败：返回ERROR_UPDATE_DOESNOTEXIST
+    成功：返回OK_UPDATE
+    失败：返回ERR_UPDATE_NOTEXIST
+          或ERR_UPDATE_DB
     """
     try:
         update_stu = StuInfo.objects.all().get(id=stu_id)

@@ -375,7 +375,7 @@ def get_info(request):
 @csrf_exempt
 def save_avatar(request):
     """
-    保存上传的头像
+    保存上传的头像文件，和更新学生的头像
     成功：返回err:SUCCEED, 头像路径
     失败：返回相应的err和msg的JSON
     """
