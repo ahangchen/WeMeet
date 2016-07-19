@@ -3,7 +3,7 @@
  */
 function loadValidCode(id) {
     $.ajax({
-            url: "../../team/valid_code",
+            url: "http://110.64.69.66:8081/team/valid_code",
             processData: false
         }).always(function (data) {
                 console.log('test');

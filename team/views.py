@@ -28,6 +28,7 @@ def test(request):
     return render(request, 'team/test.html', {})
 
 
+@csrf_exempt
 def valid_code(request):
     return validate(request)
 
