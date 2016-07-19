@@ -1,18 +1,19 @@
-from student.data_access.tag import ERR_DELETE_NOTEXIST
-from student.data_access.tag import ERR_DELETE_DB
-from student.data_access.tag import ERR_UPDATE_NOTEXIST
-from student.data_access.tag import ERR_UPDATE_DB
-from student.data_access.tag import ERR_INSERT_DB
-from student.data_access.tag import ERR_SELECT_NOTEXIST
-from student.data_access.tag import ERR_SELECT_DB
-from student.data_access.tag import OK_DELETE
-from student.data_access.tag import OK_INSERT
-from student.data_access.tag import OK_UPDATE
+from student.db.tag import ERR_DELETE_NOTEXIST
+from student.db.tag import ERR_DELETE_DB
+from student.db.tag import ERR_UPDATE_NOTEXIST
+from student.db.tag import ERR_UPDATE_DB
+from student.db.tag import ERR_INSERT_DB
+from student.db.tag import ERR_SELECT_NOTEXIST
+from student.db.tag import ERR_SELECT_DB
+from student.db.tag import OK_DELETE
+from student.db.tag import OK_INSERT
+from student.db.tag import OK_UPDATE
+from student.db.tag import OK_SELECT
 
 from student.models import StuInfo
 
-from student.utility.value_update import value, NO_INPUT
-from student.utility.logger import logger
+from student.util.value_update import value, NO_INPUT
+from student.util.logger import logger
 
 
 def delete(stu_id):
@@ -74,18 +75,19 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
 
 def select(stu_id):
     """
-    成功：返回select_stu
-    失败：返回ERR_SELECT_NOTEXIST
-           或ERR_SELECT_DB
+    成功：返回{'tag': OK_SELECT, 'stu': select_stu}
+    失败：返回{'tag': ERR_SELECT_NOTEXIST}
+           或{'tag': ERR_SELECT_DB}
     """
     try:
         select_stu = StuInfo.objects.all().get(id=stu_id)
-        return select_stu
+        return {'tag': OK_SELECT,
+                'stu': select_stu}
     except StuInfo.DoesNotExist:
-        return ERR_SELECT_NOTEXIST
+        return {'tag': ERR_SELECT_NOTEXIST}
     except:
         logger.error('数据库异常导致查询学生失败')
-        return ERR_SELECT_DB
+        return {'tag': ERR_SELECT_DB}
 
 
 def insert(name, school, tel, mail, avatar_path, edu_background, grade, major, location):

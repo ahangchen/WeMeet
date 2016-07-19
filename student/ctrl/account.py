@@ -1,50 +1,49 @@
 # -- coding: utf-8 --
-from student.data_access.tag import OK_UPDATE
-from student.data_access.tag import ERR_INSERT_DB
-from student.data_access.tag import ERR_UPDATE_NOTEXIST
-from student.data_access.tag import ERR_SELECT_NOTEXIST
-from student.data_access.tag import ERR_SELECT_DB
-from student.data_access.tag import ERR_DELETE_DB
-from student.data_access.tag import ERR_UPDATE_DB
+from student.db.tag import OK_UPDATE
+from student.db.tag import ERR_INSERT_DB
+from student.db.tag import ERR_UPDATE_NOTEXIST
+from student.db.tag import ERR_SELECT_NOTEXIST
+from student.db.tag import ERR_SELECT_DB
+from student.db.tag import ERR_DELETE_DB
+from student.db.tag import ERR_UPDATE_DB
 
-from student.bussiness_logic.avatar import DEFAULT_AVATAR
+from student.ctrl.avatar import DEFAULT_AVATAR
 
-from student.bussiness_logic.tag import OK_REG
-from student.bussiness_logic.tag import REG_FAIL_DB
-from student.bussiness_logic.tag import REG_FAIL_EXIST
-from student.bussiness_logic.tag import OK_ACTIVATE
-from student.bussiness_logic.tag import ERR_ACTIVATE_DB
-from student.bussiness_logic.tag import ERR_ACTIVATE_NOTEXIST
-from student.bussiness_logic.tag import OK_LOGIN
-from student.bussiness_logic.tag import ERR_LOGIN_NOTEXIST
-from student.bussiness_logic.tag import ERR_LOGIN_DB
-from student.bussiness_logic.tag import ERR_LOGIN_NONACTIVATED
-from student.bussiness_logic.tag import ERR_LOGIN_WRONG_PWD
-from student.bussiness_logic.tag import OK_CHANGE_PWD
-from student.bussiness_logic.tag import ERR_CHANGE_PWD_DB
-from student.bussiness_logic.tag import ERR_CHANGE_PWD_NOTEXIST
-from student.bussiness_logic.tag import ERR_CHANGE_PWD_WRONG_CREDENTIAL
-from student.bussiness_logic.tag import ERR_RESET_DB
-from student.bussiness_logic.tag import ERR_RESET_NOTEXIST
-from student.bussiness_logic.tag import ERR_RESET_OUT_DATE
-from student.bussiness_logic.tag import OK_RESET_MAIL
-from student.bussiness_logic.tag import ERR_RESET_MAIL_NOTEXIST
-from student.bussiness_logic.tag import ERR_RESET_MAIL_DB
+from student.ctrl.tag import OK_REG
+from student.ctrl.tag import REG_FAIL_DB
+from student.ctrl.tag import REG_FAIL_EXIST
+from student.ctrl.tag import OK_ACTIVATE
+from student.ctrl.tag import ERR_ACTIVATE_DB
+from student.ctrl.tag import ERR_ACTIVATE_NOTEXIST
+from student.ctrl.tag import OK_LOGIN
+from student.ctrl.tag import ERR_LOGIN_NOTEXIST
+from student.ctrl.tag import ERR_LOGIN_DB
+from student.ctrl.tag import ERR_LOGIN_NONACTIVATED
+from student.ctrl.tag import ERR_LOGIN_WRONG_PWD
+from student.ctrl.tag import OK_CHANGE_PWD
+from student.ctrl.tag import ERR_CHANGE_PWD_DB
+from student.ctrl.tag import ERR_CHANGE_PWD_NOTEXIST
+from student.ctrl.tag import ERR_CHANGE_PWD_WRONG_CREDENTIAL
+from student.ctrl.tag import ERR_RESET_DB
+from student.ctrl.tag import ERR_RESET_NOTEXIST
+from student.ctrl.tag import ERR_RESET_OUT_DATE
+from student.ctrl.tag import OK_RESET_MAIL
+from student.ctrl.tag import ERR_RESET_MAIL_NOTEXIST
+from student.ctrl.tag import ERR_RESET_MAIL_DB
 
 
-from student.bussiness_logic import verify_mail
-from student.bussiness_logic import reset_mail
+from student.ctrl import verify_mail
+from student.ctrl import reset_mail
 
-from student.data_access.stu_info import insert
-from student.data_access.stu_info import update
-from student.data_access.stu_info import select
-from student.data_access import account
-from student.data_access import stu_info
+from student.db.stu_info import insert
+from student.db.stu_info import update
+from student.db import account
+from student.db import stu_info
 
-from student.utility.encrypt_decrypt import decrypt, encrypt
-from student.utility.random_hashcode import get_hashcode
-from student.utility.logger import logger
-from student.utility import date_helper
+from student.util.encrypt_decrypt import decrypt, encrypt
+from student.util.random_hashcode import get_hashcode
+from student.util.logger import logger
+from student.util import date_helper
 
 
 from django.core.mail import send_mail
@@ -57,20 +56,20 @@ def register(acnt, pwd):
     失败：返回REG_FAIL_EXIST(账号已存在）
             或REG_FAIL_DB
     """
-    exist = account.select(account=acnt)
+    exist = account.acnt_select(account=acnt)
 
     # 如果数据库异常导致无法查询账号是否存在
-    if exist == ERR_SELECT_DB:
+    if exist['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法查询账号是否存在，导致注册失败')
         return REG_FAIL_DB
 
     # 如果账号已存在
-    elif exist != ERR_SELECT_NOTEXIST:
+    elif exist['tag'] != ERR_SELECT_NOTEXIST:
         return REG_FAIL_EXIST
 
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', school='', tel='',
-                              mail='', avatar_path=DEFAULT_AVATAR,
+                              mail=acnt, avatar_path=DEFAULT_AVATAR,
                               edu_background='', grade='', location='', major='')
 
     # 如果插入学生失败
@@ -126,11 +125,11 @@ def activate(account_cipher):
           或ERR_ACTIVATE_DB
     @account_cipher:  加密后的account
     """
-    select_rlt = account.select(ciphertext=account_cipher)
-    if select_rlt == ERR_SELECT_NOTEXIST:
+    select_rlt = account.ciphertext_select(ciphertext=account_cipher)
+    if select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试激活不存在的账号')
         return ERR_ACTIVATE_NOTEXIST
-    elif select_rlt == ERR_SELECT_DB:
+    elif select_rlt['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法激活账号')
         return ERR_ACTIVATE_DB
 
@@ -162,29 +161,29 @@ def login(acnt, pwd):
     @account: 账号（邮箱）
     @pwd: 密码
     """
-    obj = account.select(account=acnt)
+    rlt = account.acnt_select(account=acnt)
 
     # 如果账号不存在
-    if obj == ERR_SELECT_NOTEXIST:
+    if rlt['tag'] == ERR_SELECT_NOTEXIST:
         return {'tag': ERR_LOGIN_NOTEXIST}
 
     # 如果数据库异常
-    elif obj == ERR_SELECT_DB:
+    elif rlt['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致登陆失败')
         return {'tag': ERR_LOGIN_DB}
 
     # 如果账号未激活
-    elif not obj.is_activated:
+    elif not rlt['acnt'].is_activated:
         return {'tag': ERR_LOGIN_NONACTIVATED}
 
     # 如果密码错误
-    elif obj.pwd != pwd:
+    elif rlt['acnt'].pwd != pwd:
         return {'tag': ERR_LOGIN_WRONG_PWD}
 
     # 登陆成功
     else:
         return {'tag': OK_LOGIN,
-                'stu_id': obj.stu.id}
+                'stu_id': rlt['acnt'].stu.id}
 
 
 def send_reset_mail(acnt):
@@ -196,13 +195,13 @@ def send_reset_mail(acnt):
     @account: 账号（邮箱）
     """
 
-    select_tag = account.select(account=acnt)
+    select_rlt = account.acnt_select(account=acnt)
     # 如果账号不存在
-    if select_tag == ERR_SELECT_NOTEXIST:
+    if select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试发送重置邮件到不存在的账号')
         return ERR_RESET_MAIL_NOTEXIST
     # 如果数据异常无法查询
-    elif select_tag == ERR_SELECT_DB:
+    elif select_rlt['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法发送重置邮件')
         return ERR_RESET_MAIL_DB
 
@@ -235,25 +234,25 @@ def reset(account_cipher):
     失败：返回ERR_RESET_NOTEXIST
            或ERR_SELECT_DB
     """
-    obj = account.select(ciphertext=account_cipher)
+    obj = account.ciphertext_select(ciphertext=account_cipher)
 
     # 如果账号不存在
-    if obj == ERR_SELECT_NOTEXIST:
+    if obj['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试重置不存在的账号')
         return ERR_RESET_NOTEXIST
 
     # 如果数据库异常无法查询
-    elif obj == ERR_SELECT_DB:
+    elif obj['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法验证账号是否存在，无法重置账号')
         return ERR_RESET_DB
 
     # 如果账号存在，但重置账号的请求已过期
-    elif date_helper.pass_days(obj.reset_date) > date_helper.OUT_DATE_DAYS:
+    elif date_helper.pass_days(obj['acnt'].reset_date) > date_helper.OUT_DATE_DAYS:
         return ERR_RESET_OUT_DATE
 
     # 如果账号存在，请求未过期，重置状态和密码
     credential = get_hashcode()
-    tag = account.update(account=obj.account, is_activated=False, pwd=credential)
+    tag = account.update(account=obj['acnt'].account, is_activated=False, pwd=credential)
 
     # 如果更新账号时，账号不存在
     if tag == ERR_UPDATE_NOTEXIST:
@@ -265,7 +264,7 @@ def reset(account_cipher):
         logger.error('数据库异常导致无法重置账号账号')
 
     # 如果重置账号成功
-    return {'credential': credential, 'account': obj.account}  # 防止credential(哈希值）和ERROR_RESET_DOESNOTEXIST冲突
+    return {'credential': credential, 'account': obj['acnt'].account}  # 防止credential(哈希值）和ERROR_RESET_DOESNOTEXIST冲突
 
 
 def change_pwd(acnt, credential, pwd):
@@ -276,19 +275,19 @@ def change_pwd(acnt, credential, pwd):
           或ERR_CHANGE_PWD_WRONG_CREDENTIAL
           或ERR_CHANGE_PWD_DB
     """
-    obj = account.select(account=acnt)
+    obj = account.acnt_select(account=acnt)
     # 如果账号不存在
-    if obj == ERR_SELECT_NOTEXIST:
+    if obj['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试修改不存在账号的密码')
         return ERR_CHANGE_PWD_NOTEXIST
 
     # 如果数据异常导致无法验证账号是否存在
-    elif obj == ERR_SELECT_DB:
+    elif obj['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法修改密码（无法验证账号是否存在）')
         return ERR_CHANGE_PWD_DB
 
     # 账号存在，如果凭据错误
-    elif obj.pwd != credential:
+    elif obj['acnt'].pwd != credential:
         logger.info('以错误的凭据修改密码')
         return ERR_CHANGE_PWD_WRONG_CREDENTIAL
 

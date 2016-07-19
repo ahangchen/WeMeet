@@ -15,7 +15,7 @@ from haystack.query import SearchQuerySet
 from django.db.models import Q
 from functools import reduce
 from team.ctrl.err_code_msg import *
-from student.utility import json_helper
+from student.util import json_helper
 
 import json
 import operator

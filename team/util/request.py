@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from student.utility import json_helper
+from student.util import json_helper
 from team.ctrl.err_code_msg import ERROR_METHOD, MSG_METHOD_ERR
 
 

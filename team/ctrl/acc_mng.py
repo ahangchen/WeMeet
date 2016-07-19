@@ -1,4 +1,4 @@
-from student.utility.encrypt_decrypt import encrypt
+from student.util.encrypt_decrypt import encrypt
 
 from team.db import team
 from team.db.team import DB_ACC_NOT_FOUND, DB_OK, is_mail_valid, mail_team

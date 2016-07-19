@@ -3,10 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render  # for test method
 from django.views.decorators.csrf import csrf_exempt
 
-from student.bussiness_logic import info
-from student.bussiness_logic import account
-from student.bussiness_logic import avatar
-from student.bussiness_logic.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
+from student.ctrl import info
+from student.ctrl import account
+from student.ctrl import avatar
+from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                                  ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                                  ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
                                                  ERR_WRONG_CREDENTIAL, ERR_WRONG_CREDENTIAL_MSG, \
@@ -19,57 +19,57 @@ from student.bussiness_logic.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR
                                                  FAIL, FAIL_MSG, \
                                                  SUCCEED
 
-# from student.bussiness_logic.err_code_msg import ERROR_CHANGE_PWD
-# from student.bussiness_logic.err_code_msg import ERROR_CHANGE_PWD_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_GET_STU_DOESNOTEXIST
-# from student.bussiness_logic.err_code_msg import ERROR_GET_STU_DOESNOTEXIST_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_GET_STU_IDMISS
-# from student.bussiness_logic.err_code_msg import ERROR_GET_STU_IDMISS_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_IDMISS
-# from student.bussiness_logic.err_code_msg import ERROR_UPDATE_STU_IDMISS_MSG
-# from student.bussiness_logic.err_code_msg import ERROR_VERIFY_STU
-# from student.bussiness_logic.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST
-# from student.bussiness_logic.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST_MSG
+# from student.ctrl.err_code_msg import ERROR_CHANGE_PWD
+# from student.ctrl.err_code_msg import ERROR_CHANGE_PWD_MSG
+# from student.ctrl.err_code_msg import ERROR_GET_STU_DOESNOTEXIST
+# from student.ctrl.err_code_msg import ERROR_GET_STU_DOESNOTEXIST_MSG
+# from student.ctrl.err_code_msg import ERROR_GET_STU_IDMISS
+# from student.ctrl.err_code_msg import ERROR_GET_STU_IDMISS_MSG
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID_MSG
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST_MSG
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_IDMISS
+# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_IDMISS_MSG
+# from student.ctrl.err_code_msg import ERROR_VERIFY_STU
+# from student.ctrl.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST
+# from student.ctrl.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST_MSG
 
-# from student.bussiness_logic.tag import ERR_AVATAR_FILE_INVALID
-# from student.bussiness_logic.tag import ERR_AVATAR_SAVE_FAILED
-# from student.bussiness_logic.tag import GOOD_UPDATE_INFO
+# from student.ctrl.tag import ERR_AVATAR_FILE_INVALID
+# from student.ctrl.tag import ERR_AVATAR_SAVE_FAILED
+# from student.ctrl.tag import GOOD_UPDATE_INFO
 
-from student.bussiness_logic.tag import ERR_ACTIVATE_DB
-from student.bussiness_logic.tag import ERR_ACTIVATE_NOTEXIST
-from student.bussiness_logic.tag import ERR_CHANGE_PWD_NOTEXIST
-from student.bussiness_logic.tag import ERR_CHANGE_PWD_WRONG_CREDENTIAL
-from student.bussiness_logic.tag import ERR_LOGIN_NOTEXIST
-from student.bussiness_logic.tag import ERR_LOGIN_NONACTIVATED
-from student.bussiness_logic.tag import ERR_LOGIN_WRONG_PWD
-from student.bussiness_logic.tag import ERR_RESET_DB
-from student.bussiness_logic.tag import ERR_RESET_NOTEXIST
-from student.bussiness_logic.tag import ERR_RESET_OUT_DATE
-from student.bussiness_logic.tag import ERR_RESET_MAIL_NOTEXIST
-from student.bussiness_logic.tag import OK_LOGIN
-from student.bussiness_logic.tag import OK_REG
-from student.bussiness_logic.tag import REG_FAIL_DB
-from student.bussiness_logic.tag import OK_CHANGE_PWD
-from student.bussiness_logic.tag import OK_RESET_MAIL
-from student.bussiness_logic.tag import ERR_GET_INFO_DB
-from student.bussiness_logic.tag import ERR_GET_INFO_NOTEXIST
-from student.bussiness_logic.tag import OK_SAVE_AVATAR
-from student.bussiness_logic.tag import ERR_SAVE_AVATAR_FAIL
-from student.bussiness_logic.tag import ERR_AVATAR_FILE_INVALID
-from student.bussiness_logic.tag import OK_UPDATE_STU_INFO
-from student.bussiness_logic.tag import ERR_UPDATE_STU_INFO_DB
-
-
+from student.ctrl.tag import ERR_ACTIVATE_DB
+from student.ctrl.tag import ERR_ACTIVATE_NOTEXIST
+from student.ctrl.tag import ERR_CHANGE_PWD_NOTEXIST
+from student.ctrl.tag import ERR_CHANGE_PWD_WRONG_CREDENTIAL
+from student.ctrl.tag import ERR_LOGIN_NOTEXIST
+from student.ctrl.tag import ERR_LOGIN_NONACTIVATED
+from student.ctrl.tag import ERR_LOGIN_WRONG_PWD
+from student.ctrl.tag import ERR_RESET_DB
+from student.ctrl.tag import ERR_RESET_NOTEXIST
+from student.ctrl.tag import ERR_RESET_OUT_DATE
+from student.ctrl.tag import ERR_RESET_MAIL_NOTEXIST
+from student.ctrl.tag import OK_LOGIN
+from student.ctrl.tag import OK_REG
+from student.ctrl.tag import REG_FAIL_DB
+from student.ctrl.tag import OK_CHANGE_PWD
+from student.ctrl.tag import OK_RESET_MAIL
+from student.ctrl.tag import ERR_GET_INFO_DB
+from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
+from student.ctrl.tag import OK_SAVE_AVATAR
+from student.ctrl.tag import ERR_SAVE_AVATAR_FAIL
+from student.ctrl.tag import ERR_AVATAR_FILE_INVALID
+from student.ctrl.tag import OK_UPDATE_STU_INFO
+from student.ctrl.tag import ERR_UPDATE_STU_INFO_DB
 
 
-# from student.utility.tag import NO_INPUT
-from student.utility import json_helper
+
+
+# from student.util.tag import NO_INPUT
+from student.util import json_helper
 
 
 def post(request):

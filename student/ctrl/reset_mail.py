@@ -1,4 +1,4 @@
-from student.utility.encrypt_decrypt import encrypt
+from student.util.encrypt_decrypt import encrypt
 
 
 def get_content(para):

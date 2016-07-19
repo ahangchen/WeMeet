@@ -1,19 +1,19 @@
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
-from student.bussiness_logic.tag import ERR_AVATAR_FILE_INVALID
-from student.bussiness_logic.tag import ERR_SAVE_AVATAR_FAIL
-from student.bussiness_logic.tag import OK_SAVE_AVATAR
+from student.ctrl.tag import ERR_AVATAR_FILE_INVALID
+from student.ctrl.tag import ERR_SAVE_AVATAR_FAIL
+from student.ctrl.tag import OK_SAVE_AVATAR
 
-from student.data_access import stu_info
-from student.data_access.tag import ERR_SELECT_NOTEXIST
-from student.data_access.tag import ERR_SELECT_DB
-from student.data_access.tag import OK_UPDATE
-from student.data_access.tag import ERR_UPDATE_NOTEXIST
-from student.data_access.tag import ERR_UPDATE_DB
+from student.db import stu_info
+from student.db.tag import ERR_SELECT_NOTEXIST
+from student.db.tag import ERR_SELECT_DB
+from student.db.tag import OK_UPDATE
+from student.db.tag import ERR_UPDATE_NOTEXIST
+from student.db.tag import ERR_UPDATE_DB
 
-from student.utility.logger import logger
-from student.utility.file_helper import get_file_type
+from student.util.logger import logger
+from student.util.file_helper import get_file_type
 
 
 DEFAULT_AVATAR = 'student/avatar/default.jpg'
