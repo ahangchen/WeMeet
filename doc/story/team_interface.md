@@ -220,7 +220,7 @@
     - 成功：
         - JSON:   
         {"err": err,   
-         "team_name": team_name,  
+         "team_id": team_id,  
          "job_name": job_name,  
          "min_salary": min,  
          "max_salary": max,  
@@ -230,18 +230,22 @@
          "address": address,  
          "edu_cmd": edu_cmd,  
          "exp_cmd": exp_cmd,  
+         "job_type": job_type,   
          "work_type": work_type,  
          "summary": summary,  
          "pub_date": pub_date,  
-         "job_cmd": job:cmd,  
+         "pub_state": pub_state,    
+         "job_cmd": job_cmd,  
          "work_cmd": work_cmd}  
         - err: 0
-        - team_name： 公司名称
+        - team_id： 所属团队id
         - edu_cmd: 学历要求
         - exp_cmd: 经验要求
+        - job_type: 职位类型：（产品，开发，设计。。。
         - work_type: 工作性质（0表示全职，1表示兼职，2表示实习）
         - summary: 职位突出特点
         - pub_date: 发布日期
+        - pub_state: 发布状态（0表示待发布，1表示已发布，2表示已下架）
         - job_cmd: 岗位要求
         - work_cmd: 任职要求
     - 失败：
