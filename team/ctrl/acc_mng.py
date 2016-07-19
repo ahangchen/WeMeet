@@ -2,6 +2,7 @@ from student.util.encrypt_decrypt import encrypt
 
 from team.db import team
 from team.db.team import DB_ACC_NOT_FOUND, DB_OK, is_mail_valid, mail_team
+from team.models import Pwd
 from team.util.smtp_mail import send_163_mail
 
 ACC_MNG_OK = 0
@@ -21,7 +22,7 @@ def register(mail, pwd, invite):
     if team.is_team_inv_match(mail, invite):
         # 如果存在则更新pwd
         team.update_team_pwd(mail, pwd)
-        return ACC_MNG_OK,
+        return ACC_MNG_OK
     else:
         # 如果不存在提示账号不存在或邀请码错误
         return REG_FAIL_INV_ACC
@@ -39,20 +40,20 @@ def login(mail, pwd):
     @account: 账号（邮箱）
     @pwd: 密码
     """
-    obj = team.team_of_mail_pwd(mail, pwd)
+    tid, state = team.team_of_mail_pwd(mail, pwd)
     # 如果账号不存在
-    if obj is None:
+    if tid is None:
         return LOGIN_FAIL_NO_MATCH
     # 如果账号不可用
-    elif not obj.state != 0:
-        return ACC_UNABLE, obj.id
+    elif state != 0:
+        return ACC_UNABLE, None
     # 登陆成功
     else:
-        return ACC_MNG_OK, obj
+        return ACC_MNG_OK, tid
 
 
 def reset_mail_content(reset_key, mail):
-    return '<h1>点此重置密码</h1><p>http://110.64.69.66/fetch?reset_key=%s&mail=%s</p>' % (reset_key, mail)
+    return '<h1>点此重置密码</h1><p>http://110.64.69.66/team/fetch?reset_key=%s&mail=%s</p>' % (reset_key, mail)
 
 
 def send_reset_mail(mail):
@@ -68,7 +69,7 @@ def send_reset_mail(mail):
         return ACC_NO_FOUND
     else:
         # 账号密文
-        hash_tid = encrypt(tid)
+        hash_tid = encrypt(str(tid))
         team.reset_team(mail, hash_tid)
         send_163_mail(mail, '来自WeMeet', reset_mail_content(hash_tid, mail))
         return ACC_MNG_OK
@@ -87,4 +88,8 @@ def update_pwd(mail, hash_tid, pwd):
         return ACC_MNG_OK
     elif ret == DB_ACC_NOT_FOUND:
         return ACC_NO_FOUND
+
+
+def invite(name, leader, tel, mail):
+    return team.invite(name, leader, tel, mail)
 

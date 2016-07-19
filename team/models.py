@@ -5,13 +5,23 @@ from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENG
     SHORT_TEXT_LENGTH, SIMPLE_TEXT_LENGTH, DATE_MAX_LENGTH
 
 
+class Pwd(models.Model):
+    mail = models.CharField(max_length=MAIL_MAX_LENGTH, default='', unique=True)
+    pwd_hash = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    invite_code = models.CharField(max_length=SIMPLE_TEXT_LENGTH, default='')
+    reset_key = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    # 账户状态，0表示可用，1表示未激活，2表示锁定
+    state = models.IntegerField(default=0)
+
+
 # mysql 要求char字段需要有default
 class Team(models.Model):
     name = models.CharField(max_length=NAME_MAX_LENGTH, default='')
+    leader = models.CharField(max_length=NAME_MAX_LENGTH, default='')
     logo_path = models.CharField(max_length=PATH_MAX_LENGTH, default='')
     # 团队联系方式
     contact_tel = models.CharField(max_length=TEL_MAX_LENGTH, default='')
-    contact_mail = models.CharField(max_length=MAIL_MAX_LENGTH, default='')
+    pwd = models.ForeignKey(Pwd, related_name='t2p')
     # 口号
     slogan = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
     # 团队介绍
@@ -20,15 +30,8 @@ class Team(models.Model):
     history = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     # 团队类型，枚举，用于分类搜索
     b_type = models.IntegerField(default=0)
-
-
-class Pwd(models.Model):
-    team = models.ForeignKey(Team, related_name='t2pwd')
-    pwd_hash = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
-    invite_code = models.CharField(max_length=SIMPLE_TEXT_LENGTH, default='')
-    reset_key = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
-    # 账户状态，0表示可用，1表示未激活，2表示锁定
-    state = models.IntegerField(default=0)
+    # 团队人数
+    man_cnt = models.IntegerField(default=0)
 
 
 class TeamStu(models.Model):
