@@ -3,6 +3,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from team.ctrl import acc_mng
+from team.ctrl import team
 from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
 from team.ctrl.register import validate
 from team.ctrl import job
@@ -20,7 +21,7 @@ from student.util import json_helper
 import json
 import operator
 
-from team.util.request import is_post, resp_method_err
+from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err
 
 
 def test(request):
@@ -30,6 +31,7 @@ def test(request):
 def valid_code(request):
     return validate(request)
 
+
 @csrf_exempt
 def hot_product(request):
     """
@@ -37,12 +39,16 @@ def hot_product(request):
         成功： 项目的名称、简介、logo、ID
         失败：返回相应的err和msg的JSON
     """
-    res_list = Product.objects.extra(select={'visit_cnt':'last_visit_cnt + '
-            'week_visit_cnt'}).order_by('-visit_cnt').values('name','img_path','content','id')
+    res_list = Product.objects.extra(select={'visit_cnt': 'last_visit_cnt + '
+                                                          'week_visit_cnt'}).order_by('-visit_cnt').values('name',
+                                                                                                           'img_path',
+                                                                                                           'content',
+                                                                                                           'id')
     res = {'err': SUCCEED, 'message': list(res_list)}
 
     res = json.dumps(res, ensure_ascii=False)
     return HttpResponse(res)
+
 
 @csrf_exempt
 def hot_team(request):
@@ -52,12 +58,14 @@ def hot_team(request):
         失败：返回相应的err和msg的JSON
     """
     res_list = Team.objects.annotate(week_visit_cnt=Sum('product__week_visit_cnt'),
-                    last_visit_cnt=Sum('product__last_visit_cnt')).order_by('-week_visit_cnt','-last_visit_cnt')\
-                    .values('name','about','logo_path','id')
+                                     last_visit_cnt=Sum('product__last_visit_cnt')).order_by('-week_visit_cnt',
+                                                                                             '-last_visit_cnt') \
+        .values('name', 'about', 'logo_path', 'id')
     res = {'err': SUCCEED, 'message': list(res_list)}
 
     res = json.dumps(res, ensure_ascii=False)
     return HttpResponse(res)
+
 
 @csrf_exempt
 def search(request):
@@ -102,9 +110,8 @@ def register(request):
     if not is_post(request):
         return resp_method_err()
     # 如果验证码错误 todo: 上线后启动验证码校验机制
-    # if request.session['code'] != request.POST.get('code'):
-    if False:
-        return HttpResponse(json_helper.dump_err_msg(ERR_VALID_CODE, MSG_VALID_CODE_ERR))
+    if not is_valid_ok(request):
+        return resp_valid_err()
     # 如果验证码正确
     mail = request.POST.get('mail')
     pwd = request.POST.get('pwd')
@@ -127,7 +134,9 @@ def login(request):
     """
     if not is_post(request):
         return resp_method_err()
-    acnt = request.POST.get('account')
+    if not is_valid_ok(request):
+        return resp_valid_err()
+    acnt = request.POST.get('mail')
     pwd = request.POST.get('pwd')
     ret, tid = acc_mng.login(acnt, pwd)
     # 如果登陆成功
@@ -170,7 +179,7 @@ def fetch(request):
                               key: 用户修改密码的凭据; account: 未加密的账号
     失败：返回相应的err和msg
     """
-    return render(request, 'team/fetch.html', {'reset_key': request.GET['reset_key'], 'mail': request.GET['mail']})
+    return render(request, 'team/fetch.html', {'hash_tid': request.GET['reset_key'], 'mail': request.GET['mail']})
 
 
 @csrf_exempt
@@ -189,6 +198,32 @@ def update_pwd(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_RESET_KEY_ERR))
+
+
+@csrf_exempt
+def info(request):
+    """获取团队信息"""
+    tid = request.GET['tid']
+    team_dict = team.info(tid)
+    if team_dict is not None:
+        return HttpResponse(json_helper.dumps(team_dict))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
+
+
+@csrf_exempt
+def invite(request):
+    if not is_post(request):
+        return resp_method_err()
+    name = request.POST['mail']
+    leader = request.POST['leader']
+    tel = request.POST['tel']
+    mail = request.POST['mail']
+    tid = acc_mng.invite(name, leader, tel, mail)
+    if tid is not None:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, tid))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
 
 
 @csrf_exempt
@@ -225,7 +260,3 @@ def job_info(request):
         }))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_JOB_NOT_FOUND, MSG_JOB_NOT_FOUND))
-
-
-
-

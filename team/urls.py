@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^fetch/$', views.fetch),
     url(r'^update_pwd/$', views.update_pwd),
     url(r'^job_info/$', views.job_info),
+    url(r'^info/$', views.info),
+    url(r'^invite/$', views.invite)
 ]
