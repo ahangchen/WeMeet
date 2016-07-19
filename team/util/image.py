@@ -86,16 +86,16 @@ def create_validate_code(size=(100, 35),
         create_points()
     strs = create_strs()
 
-    # 图形扭曲参数
-    params = [1 - float(random.randint(1, 2)) / 100,
-              0,
-              0,
-              0,
-              1 - float(random.randint(1, 10)) / 100,
-              float(random.randint(1, 2)) / 500,
-              0.001,
-              float(random.randint(1, 2)) / 500
-              ]
+    # # 图形扭曲参数
+    # params = [1 - float(random.randint(1, 2)) / 100,
+    #           0,
+    #           0,
+    #           0,
+    #           1 - float(random.randint(1, 10)) / 100,
+    #           float(random.randint(1, 2)) / 500,
+    #           0.001,
+    #           float(random.randint(1, 2)) / 500
+    #           ]
     # img = img.transform(size, Image.PERSPECTIVE, params)  # 创建扭曲
 
     img = img.filter(ImageFilter.EDGE_ENHANCE_MORE)  # 滤镜，边界加强（阈值更大）
