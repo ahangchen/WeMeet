@@ -208,3 +208,44 @@
   ```
   - err_code: -4/-1/-10
   - msg: 账号错误/请求方法错误/其他错误
+
+  ***
+
+### 获取职位信息
+- http://110.64.69.66:8081/team/job_info/
+- POST
+- 参数：
+    - id： 职位的id
+- 返回：
+    - 成功：
+        - JSON:   
+        {"err": err,   
+         "team_name": team_name,  
+         "job_name": job_name,  
+         "min_salary": min,  
+         "max_salary": max,  
+         "prince": prince,  
+         "city": city,  
+         "town": town,  
+         "address": address,  
+         "edu_cmd": edu_cmd,  
+         "exp_cmd": exp_cmd,  
+         "work_type": work_type,  
+         "summary": summary,  
+         "pub_date": pub_date,  
+         "job_cmd": job:cmd,  
+         "work_cmd": work_cmd}  
+        - err: 0
+        - team_name： 公司名称
+        - edu_cmd: 学历要求
+        - exp_cmd: 经验要求
+        - work_type: 工作性质
+        - summary: 职位突出特点
+        - pub_date: 发布日期
+        - job_cmd: 岗位要求
+        - work_cmd: 任职要求
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -13/-1
+        - msg: 职位不存在/请求方法错误
+        
