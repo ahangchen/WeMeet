@@ -253,4 +253,34 @@
         - JSON: {"err": err, "msg": msg}
         - err: -13/-1
         - msg: 职位不存在/请求方法错误
-        
+
+### 团队邀请
+- http://110.64.69.66:8081/team/invite
+- POST
+- 参数
+  - mail
+  - leader
+  - tel
+  - name:团队名称
+- 返回：
+  - 成功：
+    ```json
+    {
+    "err": "0",
+    "msg":"tid"
+    }
+    ```
+   - 失败
+   ```json
+   {
+   "err": "-10",
+   "msg": "其他错误"
+   }
+   ```
+   
+### 团队信息
+- http://110.64.69.66.8081/team/info?tid=xxxx
+- 参数：
+  - tid: 团队id
+- 返回：
+  - 

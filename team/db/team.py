@@ -6,7 +6,7 @@ DB_ACC_NOT_FOUND = 1
 
 
 def is_team_inv_match(mail, inv_code):
-    return Pwd.objects.filter(mail=mail, invite_code=inv_code) is not None
+    return Pwd.objects.filter(mail=mail, invite_code=inv_code).count() > 0
 
 
 def update_team_pwd(team_id, pwd):
@@ -82,8 +82,10 @@ def info(tid):
 
 def invite(name, leader, tel, mail):
     inv_code = str(random6())
+    if Pwd.objects.filter(mail=mail).count() > 0:
+        return None
     pwd = Pwd(mail=mail, invite_code=inv_code, state=1)
     pwd.save()
     team = Team(pwd=pwd, name=name, leader=leader, contact_tel=tel)
     team.save()
-    return pwd
+    return pwd.invite_code

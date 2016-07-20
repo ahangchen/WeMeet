@@ -220,9 +220,9 @@ def invite(request):
     leader = request.POST['leader']
     tel = request.POST['tel']
     mail = request.POST['mail']
-    tid = acc_mng.invite(name, leader, tel, mail)
-    if tid is not None:
-        return HttpResponse(json_helper.dump_err_msg(SUCCEED, tid))
+    inv_code = acc_mng.invite(name, leader, tel, mail)
+    if inv_code is not None:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, inv_code))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
 
