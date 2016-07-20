@@ -4,5 +4,7 @@
 local_settings.py
 .idea/
 team/migrations/*
+!team/migrations/__init__.py
 student/migrations/*
+!student/migrations/__init__.py
 whoosh_index/*
