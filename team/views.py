@@ -23,6 +23,29 @@ import operator
 
 from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err
 
+from django import forms
+class JobForm(forms.Form):
+    name = forms.CharField()
+    j_type = forms.IntegerField(required=False,initial=0)
+    min_salary = forms.FloatField(required=False,initial=0)
+    max_salary = forms.FloatField(required=False,initial=0)
+    prince = forms.IntegerField(required=False,initial=0)
+    city = forms.IntegerField(required=False,initial=0)
+    town = forms.IntegerField(required=False,initial=0)
+    exp_cmd = forms.CharField(required=False,initial='')
+    w_type = forms.IntegerField(required=False,initial=0)
+    job_cmd = forms.CharField(required=False,initial='')
+    work_cmd = forms.CharField(required=False,initial='')
+    pub_state = forms.IntegerField(required=False,initial=0)
+    team_id = forms.IntegerField(required=False, initial=2)
+
+    def clean(self):
+        cleaned_data = super(JobForm,self).clean()
+        if self.is_valid():
+            for name in self.fields:
+                if  not self[name].html_name in self.data and self.fields[name].initial is not None or not cleaned_data[name]:
+                    cleaned_data[name] = self.fields[name].initial
+        return  cleaned_data
 
 def test(request):
     return render(request, 'team/test.html', {})
@@ -32,6 +55,56 @@ def test(request):
 def valid_code(request):
     return validate(request)
 
+@csrf_exempt
+def update_job(request):
+    if not is_post(request):
+        return resp_method_err()
+
+    id = request.POST['id']
+    if not id.isdigit():
+        return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
+    if not Job.objects.filter(id=id):
+        return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
+
+    job = Job.objects.get(id=id)
+    job_form = JobForm(request.POST,request.FILES)
+    if job_form.is_valid():
+        for (key,value) in job_form.cleaned_data.items():
+            if value:
+                job.__dict__[key] = value
+            job.save()
+        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC}, ensure_ascii=False))
+    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
+
+
+@csrf_exempt
+def add_job(request):
+    if not is_post(request):
+        return resp_method_err()
+
+    job_form = JobForm(request.POST,request.FILES)
+    if job_form.is_valid():
+        job = Job(**job_form.cleaned_data)
+        job.save()
+        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC,'msg':job.id}, ensure_ascii=False))
+    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
+
+
+@csrf_exempt
+def search_job(request):
+    if not is_post(request):
+        return resp_method_err()
+
+    job_type = request.POST.get('jobTags')
+    if not job_type.isdigit():
+        return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'message':MSG_POST_TYPE}, ensure_ascii=False))
+
+    res_list = Job.objects.filter(j_type=int(job_type)).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
+                          'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly',
+                                                            'exp', 'job_state')
+
+    res = json.dumps({'err': SUCCEED, 'message': list(res_list)}, ensure_ascii=False)
+    return HttpResponse(res)
 
 @csrf_exempt
 def hot_product(request):
