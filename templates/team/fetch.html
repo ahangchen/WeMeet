@@ -1,14 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>重置密码</title>
-
+    <title>找回密码</title>
+    {% load staticfiles %}
+    <link href="{% static "css/ghpages-materialize.css" %}" rel="stylesheet" type="text/css">
+    <link href="{% static "css/main/find_return.css" %}" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-<!--这个p由后端渲染，包含了hash_tid，提交新密码时将其作为凭证-->
-<p id="hash_tid" style="display: none">{{ hash_tid }}</p>
-<p id="mail" style="display: none">{{ mail }}</p>
-<!--修改密码的其他代码-->
+<p id="hash_id" style="display:none">{{hash_id}}</p>
+<p id="mail" style="display:none">{{mail}}</p>
+<div class="main card" id="mail-check">
+    <div id="return_show">
+        <p class="title" style="margin:auto;text-align: center">重置密码</p>
+        <ul style="width:320px;margin:auto;padding-bottom: 20px">
+            <li class="regi-a input-field col s6">
+                <input id="pwd" type="password" value=""/>
+                <label for="pwd">输入密码</label>
+                <div class="result" id="pwd-result"></div>
+            </li>
+            <li class="regi-a input-field col s6">
+                <input id="pwd-conf" type="password" value=""/>
+                <label for="pwd-conf">再次输入密码</label>
+                <div class="result" id="conf-result"></div>
+            </li>
+        </ul>
+        <div id="result"></div>
+        <a class="waves-effect waves-light btn" type="button" id="finish"/>完成</a>
+    </div>
+    <p id="success-show" style="display: none;width:320px;margin:auto;text-align:center"><a href="http://110.64.69.66:8080/main/index.html">密码找回成功，点此回到主页</a></p>
+</div>
+<script src="{% static "js/jquery-1.12.3.js" %}"> </script>
+<script src="{% static "js/materialize.min.js" %}"> </script>
+<script src="{% static "js/main/pwd_hash.js" %}"> </script>
+<script src="{% static "js/main/find_return.js" %}"> </script>
+
 </body>
+
 </html>

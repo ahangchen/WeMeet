@@ -1,0 +1,77 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    font-family: "Roboto", sans-serif;
+}
+html{
+    background-image: url(../../res/imgs/bg.svg);
+    background-size: 100% auto;
+}
+
+body{
+    width: 560px;
+    margin: auto;
+}
+.main {
+    width: 560px;
+    padding-top: 40px;
+    margin-top: 70px;
+    margin-bottom: 70px;
+    padding-bottom: 20px;
+}
+.regi-a > input{
+    margin:auto;
+    font-size: 20px;
+    width: 320px;
+    height: 38px;
+    margin-bottom: 20px;
+}
+
+input:not([type]):focus:not([readonly]),
+input[type=text]:focus:not([readonly]),
+input[type=password]:focus:not([readonly]),
+input[type=email]:focus:not([readonly]),
+input[type=url]:focus:not([readonly]),
+input[type=time]:focus:not([readonly]),
+input[type=date]:focus:not([readonly]),
+input[type=datetime]:focus:not([readonly]),
+input[type=datetime-local]:focus:not([readonly]),
+input[type=tel]:focus:not([readonly]),
+input[type=number]:focus:not([readonly]),
+input[type=search]:focus:not([readonly]),
+textarea.materialize-textarea:focus:not([readonly]) {
+    border-bottom: 1px solid orange;
+    box-shadow: 0 1px 0 0 orange;
+}
+
+.input-field input[type=text]:focus + label {
+    color: orange;
+}
+
+.input-field input[type=password]:focus + label {
+    color: orange;
+}
+
+.input-field label {
+    left: 0;
+}
+#finish{
+    display: block;
+    width: 320px;
+    margin:auto;
+    margin-bottom: 20px;
+    height: 40px;
+    background-color: orange;
+    border: none;
+    font-size: 17px;
+}
+
+.result {
+    margin-top: -10px;
+    margin-bottom: 20px;
+    height: 7px;
+    font-size: 7px;
+    line-height: 10px;
+    color: red;
+}

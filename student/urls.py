@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^info/$', views.get_info),
     url(r'^info/avatar/$', views.save_avatar),
     url(r'^info/update/$', views.update_info),
-    url(r'^reset_page/(.+)', views.reset_page),  # render reset page
+    url(r'^fetch/$', views.fetch),  # render reset page
     url(r'^resume/upload/$', views.upload_resume),
     url(r'^$', views.post),
 ]
