@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^info/update/$', views.update_info),
     url(r'^fetch/$', views.fetch),  # render reset page
     url(r'^resume/upload/$', views.upload_resume),
+    url(r'^resume/apply/$', views.job_apply),
     url(r'^$', views.post),
 ]

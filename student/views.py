@@ -69,6 +69,8 @@ from student.ctrl.tag import ERR_UPDATE_STU_INFO_DB
 from student.ctrl.tag import OK_SAVE_RESUME
 from student.ctrl.tag import ERR_RESUME_FILE_INVALID
 from student.ctrl.tag import ERR_SAVE_RESUME_FAIL
+from student.ctrl.tag import OK_APPLY
+from student.ctrl.tag import ERR_APPLY_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -508,6 +510,39 @@ def upload_resume(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
+@csrf_exempt
+def job_apply(request):
+    """
+    投递简历
+    成功：返回err:SUCCEED, 投递记录的id
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        job_id = request.POST.get('job_id')
+        resume_path = request.POST.get('resume_path')
+
+        apply_rlt = resume.apply(stu_id, job_id, resume_path)
+        # 如果投递简历成功
+        if apply_rlt['tag'] == OK_APPLY:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'apply_id': apply_rlt['apply_id']
+            }))
+        # 如果投递简历失败 apply_rlt['tag'] == ERR_APPLY_DB:
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 # @csrf_exempt

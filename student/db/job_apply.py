@@ -15,7 +15,7 @@ from student.models import JobApply
 from student.util.logger import logger
 
 
-def insert(stu, job, resume, team, resume_type):
+def insert(stu, job, team, resume_path):
     """
     插入一条投递简历的记录
     成功：{'tag': OK_INSERT, 'apply': new_apply}
@@ -23,18 +23,17 @@ def insert(stu, job, resume, team, resume_type):
     """
     try:
         new_apply = JobApply(stu=stu,
-                               job=job,
-                               state=0,
-                               resume=resume,
-                               team=team,
-                               resume_type=resume_type)
+                             job=job,
+                             state=0,
+                             team=team,
+                             resume_path=resume_path)
         new_apply.save()
         return {'tag': OK_INSERT,
                 'apply': new_apply}
 
-    # 如果插入账号发生异常
+    # 如果插入投递记录发生异常
     except:
-        logger.error('数据库异常导致插入账号失败')
+        logger.error('数据库异常导致插入投递简历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
