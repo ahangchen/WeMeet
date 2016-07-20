@@ -33,6 +33,12 @@ ERR_OUT_DATE_MSG = '请求已过期'
 AVATAR_INVALID = '-12'  # 用在保存头像
 AVATAR_INVALID_MSG = '头像不合法'
 
+RESUME_INVALID = '-14'
+RESUME_INVALID_MSG = '简历文件不合法'
+
+# 投递简历失败
+# 投递简历成功
+
 
 
 

@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from student.ctrl import info
 from student.ctrl import account
 from student.ctrl import avatar
+from student.ctrl import resume
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                                  ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                                  ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -13,6 +14,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                                  ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
                                                  ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
                                                  ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
+                                                 RESUME_INVALID, RESUME_INVALID_MSG,\
                                                  AVATAR_INVALID, AVATAR_INVALID_MSG,\
                                                  ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                                  ERR_METHOD, ERR_METHOD_MSG, \
@@ -64,8 +66,9 @@ from student.ctrl.tag import ERR_SAVE_AVATAR_FAIL
 from student.ctrl.tag import ERR_AVATAR_FILE_INVALID
 from student.ctrl.tag import OK_UPDATE_STU_INFO
 from student.ctrl.tag import ERR_UPDATE_STU_INFO_DB
-
-
+from student.ctrl.tag import OK_SAVE_RESUME
+from student.ctrl.tag import ERR_RESUME_FILE_INVALID
+from student.ctrl.tag import ERR_SAVE_RESUME_FAIL
 
 
 # from student.util.tag import NO_INPUT
@@ -469,6 +472,48 @@ def update_info(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
+
+
+@csrf_exempt
+def upload_resume(request):
+    """
+    保存上传的简历文件
+    成功：返回err:SUCCEED, 简历路径
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('id')
+        resume_file = request.FILES.get('resume')
+
+        upload_rlt = resume.upload(stu_id=stu_id, resume=resume_file)
+        # 如果保存上传的简历文件成功
+        if upload_rlt['tag'] == OK_SAVE_RESUME:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'path': upload_rlt['path']
+            }))
+
+        # 如果简历文件不合法
+        elif upload_rlt['tag'] == ERR_RESUME_FILE_INVALID:
+            return HttpResponse(json_helper.dumps({
+                'err': RESUME_INVALID,
+                'msg': RESUME_INVALID_MSG
+            }))
+
+        # 如果保存失败 tag == ERR_SAVE_RESUME_FAIL
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
 
 
 # @csrf_exempt

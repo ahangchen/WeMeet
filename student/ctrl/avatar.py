@@ -13,7 +13,7 @@ from student.db.tag import ERR_UPDATE_NOTEXIST
 from student.db.tag import ERR_UPDATE_DB
 
 from student.util.logger import logger
-from student.util.file_helper import get_file_type
+from student.util import file_helper
 
 
 DEFAULT_AVATAR = 'student/avatar/default.jpg'
@@ -37,39 +37,29 @@ def save(stu_id, avatar):
     def get_avatar_path(file_name, file_type):
         return '%s/%s.%s' % (AVATAR_PATH_ROOT, file_name, file_type)
 
-    def save_avatar(avatar, path):
-        if default_storage.exists(path):
-            try:
-                default_storage.delete(path)
-            # 如果目标文件系统不支持删除文件操作
-            except NotImplementedError as err:
-                logger.error('目标文件系统不支持删除文件操作')
-                return False
-        default_storage.save(path, ContentFile(avatar.read()))
-        return True
 
     # 确认学生是否存在
     select_rlt = stu_info.select(stu_id=stu_id)
     # 如果账号不存在
-    if select_rlt == ERR_SELECT_NOTEXIST:
+    if select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试为不存在的学生上传头像')
         return {'tag': ERR_SAVE_AVATAR_FAIL}
     # 如果数据库异常导致查询学生是否存在失败
-    elif select_rlt == ERR_SELECT_DB:
+    elif select_rlt['tag'] == ERR_SELECT_DB:
         logger.error('数据库异常导致无法确定学生是否存在，上传头像失败')
         return {'tag': ERR_SAVE_AVATAR_FAIL}
 
     # 学生存在，如果头像合法
-    pre_avatar_path = select_rlt.avatar_path
+    pre_avatar_path = select_rlt['stu'].avatar_path
     if check_avatar_file(avatar):
         avatar_path = get_avatar_path(file_name=stu_id,
-                                      file_type=get_file_type(avatar.name))  # use stu_id as avatar file name
+                                      file_type=file_helper.get_file_type(avatar.name))  # use stu_id as avatar file name
         # 更新学生头像路径
         update_tag = stu_info.update(stu_id=stu_id, avatar_path=avatar_path)
         # 如果更新头像路径成功
         if update_tag == OK_UPDATE:
             # 如果头像保存成功
-            if save_avatar(avatar, avatar_path):
+            if file_helper.save(avatar, avatar_path):
                 return {'tag': OK_SAVE_AVATAR,
                         'path': avatar_path}
             # 如果头像保存失败， 回滚
