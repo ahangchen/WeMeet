@@ -175,19 +175,20 @@
 
 ***
 
-###10. 投递简历
-* http://110.64.69.66:8081/student/apply/
+###10. 上传简历文件
+* http://110.64.69.66:8081/student/resume/upload/
 * POST
-* 参数
-    * stu_id
-    * job_id
-    * resume_type: 简历类型
+* 参数：
+    * id: 学生id
+    * resume： 简历文件
 * 返回：
     * 成功：
-        * JSON：  {"err": err,  "state": state}
-        * err: 0
-    * 返回：
-        * JOSN： {"err": err, "msg": msg}
-        * err: -1/-10
-        * msg: 请求方法错误/操作失败
+        * JSON： {"err": err, "path": resume_path}
+            * err: 0
+            * path: 简历文件的路径
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: 14/1-1/10
+            * msg: 简历文件不合法/请求方法错误/操作失败
+
 
