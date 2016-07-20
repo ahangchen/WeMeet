@@ -283,4 +283,43 @@
 - 参数：
   - tid: 团队id
 - 返回：
-  - 
+  - json
+  
+```json
+{
+	"res": {
+		"man_cnt": 0,
+		"slogan": "",
+		"about": "",
+		"mail": "1418659400@qq.com",
+		"tid": 1,
+		"tel": "666752",
+		"b_type": 0,
+		"stus": [
+			{
+				"school": null,
+				"id": 1,
+				"name": "cwh",
+				"logo_path": null
+			},
+			{
+				"school": null,
+				"id": 2,
+				"name": "mlh",
+				"logo_path": null
+			}
+		],
+		"imgs": [
+			"team/1/pic.png",
+			"team/1/pic2.png"
+		],
+		"label": [
+			"school",
+			"web"
+		],
+		"history": "",
+		"logo_path": ""
+	},
+	"err": 0
+}
+```
