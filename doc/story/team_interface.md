@@ -283,4 +283,51 @@
 - 参数：
   - tid: 团队id
 - 返回：
-  - 
+  - 查询成功
+  - stus, imgs, label的值可能是\[\]的空串 
+  
+```json
+{
+	"res": {
+		"man_cnt": 0,
+		"slogan": "",
+		"about": "",
+		"mail": "1418659400@qq.com",
+		"tid": 1,
+		"tel": "666752",
+		"b_type": 0,
+		"stus": [
+			{
+				"school": null,
+				"id": 1,
+				"name": "cwh",
+				"logo_path": null
+			},
+			{
+				"school": null,
+				"id": 2,
+				"name": "mlh",
+				"logo_path": null
+			}
+		],
+		"imgs": [
+			"team/1/pic.png",
+			"team/1/pic2.png"
+		],
+		"label": [
+			"school",
+			"web"
+		],
+		"history": "",
+		"logo_path": ""
+	},
+	"err": 0
+}
+```
+- 查询失败
+ ```json
+   {
+   "err": "-4",
+   "msg": "账号不存在"
+   }
+   ```

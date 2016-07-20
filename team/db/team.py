@@ -58,8 +58,10 @@ def update_pwd(mail, hash_tid, new_pwd):
 
 def info(tid):
     team = Team.objects.filter(id=tid).select_related().first()
-    stu_s = TeamStu.objects.filter(team=team)
-    stu_dict = [{'id': stu.id, 'name': stu.name, 'school': stu.school, 'logo_path': stu.avatar_path} for stu in stu_s]
+    if team is None:
+        return None
+    stu_s = TeamStu.objects.select_related().filter(team=team)
+    stu_dict = [{'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path} for stu in stu_s]
     img_s = TeamImg.objects.filter(team=team)
     img_dict = [img.path for img in img_s]
     label_s = Label.objects.filter(team=team)

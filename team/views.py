@@ -280,7 +280,7 @@ def info(request):
     tid = request.GET['tid']
     team_dict = team.info(tid)
     if team_dict is not None:
-        return HttpResponse(json_helper.dumps(team_dict))
+        return HttpResponse(json_helper.dumps_err(0, team_dict))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
 
