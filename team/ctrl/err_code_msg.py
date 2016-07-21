@@ -32,9 +32,10 @@ ERR_JOB_NOT_FOUND = '-13'  # 用在获取职位信息
 MSG_JOB_NOT_FOUND = '职位不存在'
 
 ERR_POST_TYPE = '-21'  # 用在获取职位信息
-MSG_POST_TYPE = '类型错误'
+MSG_POST_TYPE = '职位类型错误'
 
-ERR_JOB_TYPE = '-22'  # 用在添加职位信息
+ERR_JOB_TYPE = '-22'  # 职位参数类型错误
+MSG_JOB_TYPE = '职位ID参数类型错误'
 
 ERR_JOB_NONE = '-23'  # 职位不存在
 MSG_JOB_NONE = '职位不存在'  # 职位不存在

@@ -57,6 +57,11 @@ def valid_code(request):
 
 @csrf_exempt
 def update_job(request):
+    """
+        修改职位信息
+        成功: 返回相应的err和message的JSON
+        失败：返回相应的err和message的JSON
+    """
     if not is_post(request):
         return resp_method_err()
 
@@ -67,7 +72,7 @@ def update_job(request):
         id = request.POST['id']
         req_data = request.POST
         if not id.isdigit():
-            return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
+            return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': MSG_JOB_TYPE}, ensure_ascii=False))
 
     if not Job.objects.filter(id=id):
         return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
@@ -85,6 +90,11 @@ def update_job(request):
 
 @csrf_exempt
 def add_job(request):
+    """
+        添加职位信息
+        成功: 返回职位ID
+        失败：返回相应的err和message的JSON
+    """
     if not is_post(request):
         return resp_method_err()
 
@@ -103,6 +113,11 @@ def add_job(request):
 
 @csrf_exempt
 def search_job(request):
+    """
+        根据职位信息搜索职位信息
+        成功: 返回职位信息
+        失败：返回相应的err和message的JSON
+    """
     if not is_post(request):
         return resp_method_err()
 

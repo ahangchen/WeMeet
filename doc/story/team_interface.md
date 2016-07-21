@@ -175,6 +175,107 @@
         * JSON: {"err": err, "msg": msg}
 ***
 
+### 职位搜索
+- http://110.64.69.66:8081/team/search_job/
+- post
+- 参数：
+    jobTags:职位标签
+
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "message":[{
+             ob_id:职位id
+                - job_name：职位名称
+                - job_type: 职位类型
+                - min_salary: 最低工资
+                - max_salary: 最高工资
+                - prov: 工作地点省份
+                - city: 工作地点城市
+                - town: 工作地点区
+                - exp: 工作经验
+                - work_type: 工作类型
+                - job_cmd：岗位要求
+                - work_cmd: 任职要求
+                - job_state:职位发布状态
+         },...]
+        }
+    - 失败：
+        - JSON: {"err": err, "message": message}
+        - err: -21/-1
+        - message: 职位类型错误/请求方法错误
+
+### 添加职位
+- http://110.64.69.66:8081/team/add_job/
+- post
+- 参数：
+  - name：职位名称
+  - j_type: 职位类型
+  - min_salary: 最低工资
+  - max_salary: 最高工资
+  - prince: 工作地点省份
+  - city: 工作地点城市
+  - town: 工作地点区
+  - exp_cmd: 工作经验
+  - w_type: 工作类型
+  - job_cmd：岗位要求
+  - work_cmd: 任职要求
+  - pub_state: 职位发布状态
+  - team_id: 团队ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "message": "请求成功",
+         "msg": 职位id
+        }
+    - 失败：
+        - JSON: {"err": err, "message": message}
+        - err: -22/-1
+        - message: 参数错误信息列表/请求方法错误
+        - 参数错误信息列表:{
+            参数名：相应的错误信息
+            "name":相应的错误信息
+            ...
+        }
+- 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
+
+### 修改职位
+- http://110.64.69.66:8081/team/update_job/
+- post
+- 参数：
+  - id: 职位ID
+  - name：职位名称
+  - j_type: 职位类型
+  - min_salary: 最低工资
+  - max_salary: 最高工资
+  - prince: 工作地点省份
+  - city: 工作地点城市
+  - town: 工作地点区
+  - exp_cmd: 工作经验
+  - w_type: 工作类型
+  - job_cmd：岗位要求
+  - work_cmd: 任职要求
+  - pub_state: 职位发布状态
+  - team_id: 团队ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "message": "请求成功"
+        }
+    - 失败：
+        - JSON: {"err": err, "message": message}
+        - err: -23/-22/-1
+        - message: 职位不存在/参数错误信息列表/请求方法错误
+        - 参数错误信息列表:{
+            参数名：相应的错误信息
+            "name":相应的错误信息
+            ...
+        }
+- 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
+
 ### 职位编辑
 - http://110.64.69.66:8081/team/job_update/
 - post
