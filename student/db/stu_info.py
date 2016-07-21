@@ -44,7 +44,7 @@ def delete(stu_id):
 
 def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
            mail=NO_INPUT, avatar_path=NO_INPUT, edu_background=NO_INPUT,
-           grade=NO_INPUT, major=NO_INPUT, location=NO_INPUT):
+           grade=NO_INPUT, major=NO_INPUT, location=NO_INPUT, resume_path=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST
@@ -62,6 +62,7 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
         update_stu.grade = value(update_stu.grade, grade)
         update_stu.major = value(update_stu.major, major)
         update_stu.location = value(update_stu.location, location)
+        update_stu.resume_path = value(update_stu.resume_path, resume_path)
 
         update_stu.save()
         return OK_UPDATE
@@ -104,7 +105,8 @@ def insert(name, school, tel, mail, avatar_path, edu_background, grade, major, l
                           edu_background=edu_background,
                           grade=grade,
                           major=major,
-                          location=location)
+                          location=location,
+                          resume_path=NO_INPUT)
         new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError， save和create等价
         return new_stu
 #        return GOOD_INSERT

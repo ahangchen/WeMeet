@@ -36,8 +36,12 @@ AVATAR_INVALID_MSG = '头像不合法'
 RESUME_INVALID = '-14'
 RESUME_INVALID_MSG = '简历文件不合法'
 
-# 投递简历失败
-# 投递简历成功
+NO_RESUME = '-15'  # 用在简历投递
+NO_RESUME_MSG = '未上传简历'
+
+ERR_MULTI_APPLY = '-16'  # 用在简历投递
+ERR_MULTI_APPLY_MSG = '多次投递同一职位'
+
 
 
 

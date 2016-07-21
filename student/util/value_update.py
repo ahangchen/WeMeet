@@ -1,4 +1,4 @@
-NO_INPUT = -12344555
+NO_INPUT = '-12344555'  # 随机字符串
 
 
 def value(previous_value, input_value):

@@ -13,35 +13,17 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                                  ERR_WRONG_CREDENTIAL, ERR_WRONG_CREDENTIAL_MSG, \
                                                  ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
                                                  ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
+                                                 ERR_MULTI_APPLY, ERR_MULTI_APPLY_MSG, \
                                                  ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
-                                                 RESUME_INVALID, RESUME_INVALID_MSG,\
+                                                 RESUME_INVALID, RESUME_INVALID_MSG, \
                                                  AVATAR_INVALID, AVATAR_INVALID_MSG,\
                                                  ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                                  ERR_METHOD, ERR_METHOD_MSG, \
+                                                 NO_RESUME, NO_RESUME_MSG, \
                                                  FAIL, FAIL_MSG, \
                                                  SUCCEED
 
-# from student.ctrl.err_code_msg import ERROR_CHANGE_PWD
-# from student.ctrl.err_code_msg import ERROR_CHANGE_PWD_MSG
-# from student.ctrl.err_code_msg import ERROR_GET_STU_DOESNOTEXIST
-# from student.ctrl.err_code_msg import ERROR_GET_STU_DOESNOTEXIST_MSG
-# from student.ctrl.err_code_msg import ERROR_GET_STU_IDMISS
-# from student.ctrl.err_code_msg import ERROR_GET_STU_IDMISS_MSG
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_INVALID_MSG
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_DOESNOTEXIST_MSG
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_IDMISS
-# from student.ctrl.err_code_msg import ERROR_UPDATE_STU_IDMISS_MSG
-# from student.ctrl.err_code_msg import ERROR_VERIFY_STU
-# from student.ctrl.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST
-# from student.ctrl.err_code_msg import ERROR_LOGIN_STU_DOESNOTEXIST_MSG
 
-# from student.ctrl.tag import ERR_AVATAR_FILE_INVALID
-# from student.ctrl.tag import ERR_AVATAR_SAVE_FAILED
-# from student.ctrl.tag import GOOD_UPDATE_INFO
 
 from student.ctrl.tag import ERR_ACTIVATE_DB
 from student.ctrl.tag import ERR_ACTIVATE_NOTEXIST
@@ -70,7 +52,8 @@ from student.ctrl.tag import OK_SAVE_RESUME
 from student.ctrl.tag import ERR_RESUME_FILE_INVALID
 from student.ctrl.tag import ERR_SAVE_RESUME_FAIL
 from student.ctrl.tag import OK_APPLY
-from student.ctrl.tag import ERR_APPLY_DB
+from student.ctrl.tag import ERR_APPLY_NO_RESUME
+from student.ctrl.tag import ERR_APPLY_EXIST
 
 
 # from student.util.tag import NO_INPUT
@@ -343,7 +326,7 @@ def change_pwd(request):
 def get_info(request):
     """
     获取学生信息
-    成功： 返回err: SUCCEED，头像路径，姓名，学校，学历，年级，专业，所在地，联系方式（tel），邮箱
+    成功： 返回err: SUCCEED，头像路径，姓名，学校，学历，年级，专业，所在地，联系方式（tel），邮箱, 简历地址
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
@@ -376,7 +359,8 @@ def get_info(request):
                 'major': obj.major,
                 'location': obj.location,
                 'tel': obj.tel,
-                'mail': obj.mail
+                'mail': obj.mail,
+                'resume_path': obj.resume_path
             }))
 
     # 如果请求的方法是GET
@@ -521,14 +505,25 @@ def job_apply(request):
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
         job_id = request.POST.get('job_id')
-        resume_path = request.POST.get('resume_path')
 
-        apply_rlt = resume.apply(stu_id, job_id, resume_path)
+        apply_rlt = resume.apply(stu_id, job_id)
         # 如果投递简历成功
         if apply_rlt['tag'] == OK_APPLY:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
                 'apply_id': apply_rlt['apply_id']
+            }))
+        # 如果学生无简历
+        elif apply_rlt['tag'] == ERR_APPLY_NO_RESUME:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_RESUME,
+                'msg': NO_RESUME_MSG
+            }))
+        # 如果已经投递过同一职位
+        elif apply_rlt['tag'] == ERR_APPLY_EXIST:
+            return HttpResponse(json_helper.dumps({
+                'err': ERR_MULTI_APPLY,
+                'msg': ERR_MULTI_APPLY_MSG
             }))
         # 如果投递简历失败 apply_rlt['tag'] == ERR_APPLY_DB:
         else:

@@ -37,4 +37,23 @@ def insert(stu, job, team, resume_path):
         return {'tag': ERR_INSERT_DB}
 
 
+def stu_job_select(stu, job):
+    """
+    用学生id和职位id查询投递记录
+    成功： 返回{'tag': OK_SELECT, 'apply': select_apply}
+    失败： 返回{'tag': ERR_SELECT_NOTEXIST}
+            或{'tag': ERR_SELECT_DB}
+    """
+    try:
+        select_apply = JobApply.objects.get(stu=stu, job=job)
+        return {'tag': OK_SELECT,
+                'apply': select_apply}
+    except JobApply.DoesNotExist:
+        return {'tag': ERR_SELECT_NOTEXIST}
+    except:
+        logger.error('数据库异常导致查询投递记录失败')
+        return {'tag': ERR_SELECT_DB}
+
+
+
 

@@ -175,7 +175,7 @@
 
 ***
 
-###10. 上传简历文件
+###10. 上传简历
 * http://110.64.69.66:8081/student/resume/upload/
 * POST
 * 参数：
@@ -199,7 +199,6 @@
 * 参数：
     * stu_id: 学生id
     * job_id: 职位id
-    * resume_path： 简历文件路径
 * 返回：
     * 成功：
         * JSON： {"err": err, "apply_id": job_apply_id}
@@ -207,7 +206,7 @@
             * apply_id: 投递记录的id
     * 失败：
         * JSON： {"err": err, "msg": msg}
-            * err: -1/10
-            * msg: 请求方法错误/操作失败
+            * err: -15/-16/-1/10
+            * msg: 未上传简历/多次投递同一职位/请求方法错误/操作失败
 
 

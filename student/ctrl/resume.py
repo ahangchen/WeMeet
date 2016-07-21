@@ -1,11 +1,14 @@
 from student.db import stu_info
 from student.db import job_apply
 from team.db import job
-from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, OK_INSERT
+from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, OK_INSERT,\
+                           OK_UPDATE, ERR_UPDATE_NOTEXIST
 from student.ctrl.tag import OK_SAVE_RESUME, ERR_SAVE_RESUME_FAIL, ERR_RESUME_FILE_INVALID, \
-                             OK_APPLY, ERR_APPLY_DB
+                             OK_APPLY, ERR_APPLY_DB, ERR_APPLY_NO_RESUME, ERR_APPLY_EXIST
 from student.util.logger import logger
 from student.util import file_helper
+from student.util.value_update import NO_INPUT
+import time
 
 
 RESUME_PATH_ROOT = 'student/resume'
@@ -24,8 +27,8 @@ def upload(stu_id, resume):
         """return true if avatar file is valid"""
         return True
 
-    def get_avatar_path(file_name, file_type):
-        return '%s/%s.%s' % (RESUME_PATH_ROOT, file_name, file_type)
+    def get_resume_path(folder, file_name, file_type):
+        return '%s/%s/%s.%s' % (RESUME_PATH_ROOT, folder, file_name, file_type)
 
     # 确认学生是否存在
     select_rlt = stu_info.select(stu_id=stu_id)
@@ -33,15 +36,31 @@ def upload(stu_id, resume):
     if select_rlt['tag'] == OK_SELECT:
         # 如果简历文件合法
         if check_resume_file(resume):
-            resume_path = get_avatar_path(file_name=stu_id,
-                                          file_type=file_helper.get_file_type(resume.name))  # 用学生id作简历文件名称
+            pre_resume_path = select_rlt['stu'].resume_path
+            resume_path = get_resume_path(folder=stu_id,
+                                          file_name=int(time.time()),
+                                          file_type=file_helper.get_file_type(resume.name))  # 用时间作简历文件名称
 
-            # 如果简历文件上传成功
-            if file_helper.save(resume, resume_path):
-                return {'tag': OK_SAVE_RESUME,
-                        'path': resume_path}
-            # 如果简历文件上传失败，
+            # 更新学生的当前简历路径
+            update_stu_tag = stu_info.update(stu_id=stu_id, resume_path=resume_path)
+            # 如果更新学生的当前简历路径成功：
+            if update_stu_tag == OK_UPDATE:
+
+                # 如果简历文件上传成功
+                if file_helper.save(resume, resume_path):
+                    return {'tag': OK_SAVE_RESUME,
+                            'path': resume_path}
+                # 如果简历文件上传失败，
+                else:
+                    return {'tag': ERR_SAVE_RESUME_FAIL}
+
+            # 如果更新学生的当前简历路径时学生记录不存在
+            elif update_stu_tag == ERR_UPDATE_NOTEXIST:
+                logger.error('更新学生当前简历路径时，学生记录丢失，导致上传简历失败')
+                return {'tag': ERR_SAVE_RESUME_FAIL}
+            # 如果数据库异常导致无法更新学生的当前简历路径update_stu_tag == ERR_UPDATE_DB
             else:
+                logger.error('数据库异常导致无法更新学生当前简历路径，上传简历失败')
                 return {'tag': ERR_SAVE_RESUME_FAIL}
 
         # 如果简历不合法
@@ -58,14 +77,14 @@ def upload(stu_id, resume):
         return {'tag': ERR_SAVE_RESUME_FAIL}
 
 
-def apply(stu_id, job_id, resume_path):
+def apply(stu_id, job_id):
     """
     投递简历
     成功：返回{'tag': OK_APPLY, 'apply_id': insert_apply_rlt['apply'].id}
     失败：返回{'tag': ERR_APPLY_DB}
+          或{’tag': ERR_APPLY_NO_RESUME}
     @stu_id:学生id
     @job_id:职位id
-    @resume_path:简历文件的路径
     """
     select_stu_rlt = stu_info.select(stu_id)
     # 如果学生存在
@@ -75,17 +94,37 @@ def apply(stu_id, job_id, resume_path):
         if select_job_rlt is not None:
             team = select_job_rlt.team  # team一定存在（由model外键的on_delete=CASCADE保证）
             stu = select_stu_rlt['stu']
-            insert_apply_rlt = job_apply.insert(stu=stu, job=select_job_rlt, team=team, resume_path=resume_path)
 
-            # 如果投递成功
-            if insert_apply_rlt['tag'] == OK_INSERT:
-                return {'tag': OK_APPLY,
-                        'apply_id': insert_apply_rlt['apply'].id}
+            # 如果学生无简历
+            if stu.resume_path == NO_INPUT:
+                return {'tag': ERR_APPLY_NO_RESUME}
 
-            # 如果投递失败insert_apply_rlt['tag'] == ERR_INSERT_DB
+            # 如果学生有简历
             else:
-                logger.error('数据库异常导致投递记录插入失败，投递简历失败')
-                return {'tag': ERR_APPLY_DB}
+                select_apply_rlt = job_apply.stu_job_select(stu=stu, job=select_job_rlt)
+                # 如果尚未投递
+                if select_apply_rlt['tag'] == ERR_SELECT_NOTEXIST:
+                    insert_apply_rlt = \
+                        job_apply.insert(stu=stu, job=select_job_rlt, team=team, resume_path=stu.resume_path)
+
+                    # 如果投递成功
+                    if insert_apply_rlt['tag'] == OK_INSERT:
+                        return {'tag': OK_APPLY,
+                                'apply_id': insert_apply_rlt['apply'].id}
+
+                    # 如果投递失败insert_apply_rlt['tag'] == ERR_INSERT_DB
+                    else:
+                        logger.error('数据库异常导致投递记录插入失败，投递简历失败')
+                        return {'tag': ERR_APPLY_DB}
+
+                # 如果已经投递过了
+                elif select_apply_rlt['tag'] == OK_SELECT:
+                    return {'tag': ERR_APPLY_EXIST}
+
+                # 如果数据库异常导致无法确认是否已经投递过了(select_apply_rlt['tag'] == ERR_SELECT_DB)
+                else:
+                    logger.error('数据库异常导致无法确认是否已经投递过，投递简历失败')
+                    return {'tag': ERR_APPLY_DB}
 
         # 如果职位不存在(select_job_rlt is None)
         else:

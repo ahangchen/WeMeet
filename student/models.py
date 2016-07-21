@@ -54,6 +54,8 @@ class StuInfo(models.Model):
     major = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
     # 所在地
     location = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
+    # 简历文件路径
+    resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
 
     class Meta:
         db_table = 'stu_info'
