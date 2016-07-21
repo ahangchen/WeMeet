@@ -60,14 +60,20 @@ def update_job(request):
     if not is_post(request):
         return resp_method_err()
 
-    id = request.POST['id']
-    if not id.isdigit():
-        return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE','application/json')) == 'application/json':
+        req_data = json.loads(request.body.decode('utf-8'))
+        id = req_data['id']
+    else:
+        id = request.POST['id']
+        req_data = request.POST
+        if not id.isdigit():
+            return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
+
     if not Job.objects.filter(id=id):
         return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
 
     job = Job.objects.get(id=id)
-    job_form = JobForm(request.POST,request.FILES)
+    job_form = JobForm(req_data,request.FILES)
     if job_form.is_valid():
         for (key,value) in job_form.cleaned_data.items():
             if value:
@@ -82,7 +88,12 @@ def add_job(request):
     if not is_post(request):
         return resp_method_err()
 
-    job_form = JobForm(request.POST,request.FILES)
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
+        req_data = json.loads(request.body.decode('utf-8'))
+    else:
+        req_data = request.POST
+
+    job_form = JobForm(req_data,request.FILES)
     if job_form.is_valid():
         job = Job(**job_form.cleaned_data)
         job.save()
