@@ -50,4 +50,7 @@ MSG_LABEL_NOT_FOUND = '标签不存在'
 ERR_STU_NOT_FOUND = '-32'
 MSG_STU_NOT_FOUND = '学生不存在'
 
+ERR_PROD_TYPE = '-42'  # 项目参数类型错误
+MSG_PROD_TYPE = '项目ID参数类型错误'
+
 

@@ -1,6 +1,8 @@
 PRODUCT_SUCCEED = '0'
 SUCCEED = '0'
 
+MSG_PRODUCT_SUCCEED = '操作成功'
+
 ERR_PROD_TABLE = '-101'
 MSG_PROD_TABLE = '数据库操作失败'
 
@@ -12,6 +14,9 @@ MSG_PROD_SAVE_IMG = '项目照片保存失败'
 
 ERR_PROD_CHECK_IMG = '-104'
 MSG_PROD_CHECK_IMG = '项目照片格式错误'
+
+ERR_PROD_DELETE_IMG = '-105'
+MSG_PROD_DELETE_IMG = '项目照片删除失败'
 
 ERR_JOB_NOT_EXIT = '-122'
 MSG_JOB_NOT_EXIT = '职位不存在'

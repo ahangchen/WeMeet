@@ -20,36 +20,15 @@ from functools import reduce
 from team.ctrl.err_code_msg import *
 from student.util import json_helper
 from team.db import job as db_job
+from team.db import product as db_product
 from team.db.tag import PRODUCT_SUCCEED
 
 import json
 import operator
 
 from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err
+from team.db.form import JobForm, ProductForm
 
-from django import forms
-class JobForm(forms.Form):
-    name = forms.CharField()
-    j_type = forms.IntegerField(required=False, initial=0)
-    min_salary = forms.FloatField(required=False,  initial=0)
-    max_salary = forms.FloatField(required=False, initial=0)
-    prince = forms.IntegerField(required=False, initial=0)
-    city = forms.IntegerField(required=False, initial=0)
-    town = forms.IntegerField(required=False, initial=0)
-    exp_cmd = forms.CharField(required=False, initial='')
-    w_type = forms.IntegerField(required=False, initial=0)
-    job_cmd = forms.CharField(required=False, initial='')
-    work_cmd = forms.CharField(required=False, initial='')
-    pub_state = forms.IntegerField(required=False, initial=0)
-    team_id = forms.IntegerField(required=False, initial=2)
-
-    def clean(self):
-        cleaned_data = super(JobForm,self).clean()
-        if self.is_valid():
-            for name in self.fields:
-                if  not self[name].html_name in self.data and self.fields[name].initial is not None or not cleaned_data[name]:
-                    cleaned_data[name] = self.fields[name].initial
-        return  cleaned_data
 
 def test(request):
     return render(request, 'team/test.html', {})
@@ -58,6 +37,126 @@ def test(request):
 @csrf_exempt
 def valid_code(request):
     return validate(request)
+
+@csrf_exempt
+def info_product(request):
+    """
+        查询项目信息
+        成功: 返回项目信息
+        失败：返回相应的err和message的JSON
+    """
+    prod_list = ['name', 'img_path','content','reward', 'team_id',
+                 'last_visit_cnt', 'week_visit_cnt']
+
+    if not is_post(request):
+        return resp_method_err()
+
+    prod_id = request.POST.get('productId')
+    res = db_product.select(prod_id)
+
+    if res['err'] == PRODUCT_SUCCEED:
+        prod_dict = {key:res['msg'].__dict__[key] for key in prod_list}
+        res = {'err': SUCCEED,
+               'msg': prod_dict}
+
+    return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+@csrf_exempt
+def delete_product(request):
+    """
+        删除项目信息
+        成功: 返回相应的err和msg的JSON
+        失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    prod_id = request.POST.get('productId')
+    res = db_product.select(prod_id)
+
+    if res['err'] != PRODUCT_SUCCEED:
+        return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+    prod = res['msg']
+    product.delete_img(prod_id=prod.id)
+    prod.delete()
+
+    return HttpResponse(json.dumps({'err': SUCCEED, 'msg': MSG_SUCC}, ensure_ascii=False))
+
+@csrf_exempt
+def add_product(request):
+    """
+        添加项目信息
+        成功: 返回项目ID
+        失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    # 判断POST请求类型
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
+        req_data = json.loads(request.body.decode('utf-8'))
+    else:
+        req_data = request.POST
+
+    # 判断参数类型
+    prod_form = ProductForm(req_data,request.FILES)
+    if not prod_form.is_valid():
+        return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
+
+    # 判断是否插入
+    res = db_product.insert(**prod_form.cleaned_data)
+    if res['err'] != PRODUCT_SUCCEED:
+        return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+    prod_img = request.FILES.get('prod_img')
+    if prod_img:
+        res_img = product.save_img(prod_id=res['msg'].id, prod_img=prod_img)
+        if res_img['err'] != PRODUCT_SUCCEED:
+            return HttpResponse(json.dumps(res_img, ensure_ascii=False))
+    return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC, 'msg': res['msg'].id}, ensure_ascii=False))
+
+
+@csrf_exempt
+def update_product(request):
+    """
+        编辑项目信息
+        成功: 返回项目ID
+        失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    # 判断POST请求类型
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
+        req_data = json.loads(request.body.decode('utf-8'))
+        id = req_data['id']
+    else:
+        req_data = request.POST
+        id = request.POST['id']
+        if not id.isdigit():
+            return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': MSG_PROD_TYPE}, ensure_ascii=False))
+
+    # 判断参数类型
+    prod_form = ProductForm(req_data,request.FILES)
+    if not prod_form.is_valid():
+        return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
+
+    res = db_product.select(prod_id=id)
+    if res['err'] != PRODUCT_SUCCEED:
+        return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+    # 判断是否插入
+    res = db_product.update(id=id, **prod_form.cleaned_data)
+    if res['err'] != PRODUCT_SUCCEED:
+        return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+    prod_img = request.FILES.get('prod_img')
+    if prod_img:
+        res_img = product.save_img(prod_id=res['msg'].id, prod_img=prod_img)
+        if res_img['err'] != PRODUCT_SUCCEED:
+            return HttpResponse(json.dumps(res_img, ensure_ascii=False))
+    return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC, 'msg': res['msg'].id}, ensure_ascii=False))
 
 @csrf_exempt
 def save_prod_img(request):
@@ -74,7 +173,7 @@ def save_prod_img(request):
     prod_img = request.FILES.get('prod_img')
     res = product.save_img(prod_id=prod_id,prod_img=prod_img)
 
-    return HttpResponse(json.dumps({'err': res['tag'],
+    return HttpResponse(json.dumps({'err': res['err'],
                                     'msg': res['msg']}))
 
 @csrf_exempt

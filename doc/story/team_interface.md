@@ -357,6 +357,96 @@
         - err: -13/-1
         - msg: 职位不存在/请求方法错误
 
+##  项目
+### 项目查找
+- http://110.64.69.66:8081/team/product/info/
+- post
+- 参数：
+    productId: 项目ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg":{
+                - name: 项目名称
+                - img_path: 照片路径
+                - content: 团队简介
+                - reward: 获奖情况
+                - team_id: 团队ID
+                - last_visit_cnt： 上周访问量
+                - week_visit_cnt: 每周访问量
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -102/-1/-101
+        - msg: 项目不存在/请求方法错误/操作失败
+
+### 添加项目
+- http://110.64.69.66:8081/product/insert/
+- post
+- 参数：
+    - name: 项目名称
+    - img_path: 照片路径(file)
+    - content: 团队简介
+    - reward: 获奖情况
+    - team_id: 团队ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,"msg": 项目id}
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -104/-103/-102/-101/-22/-1
+        - message: 项目照片格式错误/项目照片保存失败/项目不存在/操作失败/参数错误信息列表/请求方法错误
+        - 参数错误信息列表:{
+            参数名：相应的错误信息
+            "name":相应的错误信息
+            ...
+        }
+- 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
+
+### 修改项目
+- http://110.64.69.66:8081/team/product/update/
+- post
+- 参数：
+    - id: 项目ID
+    - name: 项目名称
+    - img_path: 照片路径(file)
+    - content: 团队简介
+    - reward: 获奖情况
+    - team_id: 团队ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg": "请求成功"
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -104/-103/-102/-101/-22/-1
+        - message: 项目照片格式错误/项目照片保存失败/项目不存在/操作失败/参数错误信息列表/请求方法错误
+        - 参数错误信息列表:{
+            参数名：相应的错误信息
+            "name":相应的错误信息
+            ...
+        }
+- 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
+
+### 删除项目
+- http://110.64.69.66:8081/team/product/delete/
+- post
+- 参数：
+    productId: 项目ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg": 操作成功
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -102/-1/-101
+        - msg: 项目不存在/请求方法错误/操作失败
 
 ### 上传项目照片
 * http://110.64.69.66:8081/team/product/save_img/

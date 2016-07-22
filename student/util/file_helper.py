@@ -19,3 +19,13 @@ def save(file, path):
             return False
     default_storage.save(path, ContentFile(file.read()))
     return True
+
+def delete(path):
+    if default_storage.exists(path):
+        try:
+            default_storage.delete(path)
+        # 如果目标文件系统不支持删除文件操作
+        except NotImplementedError as err:
+            logger.error('目标文件系统不支持删除文件操作')
+            return False
+    return True
