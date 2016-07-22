@@ -3,20 +3,22 @@ from django.shortcuts import render
 
 # Create your views here.
 from team.ctrl import acc_mng
-from team.ctrl import team
+from team.ctrl import team, product
 from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
 from team.ctrl.register import validate
 from team.ctrl import job
 from team.ctrl.job import JOB_NOT_FOUND
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from team.models import Team, Product, Job
+from team.models import Team, Product, Job, JobType
 from django.db.models import Sum
 from haystack.query import SearchQuerySet
 from django.db.models import Q
 from functools import reduce
 from team.ctrl.err_code_msg import *
 from student.util import json_helper
+from team.db import job as db_job
+from team.db.tag import PRODUCT_SUCCEED
 
 import json
 import operator
@@ -54,6 +56,57 @@ def test(request):
 @csrf_exempt
 def valid_code(request):
     return validate(request)
+
+@csrf_exempt
+def save_prod_img(request):
+    """
+    保存上传的项目照片文件，和更新项目照片
+    成功：返回{'err': PRODUCT_SUCCEED, 'msg': img_path}
+    失败：返回{'err': ERR_PROD_TABLE/ERR_PROD_NOT_EXIT/ERR_PROD_SAVE_IMG/ERR_PROD_CHECK_IMG,
+             'msg': 错误信息}
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    prod_id = request.POST.get('id')
+    prod_img = request.FILES.get('prod_img')
+    res = product.save_img(prod_id=prod_id,prod_img=prod_img)
+
+    return HttpResponse(json.dumps({'err': res['tag'],
+                                    'msg': res['msg']}))
+
+@csrf_exempt
+def update_job(request):
+    """
+        修改职位信息
+        成功: 返回相应的err和message的JSON
+        失败：返回相应的err和message的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE','application/json')) == 'application/json':
+        req_data = json.loads(request.body.decode('utf-8'))
+        id = req_data['id']
+    else:
+        id = request.POST['id']
+        req_data = request.POST
+        if not id.isdigit():
+            return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': MSG_JOB_TYPE}, ensure_ascii=False))
+
+    if not Job.objects.filter(id=id):
+        return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
+
+    job = Job.objects.get(id=id)
+    job_form = JobForm(req_data,request.FILES)
+    if job_form.is_valid():
+        for (key,value) in job_form.cleaned_data.items():
+            if value:
+                job.__dict__[key] = value
+            job.save()
+        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC}, ensure_ascii=False))
+    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
+
 
 @csrf_exempt
 def update_job(request):
@@ -110,6 +163,37 @@ def add_job(request):
         return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC,'msg':job.id}, ensure_ascii=False))
     return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
 
+@csrf_exempt
+def delete_job(request):
+    """
+        删除职位信息
+        成功: 返回相应的err和msg的JSON
+        失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    job_id = request.POST.get('jobId')
+    res = db_job.select(job_id)
+
+    if res['err'] != PRODUCT_SUCCEED:
+        return HttpResponse(json.dumps(res, ensure_ascii=False))
+
+    job = res['msg']
+    job.delete()
+
+    return HttpResponse(json.dumps({'err': SUCCEED, 'msg': MSG_SUCC}, ensure_ascii=False))
+
+@csrf_exempt
+def job_type(request):
+    """
+        查找职位类型
+        成功: 职位类型ID和name
+    """
+
+    jobType = JobType.objects.values()
+    return HttpResponse(json.dumps({'err': SUCCEED, 'msg': list(jobType)}, ensure_ascii=False))
+
 
 @csrf_exempt
 def search_job(request):
@@ -121,11 +205,14 @@ def search_job(request):
     if not is_post(request):
         return resp_method_err()
 
+    team_id = job_type = request.POST.get('teamId')
     job_type = request.POST.get('jobTags')
-    if not job_type.isdigit():
+    job_type = eval(job_type)
+
+    if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
         return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'message':MSG_POST_TYPE}, ensure_ascii=False))
 
-    res_list = Job.objects.filter(j_type=int(job_type)).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
+    res_list = Job.objects.filter(j_type__in=job_type,team_id = team_id).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
                           'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly',
                                                             'exp', 'job_state')
 

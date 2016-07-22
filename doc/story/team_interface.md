@@ -355,6 +355,53 @@
         - err: -13/-1
         - msg: 职位不存在/请求方法错误
 
+### 上传项目照片
+* http://110.64.69.66:8081/team/product/save_img/
+* POST
+* 参数：
+    * id: 项目id
+    * prod_img： 项目照片
+* 返回：
+    * 成功：
+        * JSON: {'err': err, 'msg': msg}
+            * err: 0
+            * msg: 项目照片路径
+    * 失败
+        * JSON: {'err': err, 'msg': msg}
+            * err: -104/-103/-102/-1/-101
+            * msg: 项目照片格式错误/项目照片保存失败/项目不存在/请求方法错误/操作失败
+
+***
+
+### 删除职位
+* http://110.64.69.66:8081/team/delete_job/
+* POST
+* 参数：
+    * jobId: 职位id
+* 返回：
+    * 成功：* JSON: {'err': err, 'msg': msg}
+        err: 0
+        msg: 操作成功
+    * 失败
+        * JSON: {'err': err, 'msg': msg}
+            * err: -122/-1/-101
+            * msg: 职位不存在/请求方法错误/操作失败
+***
+
+### 查找职位类型
+* http://110.64.69.66:8081/team/job_type/
+* POST
+* 返回：
+    * 成功：* JSON: {'err': err, 'msg': msg}
+        err: 0
+        msg:[{
+                id: 职位类型ID,
+                name: 职位类型name,
+            },
+            ...
+        ]
+***
+
 ### 团队邀请
 - http://110.64.69.66:8081/team/invite
 - POST

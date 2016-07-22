@@ -192,12 +192,40 @@ LOGGING = {
             'filename': BASE_DIR+'/log/stu/error.log',
             'formatter': 'simple',
         },
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'team_info':{
+            'level': 'INFO',
+            'class': 'team.util.log.InfoFileHandler',
+            'filename': BASE_DIR + '/log/team/info.log',
+            'formatter': 'simple'
+        },
+        'team_warning': {
+            'level': 'WARNING',
+            'class': 'team.util.log.WarningFileHandler',
+            'filename': BASE_DIR + '/log/team/warning.log',
+            'formatter': 'simple'
+        },
+        'team_error': {
+            'level': 'ERROR',
+            'class': 'team.util.log.ErrorFileHandler',
+            'filename': BASE_DIR + '/log/team/error.log',
+            'formatter': 'simple'
+        },
     },
     'loggers': {
         'wemeet.stu': {
             'handlers': ['warning_f', 'error_f', 'info_f'],
             'level': 'INFO',
             'propagate': False,
-        }
+        },
+        'wemeet.team': {
+            'handlers': ['console','team_info','team_warning','team_error'],
+            'level': 'INFO',
+            'propagate': False,
+        },
     }
 }
