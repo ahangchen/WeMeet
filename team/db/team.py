@@ -1,4 +1,4 @@
-from team.models import Pwd, Team, TeamImg, TeamStu, Label
+from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType
 from team.util.data import random6
 
 DB_OK = 0
@@ -91,3 +91,8 @@ def invite(name, leader, tel, mail):
     team = Team(pwd=pwd, name=name, leader=leader, contact_tel=tel)
     team.save()
     return pwd.invite_code
+
+
+def bus_names():
+    business = list(BusinessType.objects.values())
+    return business

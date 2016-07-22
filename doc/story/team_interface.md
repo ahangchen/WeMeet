@@ -1,5 +1,5 @@
-##接口(团队部分)
-
+#接口(团队部分)
+## 账号逻辑
 ### 团队注册  
 * http://110.64.69.66:8081/team/register/
 * POST  
@@ -88,15 +88,16 @@
 
 ***
 
+## 统计业务
 ***
-##搜索模块
+### 搜索模块
 使用haystack搜索架构，并使用Whoosh搜索引擎，jieba做中文分词
 入门教程： http://www.jianshu.com/p/5073e25de698
 官方文档： http://django-haystack.readthedocs.io/en/latest/toc.html
 ***
 
 ***
-###搜索模块：
+### 搜索模块：
 * http://110.64.69.66:8081/team/search/
 * POST
 * 参数：
@@ -175,6 +176,7 @@
         * JSON: {"err": err, "msg": msg}
 ***
 
+##  职位
 ### 职位搜索
 - http://110.64.69.66:8081/team/search_job/
 - post
@@ -295,19 +297,19 @@
   
 - 返回：
   - 成功：
- ```json 
+```json 
   {
     "err": "0",
     "msg": "操作成功"
   }
-  ```
+``` 
   - 失败
-  ```json
+```json 
   {
     "err": "err_code",
     "msg": "对应的提示"
   }
-  ```
+``` 
   - err_code: -4/-1/-10
   - msg: 账号错误/请求方法错误/其他错误
 
@@ -355,6 +357,7 @@
         - err: -13/-1
         - msg: 职位不存在/请求方法错误
 
+<<<<<<< HEAD
 ### 上传项目照片
 * http://110.64.69.66:8081/team/product/save_img/
 * POST
@@ -402,8 +405,11 @@
         ]
 ***
 
+=======
+## 团队
+>>>>>>> origin/master
 ### 团队邀请
-- http://110.64.69.66:8081/team/invite
+- http://110.64.69.66:8081/team/invite/
 - POST
 - 参数
   - mail
@@ -412,19 +418,19 @@
   - name:团队名称
 - 返回：
   - 成功：
-    ```json
+``` json 
     {
     "err": "0",
     "msg":"tid"
     }
-    ```
+  ``` 
    - 失败
-   ```json
+ ```json 
    {
    "err": "-10",
-   "msg": "其他错误"
+   "msg": "已存在"
    }
-   ```
+ ``` 
    
 ### 团队信息
 - http://110.64.69.66.8081/team/info?tid=xxxx
@@ -478,4 +484,326 @@
    "err": "-4",
    "msg": "账号不存在"
    }
-   ```
+ ``` 
+### 更新团队信息
+- url
+  -  http://110.64.69.66.8081/team/update_team_info/
+  - post
+- 参数
+  - tid: 团队id
+  - name: 团队名
+  - logo_path：logo路径
+  - slogan：口号
+  - about：团队介绍
+  - history：发展历程
+  - b_type：行业类型：只有有限个可选，查询行业类型接口可以得到对应的名字
+ 
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -4/-1/-10
+  - msg: 账号错误/请求方法错误/其他错误
+
+### 增加团队标签
+- url
+  -  http://110.64.69.66.8081/team/add_team_label/
+  - post
+- 参数
+  - tid: 团队id
+  - name: 标签名
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -4/-1/-10
+  - msg: 账号错误/请求方法错误/其他错误
+
+### 删除团队标签
+- url
+  -  http://110.64.69.66.8081/team/rm_team_label/
+  - post
+- 参数
+  - tid: 团队id
+  - lid: 标签id
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -31/-4/-1/-10
+  - msg: 标签不存在/账号错误/请求方法错误/其他错误
+
+### 获取行业类型
+* http://110.64.69.66:8081/team/business/
+* POST
+* 参数：
+    - 无
+* 返回：
+    * 成功:
+        * JSON: {"err": err, "msg": "操作成功"} 
+            * err: 0  
+            * msg：操作成功提示
+    * 失败：
+        * JSON: {"err": err, "msg": msg}
+            * err: -10
+            * msg: 未知错误
+
+***
+
+### 新增团队学生
+- url
+  -  http://110.64.69.66.8081/team/add_team_stu/
+  - post
+- 参数
+  - tid: 团队id
+  - sid: 标签id
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -32/-4/-1/-10
+  - msg: 要添加的学生不存在/账号错误/请求方法错误/其他错误
+  
+### 删除团队学生
+- url
+  -  http://110.64.69.66.8081/team/rm_team_stu/
+  - post
+- 参数
+  - tid: 团队id
+  - sid: 标签id
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -32/-4/-1/-10
+  - msg: 要删除的学生不存在/账号错误/请求方法错误/其他错误
+  
+
+### 查询学生邮箱
+
+- url
+  -  http://110.64.69.66.8081/student/name2mail?name=cwh
+  - get
+- 参数
+  - name: 学生名字
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "res": [
+        "1418659400@qq.com",
+        "cweihang@foxmail.com"
+        ]
+  }
+``` 
+  
+  res里是名字对应的学生邮箱列表
+  
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  - err_code: -4/-10
+  - msg: 找不到对应的学生邮箱/其他错误
+  
+### 邀请团队成员注册
+
+- url
+  -  http://110.64.69.66.8081/student/invite/
+  - post
+- 参数
+  - mail: 学生邮箱
+  
+- 返回
+  - 成功：
+  
+``` json 
+    {
+    "err": "0",
+    "msg":"操作成功"
+    }
+  ``` 
+   - 失败
+   
+ ```json 
+   {
+   "err": "-10",
+   "msg": "已存在"
+   }
+ ``` 
+
+
+### 新增团队照片
+- url
+  -  http://110.64.69.66.8081/team/add_team_photo/
+  - post
+- 参数
+  - tid: 团队id
+  - name: 本地图片名字
+- FILE：图片
+
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "timg_id"
+  }
+``` 
+  - 会返回团队图片id
+  
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -6/-4/-1/-10
+  - msg: 参数错误/请求方法错误/其他错误
+
+
+
+### 删除团队照片
+- url
+  -  http://110.64.69.66.8081/team/rm_team_photo/
+  - post
+- 参数
+  - tid: 团队id
+  - name: timg_id
+
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "timg_id"
+  }
+``` 
+  
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -6/-4/-1/-10
+  - msg: 参数错误/请求方法错误/其他错误
+
+### 更新团队联系方式
+- url
+  -  http://110.64.69.66.8081/team/update_team_contact/
+  - post
+- 参数
+  - tid: 团队id
+  - tel: 联系电话
+  - mail：联系邮箱
+  
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "操作成功"
+  }
+``` 
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -4/-1/-10
+  - msg: 账号错误/请求方法错误/其他错误

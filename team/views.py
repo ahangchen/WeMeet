@@ -11,6 +11,9 @@ from team.ctrl.job import JOB_NOT_FOUND
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from team.models import Team, Product, Job, JobType
+
+from team.ctrl.team import bus_names
+from team.models import Team, Product, Job
 from django.db.models import Sum
 from haystack.query import SearchQuerySet
 from django.db.models import Q
@@ -309,7 +312,7 @@ def register(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     # 如果数据库异常导致注册失败
     else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_INV_NO_MATCH))
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_INV_NO_MATCH))
 
 
 @csrf_exempt
@@ -331,7 +334,7 @@ def login(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, str(tid)))
     # 如果不匹配
     elif ret == LOGIN_FAIL_NO_MATCH:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_PWD_NO_MATCH))
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_PWD_NO_MATCH))
     # 如果账号未激活
     elif ret == ACC_UNABLE:
         return HttpResponse(json_helper.dump_err_msg(ERR_ACC_UNABLE, MSG_ACC_UNABLE))
@@ -355,7 +358,7 @@ def reset(request):
     if ret == ACC_MNG_OK:
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     elif ret == ACC_NO_FOUND:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
 
 
 @csrf_exempt
@@ -384,7 +387,7 @@ def update_pwd(request):
     if ACC_MNG_OK == acc_mng.update_pwd(mail, hash_tid, pwd):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
     else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_RESET_KEY_ERR))
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_RESET_KEY_ERR))
 
 
 @csrf_exempt
@@ -395,7 +398,7 @@ def info(request):
     if team_dict is not None:
         return HttpResponse(json_helper.dumps_err(0, team_dict))
     else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_ACCOUNT_NO_MATCH, MSG_ACC_NOT_FOUND))
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
 
 
 @csrf_exempt
@@ -447,3 +450,47 @@ def job_info(request):
         }))
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_JOB_NOT_FOUND, MSG_JOB_NOT_FOUND))
+
+
+def update_team_contact(request):
+    return HttpResponse()
+
+
+def rm_team_photo(request):
+    return HttpResponse()
+
+
+def add_team_photo(request):
+    return HttpResponse()
+
+
+def add_team_stu(request):
+    return HttpResponse()
+
+
+def rm_team_stu(request):
+    return HttpResponse()
+
+
+def add_team_label(request):
+    return HttpResponse()
+
+
+def rm_team_label(request):
+    return HttpResponse()
+
+
+def update_team_info(request):
+    return HttpResponse()
+
+
+def business(request):
+    name = bus_names()
+    if name is not None:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, name))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
+
+
+def name2mail(request):
+    return HttpResponse()
