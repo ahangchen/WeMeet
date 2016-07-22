@@ -13,7 +13,6 @@ from django.http import HttpResponse
 from team.models import Team, Product, Job, JobType
 
 from team.ctrl.team import bus_names
-from team.models import Team, Product, Job
 from django.db.models import Sum
 from haystack.query import SearchQuerySet
 from django.db.models import Q
@@ -31,17 +30,17 @@ from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_
 from django import forms
 class JobForm(forms.Form):
     name = forms.CharField()
-    j_type = forms.IntegerField(required=False,initial=0)
-    min_salary = forms.FloatField(required=False,initial=0)
-    max_salary = forms.FloatField(required=False,initial=0)
-    prince = forms.IntegerField(required=False,initial=0)
-    city = forms.IntegerField(required=False,initial=0)
-    town = forms.IntegerField(required=False,initial=0)
-    exp_cmd = forms.CharField(required=False,initial='')
-    w_type = forms.IntegerField(required=False,initial=0)
-    job_cmd = forms.CharField(required=False,initial='')
-    work_cmd = forms.CharField(required=False,initial='')
-    pub_state = forms.IntegerField(required=False,initial=0)
+    j_type = forms.IntegerField(required=False, initial=0)
+    min_salary = forms.FloatField(required=False,  initial=0)
+    max_salary = forms.FloatField(required=False, initial=0)
+    prince = forms.IntegerField(required=False, initial=0)
+    city = forms.IntegerField(required=False, initial=0)
+    town = forms.IntegerField(required=False, initial=0)
+    exp_cmd = forms.CharField(required=False, initial='')
+    w_type = forms.IntegerField(required=False, initial=0)
+    job_cmd = forms.CharField(required=False, initial='')
+    work_cmd = forms.CharField(required=False, initial='')
+    pub_state = forms.IntegerField(required=False, initial=0)
     team_id = forms.IntegerField(required=False, initial=2)
 
     def clean(self):
@@ -63,7 +62,7 @@ def valid_code(request):
 @csrf_exempt
 def save_prod_img(request):
     """
-    保存上传的项目照片文件，和更新项目照片 
+    保存上传的项目照片文件，和更新项目照片
     成功：返回{'err': PRODUCT_SUCCEED, 'msg': img_path}
     失败：返回{'err': ERR_PROD_TABLE/ERR_PROD_NOT_EXIT/ERR_PROD_SAVE_IMG/ERR_PROD_CHECK_IMG,
              'msg': 错误信息}
@@ -77,39 +76,6 @@ def save_prod_img(request):
 
     return HttpResponse(json.dumps({'err': res['tag'],
                                     'msg': res['msg']}))
-
-@csrf_exempt
-def update_job(request):
-    """
-        修改职位信息
-        成功: 返回相应的err和message的JSON
-        失败：返回相应的err和message的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE','application/json')) == 'application/json':
-        req_data = json.loads(request.body.decode('utf-8'))
-        id = req_data['id']
-    else:
-        id = request.POST['id']
-        req_data = request.POST
-        if not id.isdigit():
-            return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': MSG_JOB_TYPE}, ensure_ascii=False))
-
-    if not Job.objects.filter(id=id):
-        return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
-
-    job = Job.objects.get(id=id)
-    job_form = JobForm(req_data,request.FILES)
-    if job_form.is_valid():
-        for (key,value) in job_form.cleaned_data.items():
-            if value:
-                job.__dict__[key] = value
-            job.save()
-        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC}, ensure_ascii=False))
-    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
-
 
 @csrf_exempt
 def update_job(request):
@@ -210,7 +176,6 @@ def search_job(request):
 
     team_id = job_type = request.POST.get('teamId')
     job_type = request.POST.get('jobTags')
-    job_type = eval(job_type)
 
     if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
         return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'message':MSG_POST_TYPE}, ensure_ascii=False))
