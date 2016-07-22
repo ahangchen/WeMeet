@@ -63,7 +63,7 @@ def valid_code(request):
 @csrf_exempt
 def save_prod_img(request):
     """
-    保存上传的项目照片文件，和更新项目照片
+    保存上传的项目照片文件，和更新项目照片 
     成功：返回{'err': PRODUCT_SUCCEED, 'msg': img_path}
     失败：返回{'err': ERR_PROD_TABLE/ERR_PROD_NOT_EXIT/ERR_PROD_SAVE_IMG/ERR_PROD_CHECK_IMG,
              'msg': 错误信息}
