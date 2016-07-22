@@ -11,16 +11,20 @@ MSG_VALID_CODE_ERR = '验证码错误'  # 用在注册
 ERR_ACC_EXIST = '-3'
 MSG_ACC_EXIST = '账号已存在'  # 用在注册
 
-ERR_ACCOUNT_NO_MATCH = '-4'
+ERR_STH_NO_MATCH = '-4'
 MSG_ACC_INV_NO_MATCH = '账号与邀请码不匹配'
 MSG_ACC_NOT_FOUND = '账号不存在'  # 用在邮件验证/登陆/重置密码的邮件的发送请求/修改密码
 MSG_ACC_PWD_NO_MATCH = '帐密不匹配'
 MSG_RESET_KEY_ERR = '账号与凭据不匹配'  # 用在修改密码
+MSG_BUS_NOT_FOUND = '账号与凭据不匹配'  # 用在修改密码
+MSG_NO_MAIL2NAME = '找不到对应的学生邮箱'  # 用在修改密码
 
 
 ERR_ACC_UNABLE = '-5'
 MSG_ACC_UNABLE = '账号不可用'
 
+ERR_PARAM = '-6'
+MSG_PARAM_ERR = "参数错误"
 
 ERR_UNKNOWN = '-10'  # 未知错误
 MSG_FAIL = '操作失败'
@@ -39,4 +43,11 @@ MSG_JOB_TYPE = '职位ID参数类型错误'
 
 ERR_JOB_NONE = '-23'  # 职位不存在
 MSG_JOB_NONE = '职位不存在'  # 职位不存在
+
+ERR_LABEL_NOT_FOUND = '-31'
+MSG_LABEL_NOT_FOUND = '标签不存在'
+
+ERR_STU_NOT_FOUND = '-32'
+MSG_STU_NOT_FOUND = '学生不存在'
+
 

@@ -18,5 +18,15 @@ urlpatterns = [
     url(r'^update_pwd/$', views.update_pwd),
     url(r'^job_info/$', views.job_info),
     url(r'^info/$', views.info),
-    url(r'^invite/$', views.invite)
+    url(r'^invite/$', views.invite),
+    url(r'^update_team_info/$', views.update_team_info),
+    url(r'^add_team_label/$', views.add_team_label),
+    url(r'^rm_team_label/$', views.rm_team_label),
+    url(r'^rm_team_stu/$', views.rm_team_stu),
+    url(r'^add_team_stu/$', views.add_team_stu),
+    url(r'^add_team_photo/$', views.add_team_photo),
+    url(r'^rm_team_photo/$', views.rm_team_photo),
+    url(r'^update_team_contact/$', views.update_team_contact),
+    url(r'^business/$', views.business),
+    url(r'^name2mail/$', views.name2mail),
 ]

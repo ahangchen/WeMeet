@@ -112,3 +112,7 @@ class WorkType(models.Model):
 class TeamType(models.Model):
     # 团队类型可以由管理员预设，在团队信息中设置类型id以区分团队类型
     name = models.CharField(max_length=NAME_MAX_LENGTH, default='')
+
+
+class BusinessType(models.Model):
+    name = models.CharField(max_length=NAME_MAX_LENGTH, default='')
