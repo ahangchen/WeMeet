@@ -535,6 +535,7 @@
 	"res": {
 		"man_cnt": 0,
 		"slogan": "",
+                "name": "wemeet",
 		"about": "",
 		"mail": "1418659400@qq.com",
 		"tid": 1,
