@@ -96,20 +96,63 @@ class StuEdu(models.Model):
         db_table = 'stu_edu'
 
 
-# class StuIntern(models.Model):
-#     # By default, id = models.AutoField(primary_key=True)
-#     # 公司
-#     company = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-#     # 毕业年份
-#     position = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-#     # 开始年月 0表示其他，1表示大专，2表示本科，3表示硕士，4表示博士
-#     begin_time = models.IntegerField(default='-1')
-#     # 结束年月
-#     end_time = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-#     # 职能描述
-#     description = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-#     # 学生，on_delete默认为CASCADE，当学生被删除的时候，教育经历级联删除
-#     stu = models.ForeignKey('StuInfo', null=False)
-#
-#     class Meta:
-#         db_table = 'stu_edu'
+class StuIntern(models.Model):
+    intern_id = models.AutoField(primary_key=True)
+    # 公司
+    company = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 职位
+    position = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 开始年月
+    begin_time = models.CharField(max_length=DATE_MAX_LENGTH, blank=True, null=True, default='')
+    # 结束年月
+    end_time = models.CharField(max_length=DATE_MAX_LENGTH, blank=True, null=True, default='')
+    # 职能描述
+    description = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True, default='')
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，实习经历级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_intern'
+
+
+class StuProj(models.Model):
+    proj_id = models.AutoField(primary_key=True)
+    # 项目名称
+    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 职位
+    duty = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 年份
+    year = models.CharField(max_length=DATE_MAX_LENGTH, blank=True, null=True, default='')
+    # 职能描述
+    description = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True, default='')
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，项目经历级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_proj'
+
+
+class StuWorks(models.Model):
+    works_id = models.AutoField(primary_key=True)
+    # 作品集路径
+    path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
+    # 作品集在线地址
+    site = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，作品集级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_works'
+
+
+class StuSkill(models.Model):
+    skill_id = models.AutoField(primary_key=True)
+    # 技能名称
+    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 技能值0-10
+    value = models.IntegerField(default=0)
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_skill'

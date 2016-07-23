@@ -1,6 +1,4 @@
-# from student.utility.tag import NO_INPUT
-
-from student.db import stu_info, account, edu
+from student.db import stu_info, account, edu, intern
 from student.db.tag import OK_SELECT
 from student.db.tag import ERR_SELECT_NOTEXIST
 from student.db.tag import ERR_SELECT_DB
@@ -17,8 +15,11 @@ from student.ctrl.tag import OK_ADD_EDU
 from student.ctrl.tag import ERR_ADD_EDU_FULL
 from student.ctrl.tag import ERR_ADD_EDU_DB
 from student.ctrl.tag import OK_GET_EDU
-from student.ctrl.tag import ERR_GET_EDU_NO_EDU
+from student.ctrl.tag import ERR_GET_NO_EDU
 from student.ctrl.tag import ERR_GET_EDU_DB
+from student.ctrl.tag import OK_GET_INTERN
+from student.ctrl.tag import ERR_GET_NO_INTERN
+from student.ctrl.tag import ERR_GET_INTERN_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -147,7 +148,7 @@ def get_edu(stu_id):
                                  'graduation_year': edu_rcd.graduation_year,
                                  'edu_background': edu_rcd.background,
                                  'school': edu_rcd.school}]
-    失败：返回{'tag': ERR_GET_EDU_NO_EDU}
+    失败：返回{'tag': ERR_GET_NO_EDU}
           或{'tag': ERR_GET_EDU_DB}
     """
     select_rlt = stu_info.select(stu_id=stu_id)
@@ -176,7 +177,7 @@ def get_edu(stu_id):
 
         # 如果该学生无教育经历
         elif filter_set.count() == 0:
-            return {'tag': ERR_GET_EDU_NO_EDU}
+            return {'tag': ERR_GET_NO_EDU}
         # 如果该学生的教育经历数量不合法
         else:
             logger.error('学生id为%s的学生拥有不合法的教育经历数量，导致获取教育经历失败' % stu_id)
@@ -190,6 +191,39 @@ def get_edu(stu_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，查询教育经历失败')
         return {'tag': ERR_GET_EDU_DB}
+
+
+def get_intern(stu_id):
+    """
+    @param stu_id:
+    @return:
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        filter_set = intern.stu_filter(stu=select_rlt['stu'])
+
+        # 如果该学生有合法的实习经历数量
+        if filter_set.count() in range(1, 6):
+            return {'tag': OK_GET_INTERN,
+                    'intern_list': list(filter_set.values())}
+
+        # 如果该学生无实习经历
+        elif filter_set.count() == 0:
+            return {'tag': ERR_GET_NO_INTERN}
+        # 如果该学生的实习经历数量不合法
+        else:
+            logger.error('学生id为%s的学生拥有不合法的实习经历数量，导致获取实习经历失败' % stu_id)
+            return {'tag': ERR_GET_INTERN_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在的学生的实习经历')
+        return {'tag': ERR_GET_INTERN_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，查询实习经历失败')
+        return {'tag': ERR_GET_INTERN_DB}
 
 
 

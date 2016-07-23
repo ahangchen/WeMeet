@@ -42,11 +42,14 @@ NO_RESUME_MSG = '未上传简历'
 ERR_MULTI_APPLY = '-16'  # 用在简历投递
 ERR_MULTI_APPLY_MSG = '多次投递同一职位'
 
-ERR_EDU_FULL = '-17' # 用在增加教育经历
+ERR_EDU_FULL = '-123' # 用在增加教育经历
 ERR_EDU_FULL_MSG = '教育经历已达上限'
 
-NO_EDU = '-18'  # 用在获取教育经历
+NO_EDU = '-118'  # 用在获取教育经历
 NO_EDU_MSG = '无教育经历'
+
+NO_INTERN = '-119'  # 用在获取实习经历
+NO_INTERN_MSG = '无实习经历'
 
 
 

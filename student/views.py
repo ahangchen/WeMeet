@@ -20,6 +20,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                       ERR_METHOD, ERR_METHOD_MSG, \
+                                      NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
                                       NO_EDU, NO_EDU_MSG, \
                                       FAIL, FAIL_MSG, \
@@ -60,8 +61,11 @@ from student.ctrl.tag import OK_ADD_EDU
 from student.ctrl.tag import ERR_ADD_EDU_FULL
 from student.ctrl.tag import ERR_ADD_EDU_DB
 from student.ctrl.tag import OK_GET_EDU
-from student.ctrl.tag import ERR_GET_EDU_NO_EDU
+from student.ctrl.tag import ERR_GET_NO_EDU
 from student.ctrl.tag import ERR_GET_EDU_DB
+from student.ctrl.tag import OK_GET_INTERN
+from student.ctrl.tag import ERR_GET_NO_INTERN
+from student.ctrl.tag import ERR_GET_INTERN_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -622,7 +626,7 @@ def get_edu(request):
             }))
 
         # 如果该学生没有教育经历
-        elif get_rlt['tag'] == ERR_GET_EDU_NO_EDU:
+        elif get_rlt['tag'] == ERR_GET_NO_EDU:
             return HttpResponse(json_helper.dumps({
                 'err': NO_EDU,
                 'msg': NO_EDU_MSG
@@ -642,6 +646,44 @@ def get_edu(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
+@csrf_exempt
+def get_intern(request):
+    """
+    @param request:
+    @return:
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = info.get_intern(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_INTERN:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'intern_list': get_rlt['intern_list']
+            }))
+
+        # 如果该学生没有实习经历
+        elif get_rlt['tag'] == ERR_GET_NO_INTERN:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_INTERN,
+                'msg': NO_INTERN_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_INTERN_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 # @csrf_exempt
