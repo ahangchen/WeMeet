@@ -23,6 +23,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
                                       NO_WORKS, NO_WORKS_MSG, \
+                                      NO_SKILL, NO_SKILL_MSG, \
                                       NO_PROJ, NO_PROJ_MSG, \
                                       NO_EDU, NO_EDU_MSG, \
                                       FAIL, FAIL_MSG, \
@@ -74,6 +75,9 @@ from student.ctrl.tag import ERR_GET_PROJ_DB
 from student.ctrl.tag import OK_GET_WORKS
 from student.ctrl.tag import ERR_GET_NO_WORKS
 from student.ctrl.tag import ERR_GET_WORKS_DB
+from student.ctrl.tag import OK_GET_SKILL
+from student.ctrl.tag import ERR_GET_NO_SKILL
+from student.ctrl.tag import ERR_GET_SKILL_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -775,6 +779,51 @@ def get_works(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_WORKS_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def get_skill(request):
+    """
+    获取技能评价
+    成功：返回{'err': SUCCEED, 'skill_list': get_rlt['skill_list']}
+                            "skill_list": [{
+            　　　　　　                      "skill_id": skill_id,
+            　　　　　　                      "name": name,
+            　　　　　　                      "value": value},
+            　　　                         ...]}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = info.get_skill(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_SKILL:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'skill_list': get_rlt['skill_list']
+            }))
+
+        # 如果该学生没有技能评价
+        elif get_rlt['tag'] == ERR_GET_NO_SKILL:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_SKILL,
+                'msg': NO_SKILL_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_SKILL_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

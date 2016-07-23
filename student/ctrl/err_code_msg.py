@@ -57,6 +57,9 @@ NO_PROJ_MSG = '无项目经历'
 NO_WORKS = '-121'  # 用再获取作品集
 NO_WORKS_MSG = '无作品集'
 
+NO_SKILL = '-122'  # 用在获取技能评价
+NO_SKILL_MSG = '无技能评价'
+
 
 
 

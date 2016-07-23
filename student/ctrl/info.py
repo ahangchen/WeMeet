@@ -1,4 +1,4 @@
-from student.db import stu_info, account, edu, intern, proj, works
+from student.db import stu_info, account, edu, intern, proj, works, skill
 from student.db.tag import OK_SELECT
 from student.db.tag import ERR_SELECT_NOTEXIST
 from student.db.tag import ERR_SELECT_DB
@@ -26,6 +26,9 @@ from student.ctrl.tag import ERR_GET_PROJ_DB
 from student.ctrl.tag import OK_GET_WORKS
 from student.ctrl.tag import ERR_GET_NO_WORKS
 from student.ctrl.tag import ERR_GET_WORKS_DB
+from student.ctrl.tag import OK_GET_SKILL
+from student.ctrl.tag import ERR_GET_NO_SKILL
+from student.ctrl.tag import ERR_GET_SKILL_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -322,6 +325,46 @@ def get_works(stu_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，查询作品集失败')
         return {'tag': ERR_GET_WORKS_DB}
+
+
+def get_skill(stu_id):
+    """
+    获取技能评价
+    成功：{'tag': OK_GET_SKILL, 'skill_list': list(filter_set.values())}
+                            "skill_list": [{
+            　　　　　　                      "skill_id": skill_id,
+            　　　　　　                      "name": name,
+            　　　　　　                      "value": value},
+            　　　                         ...]}
+    失败：{'tag': ERR_GET_NO_SKILL}或{'tag': ERR_GET_SKILL_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        filter_set = skill.stu_filter(stu=select_rlt['stu'])
+
+        # 如果该学生有合法的技能评价数量
+        if filter_set.count() in range(1, 6):
+            return {'tag': OK_GET_SKILL,
+                    'skill_list': list(filter_set.values())}
+
+        # 如果该学生无技能评价
+        elif filter_set.count() == 0:
+            return {'tag': ERR_GET_NO_SKILL}
+        # 如果该学生的技能评价数量不合法
+        else:
+            logger.error('学生id为%s的学生拥有不合法的技能评价数量，导致获取技能评价失败' % stu_id)
+            return {'tag': ERR_GET_SKILL_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在的学生的技能评价')
+        return {'tag': ERR_GET_SKILL_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，查询技能评价失败')
+        return {'tag': ERR_GET_SKILL_DB}
+
 
 
 

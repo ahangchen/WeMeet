@@ -19,5 +19,6 @@ urlpatterns = [
     url(r'^info/intern/get/$', views.get_intern),
     url(r'^info/proj/get/$', views.get_proj),
     url(r'^info/works/get/$', views.get_works),
+    url(r'^info/skill/get/$', views.get_skill),
     url(r'^$', views.post),
 ]
