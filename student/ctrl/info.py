@@ -1,27 +1,24 @@
 # from student.utility.tag import NO_INPUT
 
-from student.db import stu_info, account
+from student.db import stu_info, account, edu
 from student.db.tag import OK_SELECT
 from student.db.tag import ERR_SELECT_NOTEXIST
 from student.db.tag import ERR_SELECT_DB
 from student.db.tag import OK_UPDATE
 from student.db.tag import ERR_UPDATE_DB
 from student.db.tag import ERR_UPDATE_NOTEXIST
+from student.db.tag import OK_INSERT
 
-# from student.ctrl.avatar import check_avatar_file
-# from student.ctrl.avatar import get_avatar_path
-# from student.ctrl.avatar import save_avatar
-
-# from student.ctrl.tag import ERROR_AVATAR_FILE_INVALID
-# from student.ctrl.tag import ERROR_AVATAR_SAVE_FAILED
-# from student.ctrl.tag import GOOD_UPDATE_INFO
-# from student.ctrl.tag import ERROR_UPDATE_INFO
 from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
 from student.ctrl.tag import ERR_GET_INFO_DB
 from student.ctrl.tag import OK_UPDATE_STU_INFO
 from student.ctrl.tag import ERR_UPDATE_STU_INFO_DB
-
-# from student.db.stu_info import update
+from student.ctrl.tag import OK_ADD_EDU
+from student.ctrl.tag import ERR_ADD_EDU_FULL
+from student.ctrl.tag import ERR_ADD_EDU_DB
+from student.ctrl.tag import OK_GET_EDU
+from student.ctrl.tag import ERR_GET_EDU_NO_EDU
+from student.ctrl.tag import ERR_GET_EDU_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -100,7 +97,99 @@ def update(stu_id, avatar_path, name, school, major, location, edu_background, g
         return ERR_UPDATE_DB
 
 
+def add_edu(stu_id, major, graduation_year, background, school):
+    """
+    增加教育经历
+    成功：返回{'tag': OK_ADD_EDU, 'edu_id': insert_rlt['edu'].id}
+    失败：返回{'tag': ERR_ADD_EDU_FULL}
+           或{'tag': ERR_ADD_EDU_DB}
+    @stu_id: 学生id
+    @major: 专业
+    @graduation_year: 毕业年份
+    @background: 学历
+    @school: 学校
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        # 如果教育经历未达五条
+        if edu.stu_filter(stu=select_rlt['stu']).count() < 5:
+            insert_rlt = edu.insert(major=major, graduation_year=graduation_year,
+                                    background=background, school=school, stu=select_rlt['stu'])
+            # 如果插入成功：
+            if insert_rlt['tag'] == OK_INSERT:
+                return {'tag': OK_ADD_EDU,
+                        'edu_id': insert_rlt['edu'].id}
+            # 如果插入失败（insert_rlt['tag'] == ERR_INSERT_DB）
+            else:
+                return {'tag': ERR_ADD_EDU_DB}
 
+        # 如果教育经历已有五条或更多
+        else:
+            return {'tag': ERR_ADD_EDU_FULL}
+
+    # 如果学生记录不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试为不存在的学生增加教育经历')
+        return {'tag': ERR_ADD_EDU_DB}
+    # 如果数据库异常导致获取学生信息失败(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，增加教育经历失败')
+        return {'tag': ERR_ADD_EDU_DB}
+
+
+def get_edu(stu_id):
+    """
+    获取学生的教育经历
+    成功：返回{'tag': OK_GET_EDU, 'grade': latest_year, 'major': major, 'edu_list': edu_list}
+                     edu_list: [{'edu_id': edu_rcd.id,
+                                 'major': edu_rcd.major,
+                                 'graduation_year': edu_rcd.graduation_year,
+                                 'edu_background': edu_rcd.background,
+                                 'school': edu_rcd.school}]
+    失败：返回{'tag': ERR_GET_EDU_NO_EDU}
+          或{'tag': ERR_GET_EDU_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        filter_set = edu.stu_filter(stu=select_rlt['stu'])
+
+        # 如果该学生有合法的教育经历数量
+        if filter_set.count() in range(1, 6):
+            edu_list = []
+            latest_year = -1
+            major = ''
+            for edu_rcd in filter_set:
+                if edu_rcd.graduation_year >= latest_year:
+                    latest_year = edu_rcd.graduation_year
+                    major = edu_rcd.major
+                edu_list.append({'edu_id': edu_rcd.id,
+                                 'major': edu_rcd.major,
+                                 'graduation_year': edu_rcd.graduation_year,
+                                 'edu_background': edu_rcd.background,
+                                 'school': edu_rcd.school})
+            return {'tag': OK_GET_EDU,
+                    'grade': latest_year,
+                    'major': major,
+                    'edu_list': edu_list}
+
+        # 如果该学生无教育经历
+        elif filter_set.count() == 0:
+            return {'tag': ERR_GET_EDU_NO_EDU}
+        # 如果该学生的教育经历数量不合法
+        else:
+            logger.error('学生id为%s的学生拥有不合法的教育经历数量，导致获取教育经历失败' % stu_id)
+            return {'tag': ERR_GET_EDU_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在的学生的教育经历')
+        return {'tag': ERR_GET_EDU_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，查询教育经历失败')
+        return {'tag': ERR_GET_EDU_DB}
 
 
 

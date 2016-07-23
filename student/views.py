@@ -8,20 +8,22 @@ from student.ctrl import account
 from student.ctrl import avatar
 from student.ctrl import resume
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
-                                                 ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
-                                                 ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
-                                                 ERR_WRONG_CREDENTIAL, ERR_WRONG_CREDENTIAL_MSG, \
-                                                 ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
-                                                 ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
-                                                 ERR_MULTI_APPLY, ERR_MULTI_APPLY_MSG, \
-                                                 ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
-                                                 RESUME_INVALID, RESUME_INVALID_MSG, \
-                                                 AVATAR_INVALID, AVATAR_INVALID_MSG,\
-                                                 ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
-                                                 ERR_METHOD, ERR_METHOD_MSG, \
-                                                 NO_RESUME, NO_RESUME_MSG, \
-                                                 FAIL, FAIL_MSG, \
-                                                 SUCCEED
+                                      ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
+                                      ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
+                                      ERR_WRONG_CREDENTIAL, ERR_WRONG_CREDENTIAL_MSG, \
+                                      ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
+                                      ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
+                                      ERR_MULTI_APPLY, ERR_MULTI_APPLY_MSG, \
+                                      ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
+                                      RESUME_INVALID, RESUME_INVALID_MSG, \
+                                      AVATAR_INVALID, AVATAR_INVALID_MSG, \
+                                      ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
+                                      ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
+                                      ERR_METHOD, ERR_METHOD_MSG, \
+                                      NO_RESUME, NO_RESUME_MSG, \
+                                      NO_EDU, NO_EDU_MSG, \
+                                      FAIL, FAIL_MSG, \
+                                      SUCCEED
 
 
 
@@ -54,6 +56,12 @@ from student.ctrl.tag import ERR_SAVE_RESUME_FAIL
 from student.ctrl.tag import OK_APPLY
 from student.ctrl.tag import ERR_APPLY_NO_RESUME
 from student.ctrl.tag import ERR_APPLY_EXIST
+from student.ctrl.tag import OK_ADD_EDU
+from student.ctrl.tag import ERR_ADD_EDU_FULL
+from student.ctrl.tag import ERR_ADD_EDU_DB
+from student.ctrl.tag import OK_GET_EDU
+from student.ctrl.tag import ERR_GET_EDU_NO_EDU
+from student.ctrl.tag import ERR_GET_EDU_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -538,6 +546,102 @@ def job_apply(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
+
+
+@csrf_exempt
+def add_edu(request):
+    """
+    @param request:
+    @return:
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        major = request.POST.get('major')
+        graduation_year = request.POST.get('graduation_year')
+        background = request.POST.get('edu_background')
+        school = request.POST.get('school')
+
+        add_rlt = info.add_edu(stu_id, major, graduation_year, background, school)
+        # 如果增加教育经历成功
+        if add_rlt['tag'] == OK_ADD_EDU:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'edu_id': add_rlt['edu_id']
+            }))
+
+        # 如果教育经历已达上限
+        elif add_rlt['tag'] == ERR_ADD_EDU_FULL:
+            return HttpResponse(json_helper.dumps({
+                'err': ERR_EDU_FULL,
+                'msg': ERR_EDU_FULL_MSG
+            }))
+
+        # 如果数据库异常导致增加教育经历失败(add_rlt['tag'] == ERR_ADD_EDU_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def get_edu(request):
+    """
+    获取学生的教育经历
+    成功：返回{
+                'err': SUCCEED,
+                'grade': get_rlt['grade'],
+                'major': get_rlt['major'],
+                'edu_list': get_rlt['edu_list']
+            }
+            get_rlt['edu_list']: [{'edu_id': edu_rcd.id,
+                                  'major': edu_rcd.major,
+                                  'graduation_year': edu_rcd.graduation_year,
+                                  'edu_background': edu_rcd.background,
+                                  'school': edu_rcd.school}]
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = info.get_edu(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_EDU:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'grade': get_rlt['grade'],
+                'major': get_rlt['major'],
+                'edu_list': get_rlt['edu_list']
+            }))
+
+        # 如果该学生没有教育经历
+        elif get_rlt['tag'] == ERR_GET_EDU_NO_EDU:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_EDU,
+                'msg': NO_EDU_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_EDU_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
 
 
 # @csrf_exempt
