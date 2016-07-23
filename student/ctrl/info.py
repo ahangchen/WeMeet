@@ -1,4 +1,4 @@
-from student.db import stu_info, account, edu, intern, proj
+from student.db import stu_info, account, edu, intern, proj, works
 from student.db.tag import OK_SELECT
 from student.db.tag import ERR_SELECT_NOTEXIST
 from student.db.tag import ERR_SELECT_DB
@@ -23,6 +23,9 @@ from student.ctrl.tag import ERR_GET_INTERN_DB
 from student.ctrl.tag import OK_GET_PROJ
 from student.ctrl.tag import ERR_GET_NO_PROJ
 from student.ctrl.tag import ERR_GET_PROJ_DB
+from student.ctrl.tag import OK_GET_WORKS
+from student.ctrl.tag import ERR_GET_NO_WORKS
+from student.ctrl.tag import ERR_GET_WORKS_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -279,6 +282,46 @@ def get_proj(stu_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，查询项目经历失败')
         return {'tag': ERR_GET_PROJ_DB}
+
+
+def get_works(stu_id):
+    """
+    获取学生的作品集
+    成功：返回{'tag': OK_GET_WORKS,
+             'works_id': select_works_rlt['works'].works_id,
+             'path': select_works_rlt['works'].path,
+             'site': select_works_rlt['works'].site}
+    失败：返回{'tag': ERR_GET_NO_WORKS} 或 {'tag': ERR_GET_WORKS_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        select_works_rlt = works.stu_select(stu=select_rlt['stu'])
+
+        # 如果获取成功
+        if select_works_rlt['tag'] == OK_SELECT:
+            return {'tag': OK_GET_WORKS,
+                    'works_id': select_works_rlt['works'].works_id,
+                    'path': select_works_rlt['works'].path,
+                    'site': select_works_rlt['works'].site}
+
+        # 如果该学生无作品集
+        elif select_works_rlt['tag'] == ERR_SELECT_NOTEXIST:
+            return {'tag': ERR_GET_NO_WORKS}
+
+        # 如果数据库异常导致无法查询作品集(select_works_rlt['tag'] == ERR_SELECT_DB)
+        else:
+            return {'tag': ERR_GET_WORKS_DB}
+
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在的学生的作品集')
+        return {'tag': ERR_GET_WORKS_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，查询作品集失败')
+        return {'tag': ERR_GET_WORKS_DB}
 
 
 

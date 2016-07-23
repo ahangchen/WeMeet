@@ -54,6 +54,9 @@ NO_INTERN_MSG = '无实习经历'
 NO_PROJ = '-120'  # 用在获取项目经历
 NO_PROJ_MSG = '无项目经历'
 
+NO_WORKS = '-121'  # 用再获取作品集
+NO_WORKS_MSG = '无作品集'
+
 
 
 
