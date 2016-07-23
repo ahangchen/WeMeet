@@ -51,6 +51,9 @@ NO_EDU_MSG = '无教育经历'
 NO_INTERN = '-119'  # 用在获取实习经历
 NO_INTERN_MSG = '无实习经历'
 
+NO_PROJ = '-120'  # 用在获取项目经历
+NO_PROJ_MSG = '无项目经历'
+
 
 
 

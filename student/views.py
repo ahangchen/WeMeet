@@ -22,6 +22,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       ERR_METHOD, ERR_METHOD_MSG, \
                                       NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
+                                      NO_PROJ, NO_PROJ_MSG, \
                                       NO_EDU, NO_EDU_MSG, \
                                       FAIL, FAIL_MSG, \
                                       SUCCEED
@@ -66,6 +67,9 @@ from student.ctrl.tag import ERR_GET_EDU_DB
 from student.ctrl.tag import OK_GET_INTERN
 from student.ctrl.tag import ERR_GET_NO_INTERN
 from student.ctrl.tag import ERR_GET_INTERN_DB
+from student.ctrl.tag import OK_GET_PROJ
+from student.ctrl.tag import ERR_GET_NO_PROJ
+from student.ctrl.tag import ERR_GET_PROJ_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -650,8 +654,9 @@ def get_edu(request):
 @csrf_exempt
 def get_intern(request):
     """
-    @param request:
-    @return:
+    获取实习经历
+    成功：返回{'err': SUCCEED, 'intern_list': get_rlt['intern_list']}
+    失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
@@ -684,6 +689,57 @@ def get_intern(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
+
+
+@csrf_exempt
+def get_proj(request):
+    """
+    获取项目经历
+    成功：返回{'err': SUCCEED, 'proj_list': get_rlt['proj_list']}
+                            "proj_list": [{
+            　　　　　　                      "proj_id": proj_id,
+            　　　　　　                      "name": name,
+            　　　　　　                      "duty": duty,
+            　　　　　　                      "year": year,
+            　　　　　　                      "description": description},
+            　　　                         ...]}
+    失败：返回{'tag': ERR_GET_NO_PROJ}
+          或{'tag': ERR_GET_PROJ_DB}
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = info.get_proj(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_PROJ:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'proj_list': get_rlt['proj_list']
+            }))
+
+        # 如果该学生没有项目经历
+        elif get_rlt['tag'] == ERR_GET_NO_PROJ:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_PROJ,
+                'msg': NO_PROJ_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_PROJ_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+
 
 
 # @csrf_exempt
