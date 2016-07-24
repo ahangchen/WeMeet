@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^product/update/$', views.update_product),
     url(r'^product/delete/$', views.delete_product),
     url(r'^product/info/$', views.info_product),
+    url(r'^product/search/$', views.search_product),
     url(r'^register/$', views.register),
     url(r'^login/$', views.login),
     url(r'^reset/$', views.reset),

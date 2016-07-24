@@ -466,6 +466,32 @@
 
 ***
 
+### 9 职位搜索
+- http://110.64.69.66:8081/team/product/search/
+- post
+- 参数：
+    team_id: 团队ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg":[{
+                - name: 项目名称
+                - img_path: 照片路径
+                - content: 团队简介
+                - reward: 获奖情况
+                - team_id: 团队ID
+                - last_visit_cnt： 上周访问量
+                - week_visit_cnt: 每周访问量
+                },
+             ...
+            ]
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": message}
+        - err: -1
+        - message: 请求方法错误
+
 ### 19 删除职位
 * http://110.64.69.66:8081/team/delete_job/
 * POST

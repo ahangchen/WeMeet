@@ -39,6 +39,27 @@ def valid_code(request):
     return validate(request)
 
 @csrf_exempt
+def search_product(request):
+    """
+        根据团队ID搜索项目信息
+        成功: 返回项目信息
+        失败：返回相应的err和msg的JSON
+    """
+    if not is_post(request):
+        return resp_method_err()
+
+    team_id = request.POST.get('teamId')
+
+    if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
+        return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'msg':MSG_POST_TYPE}, ensure_ascii=False))
+
+    res_list = Product.objects.filter(team_id = team_id).values('name', 'img_path', 'content', 'reward', 'team_id',
+                                                            'last_visit_cnt', 'week_visit_cnt')
+
+    res = json.dumps({'err': SUCCEED, 'msg': list(res_list)}, ensure_ascii=False)
+    return HttpResponse(res)
+
+@csrf_exempt
 def info_product(request):
     """
         查询项目信息
