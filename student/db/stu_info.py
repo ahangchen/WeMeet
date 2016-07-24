@@ -42,9 +42,8 @@ def delete(stu_id):
         return ERR_DELETE_DB
 
 
-def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
-           mail=NO_INPUT, avatar_path=NO_INPUT, edu_background=NO_INPUT,
-           grade=NO_INPUT, major=NO_INPUT, location=NO_INPUT, resume_path=NO_INPUT):
+def update(stu_id, name=NO_INPUT, sex=NO_INPUT, year=NO_INPUT, month=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
+           mail=NO_INPUT, avatar_path=NO_INPUT, major=NO_INPUT, location=NO_INPUT, resume_path=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST
@@ -54,12 +53,13 @@ def update(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
         update_stu = StuInfo.objects.all().get(id=stu_id)
 
         update_stu.name = value(update_stu.name, name)
+        update_stu.sex = value(update_stu.sex, sex)
+        update_stu.year = value(update_stu.year, year)
+        update_stu.month = value(update_stu.month, month)
         update_stu.school = value(update_stu.school, school)
         update_stu.tel = value(update_stu.tel, tel)
         update_stu.mail = value(update_stu.mail, mail)
         update_stu.avatar_path = value(update_stu.avatar_path, avatar_path)
-        update_stu.edu_background = value(update_stu.edu_background, edu_background)
-        update_stu.grade = value(update_stu.grade, grade)
         update_stu.major = value(update_stu.major, major)
         update_stu.location = value(update_stu.location, location)
         update_stu.resume_path = value(update_stu.resume_path, resume_path)
@@ -91,7 +91,7 @@ def select(stu_id):
         return {'tag': ERR_SELECT_DB}
 
 
-def insert(name, school, tel, mail, avatar_path, edu_background, grade, major, location):
+def insert(name, school, tel, mail, avatar_path, sex, year, month, major, location):
     """
     成功：返回插入的学生
     失败：返回ERROR_INSERT
@@ -102,12 +102,13 @@ def insert(name, school, tel, mail, avatar_path, edu_background, grade, major, l
                           tel=tel,
                           mail=mail,
                           avatar_path=avatar_path,
-                          edu_background=edu_background,
-                          grade=grade,
+                          sex=sex,
+                          year=year,
+                          month=month,
                           major=major,
                           location=location,
                           resume_path=NO_INPUT)
-        new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError， save和create等价
+        new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError
         return new_stu
 #        return GOOD_INSERT
     except:

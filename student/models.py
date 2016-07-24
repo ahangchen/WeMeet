@@ -10,7 +10,7 @@ class JobApply(models.Model):
     stu = models.ForeignKey('StuInfo')
     # 职位，on_delete默认为CASCADE，当职位被删除的时候，投递关系级联删除
     job = models.ForeignKey('team.Job')
-    # 投递状态，0表示待查收，1表示面试中，2表示待发offer，3表示已结束
+    # 投递状态，0表示待查看，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
     state = models.IntegerField(default=0)
     # # 学生简历，on_delete默认为CASCADE，当简历被删除的时候，投递关系级联删除
     # resume = models.ForeignKey('Resume')
@@ -40,20 +40,26 @@ class JobApply(models.Model):
 
 class StuInfo(models.Model):
     id = models.AutoField(primary_key=True)
+    # 姓名
     name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 性别，0表示未填，1表示男，2表示女
+    sex = models.IntegerField(default=0)
+    # 出生年份
+    year = models.IntegerField(default=-1)
+    # 出生月份
+    month = models.IntegerField(default=-1)
+    # 学校
     school = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-    tel = models.CharField(max_length=TEL_MAX_LENGTH, blank=True, null=True, default='')
-    mail = models.CharField(max_length=MAIL_MAX_LENGTH, blank=True, null=True, default='')
-    # 头像路径
-    avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
-    # 学历
-    edu_background = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
-    # 年级
-    grade = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
     # 专业
     major = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
     # 所在地
     location = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
+    # 邮箱
+    mail = models.CharField(max_length=MAIL_MAX_LENGTH, blank=True, null=True, default='')
+    # 电话
+    tel = models.CharField(max_length=TEL_MAX_LENGTH, blank=True, null=True, default='')
+    # 头像路径
+    avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
     # 简历文件路径
     resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
 

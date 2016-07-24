@@ -47,6 +47,7 @@ from student.ctrl.tag import OK_REG
 from student.ctrl.tag import REG_FAIL_DB
 from student.ctrl.tag import OK_CHANGE_PWD
 from student.ctrl.tag import OK_RESET_MAIL
+from student.ctrl.tag import OK_GET_INFO
 from student.ctrl.tag import ERR_GET_INFO_DB
 from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
 from student.ctrl.tag import OK_SAVE_AVATAR
@@ -350,41 +351,43 @@ def change_pwd(request):
 def get_info(request):
     """
     获取学生信息
-    成功： 返回err: SUCCEED，头像路径，姓名，学校，学历，年级，专业，所在地，联系方式（tel），邮箱, 简历地址
+    成功： 返回err: SUCCEED，头像路径，姓名，学校, 性别，出生年份，出生月份，年龄，专业，所在地，联系方式（tel），邮箱, 简历地址
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
         stu_id = request.POST.get('id')
-        obj = info.get(stu_id=stu_id)
+        get_rlt = info.get(stu_id=stu_id)
+
+        # 如果获取学生信息成功, 返回前端请求的信息
+        if get_rlt['tag'] == OK_GET_INFO:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'avatar_path': get_rlt['stu'].avatar_path,
+                'name': get_rlt['stu'].name,
+                'school': get_rlt['stu'].school,
+                'sex': get_rlt['stu'].sex,
+                'year': get_rlt['stu'].year,
+                'month': get_rlt['stu'].month,
+                'major': get_rlt['stu'].major,
+                'location': get_rlt['stu'].location,
+                'tel': get_rlt['stu'].tel,
+                'mail': get_rlt['stu'].mail,
+                'resume_path': get_rlt['stu'].resume_path,
+                'age': get_rlt['age']
+            }))
 
         # 如果学生不存在
-        if obj == ERR_GET_INFO_NOTEXIST:
+        elif get_rlt['tag'] == ERR_GET_INFO_NOTEXIST:
             return HttpResponse(json_helper.dumps({
                 'err': ERR_STU_NOTEXIST,
                 'msg': ERR_STU_NOTEXIST_MSG
             }))
 
-        # 如果数据库异常导致无法获取学生信息
-        elif obj == ERR_GET_INFO_DB:
+        # 如果数据库异常导致无法获取学生信息(get_rlt['tag'] == ERR_GET_INFO_DB)
+        else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
                 'msg': FAIL_MSG
-            }))
-
-        # 如果获取学生信息成功, 返回前端请求的信息
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'avatar_path': obj.avatar_path,
-                'name': obj.name,
-                'school': obj.school,
-                'edu_background': obj.edu_background,
-                'grade': obj.grade,
-                'major': obj.major,
-                'location': obj.location,
-                'tel': obj.tel,
-                'mail': obj.mail,
-                'resume_path': obj.resume_path
             }))
 
     # 如果请求的方法是GET
@@ -450,14 +453,15 @@ def update_info(request):
         school = request.POST.get('school')
         major = request.POST.get('major')
         location = request.POST.get('location')
-        edu_background = request.POST.get('edu_background')
-        grade = request.POST.get('grade')
+        sex = request.POST.get('sex')
+        year = request.POST.get('year')
+        month = request.POST.get('month')
         mail = request.POST.get('mail')
         tel = request.POST.get('tel')
 
         tag = info.update(stu_id=stu_id, avatar_path=avatar_path, name=name, school=school,
-                          major=major, location=location, edu_background=edu_background,
-                          grade=grade, mail=mail, tel=tel)
+                          major=major, location=location, sex=sex, year=year,
+                          month=month, mail=mail, tel=tel)
 
         # 如果更新成功
         if tag == OK_UPDATE_STU_INFO:

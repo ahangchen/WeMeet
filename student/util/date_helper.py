@@ -33,3 +33,18 @@ def now():
     date_str = '%s-%s-%s' % (d.year, d.month, d.day)
     return date_str
 
+
+def curr_year():
+    """
+    返回当前年份
+    """
+    return datetime.datetime.now().year
+
+
+def curr_month():
+    """
+    返回当前月份
+    """
+    return datetime.datetime.now().month
+
+

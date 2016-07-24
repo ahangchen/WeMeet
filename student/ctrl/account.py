@@ -70,7 +70,7 @@ def register(acnt, pwd):
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', school='', tel='',
                               mail=acnt, avatar_path=DEFAULT_AVATAR,
-                              edu_background='', grade='', location='', major='')
+                              sex=0, year=-1, month=-1, location='', major='')
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:

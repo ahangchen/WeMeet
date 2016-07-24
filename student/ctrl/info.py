@@ -7,6 +7,7 @@ from student.db.tag import ERR_UPDATE_DB
 from student.db.tag import ERR_UPDATE_NOTEXIST
 from student.db.tag import OK_INSERT
 
+from student.ctrl.tag import OK_GET_INFO
 from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
 from student.ctrl.tag import ERR_GET_INFO_DB
 from student.ctrl.tag import OK_UPDATE_STU_INFO
@@ -32,30 +33,47 @@ from student.ctrl.tag import ERR_GET_SKILL_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
+from student.util.date_helper import curr_year, curr_month
 
 
 def get(stu_id):
     """
     获取学生信息
-     成功：返回学生
-     失败:返回ERR_GET_INFO_NOTEXIST
-           或ERR_GET_INFO_DB
+     成功：返回{'tag': OK_GET_INFO, 'age': age, 'stu': select_rlt['stu']}
+     失败:返回{'tag': ERR_GET_INFO_NOTEXIST}
+           或{'tag': ERR_GET_INFO_DB}
     """
     select_rlt = stu_info.select(stu_id=stu_id)
     # 如果学生存在
     if select_rlt['tag'] == OK_SELECT:
-        return select_rlt['stu']
+        stu = select_rlt['stu']
+
+        # 如果年份或月份不合法
+        if stu.year <= 0 or stu.month not in range(1, 13):
+            age = year = month = -1
+        # 如果年份和月份都合法
+        else:
+            age = curr_year() - stu.year
+            if curr_month() < stu.month:
+                age -= 1
+            year = stu.year
+            month = stu.month
+        return {'tag': OK_GET_INFO,
+                'age': age,
+                'year': year,
+                'month': month,
+                'stu': select_rlt['stu']}
     # 如果学生记录不存在
     elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.error('学生不存在，获取学生信息失败')
-        return ERR_GET_INFO_NOTEXIST
+        return {'tag': ERR_GET_INFO_NOTEXIST}
     # 如果数据库异常导致获取学生信息失败(select_rlt['tag'] == ERR_SELECT_DB)
     else:
         logger.error('数据库异常导致获取学生信息失败')
-        return ERR_GET_INFO_DB
+        return {'tag': ERR_GET_INFO_DB}
 
 
-def update(stu_id, avatar_path, name, school, major, location, edu_background, grade, mail, tel):
+def update(stu_id, avatar_path, name, school, major, location, sex, year, month, mail, tel):
     """
     更新学生信息
     成功：返回OK_UPDATE_INFO
@@ -66,9 +84,9 @@ def update(stu_id, avatar_path, name, school, major, location, edu_background, g
     @school: 学校
     @major: 专业
     @location: 所在地
-    @edu_background: 学历
-    @grade: 年级
-    @mail: 邮箱
+    @sex: 性别
+    @year: 出生年份
+    @month: 出生月份
     @tel: 联系方式
     """
 
@@ -78,8 +96,9 @@ def update(stu_id, avatar_path, name, school, major, location, edu_background, g
                                      school=school,
                                      major=major,
                                      location=location,
-                                     edu_background=edu_background,
-                                     grade=grade,
+                                     sex=int(sex),
+                                     year=int(year),
+                                     month=int(month),
                                      mail=mail,
                                      tel=tel)
 
