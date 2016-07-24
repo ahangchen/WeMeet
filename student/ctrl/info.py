@@ -169,11 +169,11 @@ def get_edu(stu_id):
         if filter_set.count() in range(1, 6):
             edu_list = []
             latest_year = -1
-            major = ''
+            edu_background = -1
             for edu_rcd in filter_set:
-                if edu_rcd.graduation_year >= latest_year:
+                if edu_rcd.background >= edu_background:
                     latest_year = edu_rcd.graduation_year
-                    major = edu_rcd.major
+                    edu_background = edu_rcd.background
                 edu_list.append({'edu_id': edu_rcd.id,
                                  'major': edu_rcd.major,
                                  'graduation_year': edu_rcd.graduation_year,
@@ -181,7 +181,7 @@ def get_edu(stu_id):
                                  'school': edu_rcd.school})
             return {'tag': OK_GET_EDU,
                     'grade': latest_year,
-                    'major': major,
+                    'edu_background': edu_background,
                     'edu_list': edu_list}
 
         # 如果该学生无教育经历

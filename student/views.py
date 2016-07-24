@@ -633,7 +633,7 @@ def get_edu(request):
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
                 'grade': get_rlt['grade'],
-                'major': get_rlt['major'],
+                'edu_background': get_rlt['edu_background'],
                 'edu_list': get_rlt['edu_list']
             }))
 
