@@ -650,7 +650,7 @@
 ```json 
   {
     "err": "0",
-    "msg": "操作成功"
+    "msg": "label_id"
   }
 ``` 
   - 失败
@@ -785,8 +785,14 @@
   {
     "err": "0",
     "res": [
-        "1418659400@qq.com",
-        "cweihang@foxmail.com"
+        {
+        "sid": "1",
+        "mail": "1418659400@qq.com"
+        },
+        {
+        "sid": "2",
+        "mail": "cweihang@foxmail.com"
+        }
         ]
   }
 ``` 
