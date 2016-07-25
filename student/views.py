@@ -100,6 +100,8 @@ from student.ctrl.tag import ERR_DEL_PROJ_DB
 from student.ctrl.tag import OK_ADD_SKILL
 from student.ctrl.tag import ERR_ADD_SKILL_FULL
 from student.ctrl.tag import ERR_ADD_SKILL_DB
+from student.ctrl.tag import OK_UPDATE_SKILL
+from student.ctrl.tag import ERR_UPDATE_SKILL_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1212,6 +1214,39 @@ def get_skill(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_SKILL_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_skill(request):
+    """
+    更新技能评价
+    成功：返回
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        skill_id = request.POST.get('skill_id')
+        name = request.POST.get('name')
+        value = request.POST.get('value')
+
+        update_rlt = info.update_skill(skill_id, stu_id, name, value)
+        # 如果更新技能评价成功
+        if update_rlt['tag'] == OK_UPDATE_SKILL:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致更新技能评价失败(add_rlt['tag'] == ERR_UPDATE_SKILL_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

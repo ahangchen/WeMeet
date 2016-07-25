@@ -52,6 +52,8 @@ from student.ctrl.tag import ERR_DEL_PROJ_DB
 from student.ctrl.tag import OK_ADD_SKILL
 from student.ctrl.tag import ERR_ADD_SKILL_FULL
 from student.ctrl.tag import ERR_ADD_SKILL_DB
+from student.ctrl.tag import OK_UPDATE_SKILL
+from student.ctrl.tag import ERR_UPDATE_SKILL_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -777,6 +779,38 @@ def add_skill(stu_id, name, value):
         logger.error('数据库异常导致无法确认学生是否存在，增加技能评价失败')
         return {'tag': ERR_ADD_PROJ_DB}
 
+
+def update_skill(skill_id, stu_id, name, value):
+    """
+    修改技能评价
+    成功：返回{'tag': OK_UPDATE_SKILL}
+    失败：返回{'tag': ERR_UPDATE_SKILL_DB}
+    @skill_id: 技能评价的id
+    @stu_id:  关联的学生id
+    @name: 技能名称
+    @value: 技能值
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        update_tag = \
+            skill.id_stu_update(skill_id, select_rlt['stu'], name, value)
+
+        # 如果更新成功
+        if update_tag == OK_UPDATE:
+            return {'tag': OK_UPDATE_SKILL}
+        # 如果更新失败
+        else:
+            return {'tag': ERR_UPDATE_SKILL_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试更新不存在的学生的技能评价')
+        return {'tag': ERR_UPDATE_SKILL_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，修改技能评价失败')
+        return {'tag': ERR_UPDATE_SKILL_DB}
 
 
 
