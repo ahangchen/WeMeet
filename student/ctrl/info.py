@@ -40,6 +40,8 @@ from student.ctrl.tag import ERR_ADD_INTERN_FULL
 from student.ctrl.tag import ERR_ADD_INTERN_DB
 from student.ctrl.tag import OK_UPDATE_INTERN
 from student.ctrl.tag import ERR_UPDATE_INTERN_DB
+from student.ctrl.tag import OK_DEL_INTERN
+from student.ctrl.tag import ERR_DEL_INTERN_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -353,11 +355,11 @@ def del_edu(stu_id, edu_id):
             return {'tag': ERR_DEL_EDU_DB}
     # 如果学生不存在
     elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
-        logger.warning('尝试更新不存在的学生的教育经历')
+        logger.warning('尝试删除不存在的学生的教育经历')
         return {'tag': ERR_DEL_EDU_DB}
     # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
     else:
-        logger.error('数据库异常导致无法确认学生是否存在，修改教育经历失败')
+        logger.error('数据库异常导致无法确认学生是否存在，删除教育经历失败')
         return {'tag': ERR_DEL_EDU_DB}
 
 
@@ -476,6 +478,33 @@ def update_intern(intern_id, stu_id, company, position, begin_time, end_time, de
         logger.error('数据库异常导致无法确认学生是否存在，修改实习经历失败')
         return {'tag': ERR_UPDATE_INTERN_DB}
 
+
+def del_intern(stu_id, intern_id):
+    """
+    删除实习经历
+    成功：返回{'tag': OK_DEL_INTERN}
+    失败：返回{'tag': ERR_DEL_INTERN_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        delete_tag = intern.id_stu_delete(intern_id, select_rlt['stu'])
+        if delete_tag == OK_DELETE:
+            return {'tag': OK_DEL_INTERN}
+
+        # delete_tag == ERR_DELETE_DB
+        else:
+            return {'tag': ERR_DEL_INTERN_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试删除不存在的学生的实习经历')
+        return {'tag': ERR_DEL_INTERN_DB}
+
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，删除实习经历失败')
+        return {'tag': ERR_DEL_INTERN_DB}
 
 
 def get_proj(stu_id):

@@ -69,8 +69,34 @@ def id_stu_update(intern_id, stu, company=NO_INPUT, position=NO_INPUT, begin_tim
         return OK_UPDATE
 
     except StuIntern.DoesNotExist:
-        logger.warning("尝试更新学生id和教育经历id不匹配的实习经历")
+        logger.warning("尝试更新学生id和实习经历id不匹配的实习经历")
         return ERR_UPDATE_DB
     except:
         logger.error('数据库异常导致更新实习经历失败')
         return ERR_UPDATE_DB
+
+
+def id_stu_delete(intern_id, stu):
+    """
+    用id和stu删除实习经历
+    成功：返回OK_DELETE
+    失败：返回ERR_DELETE_DB
+    """
+    try:
+        delete_intern = StuIntern.objects.all().get(intern_id=intern_id, stu=stu)  # 抛出MultipleObjectsReturned或DoesNotExist
+        delete_intern.delete()  # 不抛出异常
+        return OK_DELETE
+
+    except StuIntern.DoesNotExist:
+        logger.error('尝试删除学生id和实习经历id不匹配的实习经历')
+        return ERR_DELETE_DB
+
+    except StuIntern.MultipleObjectsReturned:
+        logger.info('数据库异常（存在重复记录）')
+        StuIntern.objects.all().filter(intern_id=intern_id, stu=stu).delete()  # 不抛异常
+        return OK_DELETE
+
+    # 数据库异常
+    except:
+        logger.error('数据库异常导致删除实习经历失败')
+        return ERR_DELETE_DB
