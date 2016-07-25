@@ -116,6 +116,10 @@ def insert(name, school, tel, mail, avatar_path, sex, year, month, major, locati
         return ERR_INSERT_DB
 
 
+def query(stu_id):
+    return StuInfo.objects.filter(id=stu_id)
+
+
 
 
 
