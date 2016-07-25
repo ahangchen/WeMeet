@@ -18,6 +18,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
                                       RESUME_INVALID, RESUME_INVALID_MSG, \
                                       AVATAR_INVALID, AVATAR_INVALID_MSG, \
+                                      ERR_SKILL_FULL, ERR_SKILL_FULL_MSG, \
                                       ERR_PROJ_FULL, ERR_PROJ_FULL_MSG, \
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
@@ -30,7 +31,6 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       NO_EDU, NO_EDU_MSG, \
                                       FAIL, FAIL_MSG, \
                                       SUCCEED
-
 
 
 from student.ctrl.tag import ERR_ACTIVATE_DB
@@ -97,6 +97,9 @@ from student.ctrl.tag import OK_UPDATE_PROJ
 from student.ctrl.tag import ERR_UPDATE_PROJ_DB
 from student.ctrl.tag import OK_DEL_PROJ
 from student.ctrl.tag import ERR_DEL_PROJ_DB
+from student.ctrl.tag import OK_ADD_SKILL
+from student.ctrl.tag import ERR_ADD_SKILL_FULL
+from student.ctrl.tag import ERR_ADD_SKILL_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1085,6 +1088,7 @@ def del_proj(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
 @csrf_exempt
 def get_works(request):
     """
@@ -1118,6 +1122,51 @@ def get_works(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_WORKS_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def add_skill(request):
+    """
+    增加技能评价
+    成功：返回{
+                'err': SUCCEED,
+                'skill_id': add_rlt['skill_id']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        name = request.POST.get('name')
+        value = request.POST.get('value')
+
+        add_rlt = info.add_skill(stu_id, name, value)
+        # 如果增加技能评价成功
+        if add_rlt['tag'] == OK_ADD_SKILL:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'skill_id': add_rlt['skill_id']
+            }))
+
+        # 如果技能评价已达上限
+        elif add_rlt['tag'] == ERR_ADD_SKILL_FULL:
+            return HttpResponse(json_helper.dumps({
+                'err': ERR_SKILL_FULL,
+                'msg': ERR_SKILL_FULL_MSG
+            }))
+
+        # 如果数据库异常导致增加技能评价失败(add_rlt['tag'] == ERR_ADD_SKILL_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
