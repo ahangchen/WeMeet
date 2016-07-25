@@ -425,7 +425,8 @@ def add_intern(stu_id, company, position, begin_time, end_time, description):
                                        end_time=end_time, description=description, stu=select_rlt['stu'])
             # 如果插入成功：
             if insert_rlt['tag'] == OK_INSERT:
-                return {'tag': OK_ADD_INTERN}
+                return {'tag': OK_ADD_INTERN,
+                        'intern_id': insert_rlt['intern'].intern_id}
             # 如果插入失败（insert_rlt['tag'] == ERR_INSERT_DB）
             else:
                 return {'tag': ERR_ADD_INTERN_DB}

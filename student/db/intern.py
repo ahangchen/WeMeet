@@ -37,7 +37,7 @@ def insert(company, position, begin_time, end_time, description, stu):
 
         new_intern.save()
         return {'tag': OK_INSERT,
-                'edu': new_intern}
+                'intern': new_intern}
     except:
         logger.error('数据库异常导致插入实习经历记录失败')
         return {'tag': ERR_INSERT_DB}

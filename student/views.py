@@ -767,7 +767,10 @@ def del_edu(request):
 def add_intern(request):
     """
     增加实习经历
-    成功：返回{'err': SUCCEED}
+    成功：返回{
+                'err': SUCCEED,
+                'intern_id': add_rlt['intern_id']
+            }
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
@@ -781,7 +784,10 @@ def add_intern(request):
         add_rlt = info.add_intern(stu_id, company, position, begin_time, end_time, description)
         # 如果增加实习经历成功
         if add_rlt['tag'] == OK_ADD_INTERN:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'intern_id': add_rlt['intern_id']
+            }))
 
         # 如果实习经历已达上限
         elif add_rlt['tag'] == ERR_ADD_INTERN_FULL:
