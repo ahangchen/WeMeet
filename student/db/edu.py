@@ -190,7 +190,7 @@ def id_stu_delete(edu_id, stu):
 
     except StuEdu.MultipleObjectsReturned:
         logger.info('数据库异常（存在重复记录）')
-        StuEdu.objects.all().filter(id=edu_id).delete()  # 不抛异常
+        StuEdu.objects.all().filter(id=edu_id, stu=stu).delete()  # 不抛异常
         return OK_DELETE
 
     # 数据库异常
