@@ -14,6 +14,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       ERR_STU_NOTEXIST, ERR_STU_NOTEXIST_MSG, \
                                       ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG, \
                                       ERR_MULTI_APPLY, ERR_MULTI_APPLY_MSG, \
+                                      ERR_INTERN_FULL, ERR_INTERN_FULL_MSG, \
                                       ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
                                       RESUME_INVALID, RESUME_INVALID_MSG, \
                                       AVATAR_INVALID, AVATAR_INVALID_MSG, \
@@ -81,6 +82,9 @@ from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
 from student.ctrl.tag import OK_UPDATE_EDU
 from student.ctrl.tag import OK_DEL_EDU
+from student.ctrl.tag import OK_ADD_INTERN
+from student.ctrl.tag import ERR_ADD_INTERN_FULL
+from student.ctrl.tag import ERR_ADD_INTERN_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -718,6 +722,48 @@ def update_edu(request):
 
 
 @csrf_exempt
+def add_intern(request):
+    """
+    增加实习经历
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        company = request.POST.get('company')
+        position = request.POST.get('position')
+        begin_time = request.POST.get('begin_time')
+        end_time = request.POST.get('end_time')
+        description = request.POST.get('description')
+
+        add_rlt = info.add_intern(stu_id, company, position, begin_time, end_time, description)
+        # 如果增加实习经历成功
+        if add_rlt['tag'] == OK_ADD_INTERN:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果实习经历已达上限
+        elif add_rlt['tag'] == ERR_ADD_INTERN_FULL:
+            return HttpResponse(json_helper.dumps({
+                'err': ERR_INTERN_FULL,
+                'msg': ERR_INTERN_FULL_MSG
+            }))
+
+        # 如果数据库异常导致增加实习经历失败(add_rlt['tag'] == ERR_ADD_INTERN_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
 def del_edu(request):
     """
     删除教育经历
@@ -753,6 +799,7 @@ def del_edu(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
+
 
 @csrf_exempt
 def get_intern(request):

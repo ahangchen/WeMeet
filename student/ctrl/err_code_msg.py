@@ -42,9 +42,6 @@ NO_RESUME_MSG = '未上传简历'
 ERR_MULTI_APPLY = '-16'  # 用在简历投递
 ERR_MULTI_APPLY_MSG = '多次投递同一职位'
 
-ERR_EDU_FULL = '-123' # 用在增加教育经历
-ERR_EDU_FULL_MSG = '教育经历已达上限'
-
 NO_EDU = '-118'  # 用在获取教育经历
 NO_EDU_MSG = '无教育经历'
 
@@ -59,6 +56,13 @@ NO_WORKS_MSG = '无作品集'
 
 NO_SKILL = '-122'  # 用在获取技能评价
 NO_SKILL_MSG = '无技能评价'
+
+ERR_EDU_FULL = '-123' # 用在增加教育经历
+ERR_EDU_FULL_MSG = '教育经历已达上限'
+
+ERR_INTERN_FULL = '-124' # 用在增加实习经历
+ERR_INTERN_FULL_MSG = '实习经历已达上限'
+
 
 
 

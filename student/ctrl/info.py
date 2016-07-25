@@ -35,6 +35,9 @@ from student.ctrl.tag import OK_UPDATE_EDU
 from student.ctrl.tag import ERR_UPDATE_EDU_DB
 from student.ctrl.tag import OK_DEL_EDU
 from student.ctrl.tag import ERR_DEL_EDU_DB
+from student.ctrl.tag import OK_ADD_INTERN
+from student.ctrl.tag import ERR_ADD_INTERN_FULL
+from student.ctrl.tag import ERR_ADD_INTERN_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -397,6 +400,43 @@ def get_intern(stu_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，查询实习经历失败')
         return {'tag': ERR_GET_INTERN_DB}
+
+
+def add_intern(stu_id, company, position, begin_time, end_time, description):
+    """
+    增加实习经历
+    @stu_id: 关联的学生id
+    @company: 公司
+    @position: 职位
+    @begin_time: 开始时间
+    @end_time: 结束时间
+    @description: 描述
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        # 如果实习经历未达五条
+        if intern.stu_filter(stu=select_rlt['stu']).count() < 5:
+            insert_rlt = intern.insert(company=company, position=position, begin_time=begin_time,
+                                       end_time=end_time, description=description, stu=select_rlt['stu'])
+            # 如果插入成功：
+            if insert_rlt['tag'] == OK_INSERT:
+                return {'tag': OK_ADD_INTERN}
+            # 如果插入失败（insert_rlt['tag'] == ERR_INSERT_DB）
+            else:
+                return {'tag': ERR_ADD_INTERN_DB}
+        # 如果实习经历已有五条或更多
+        else:
+            return {'tag': ERR_ADD_INTERN_FULL}
+
+    # 如果学生记录不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试为不存在的学生增加实习经历')
+        return {'tag': ERR_ADD_INTERN_DB}
+    # 如果数据库异常导致获取学生信息失败(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，增加实习经历失败')
+        return {'tag': ERR_ADD_INTERN_DB}
 
 
 def get_proj(stu_id):
