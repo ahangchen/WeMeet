@@ -80,6 +80,7 @@ from student.ctrl.tag import OK_GET_SKILL
 from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
 from student.ctrl.tag import OK_UPDATE_EDU
+from student.ctrl.tag import OK_DEL_EDU
 
 
 # from student.util.tag import NO_INPUT
@@ -715,6 +716,43 @@ def update_edu(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
+@csrf_exempt
+def del_edu(request):
+    """
+    删除教育经历
+    成功:返回{
+                'err': SUCCEED,
+                'grade': del_rlt['grade'],
+                'edu_background': del_rlt['edu_background']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        edu_id = request.POST.get('edu_id')
+
+        del_rlt = info.del_edu(stu_id=stu_id, edu_id=edu_id)
+        # 如果删除成功
+        if del_rlt['tag'] == OK_DEL_EDU:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'grade': del_rlt['grade'],
+                'edu_background': del_rlt['edu_background']
+            }))
+        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_EDU_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 @csrf_exempt
 def get_intern(request):

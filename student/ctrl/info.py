@@ -6,6 +6,7 @@ from student.db.tag import OK_UPDATE
 from student.db.tag import ERR_UPDATE_DB
 from student.db.tag import ERR_UPDATE_NOTEXIST
 from student.db.tag import OK_INSERT
+from student.db.tag import OK_DELETE
 
 from student.ctrl.tag import OK_GET_INFO
 from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
@@ -32,6 +33,8 @@ from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
 from student.ctrl.tag import OK_UPDATE_EDU
 from student.ctrl.tag import ERR_UPDATE_EDU_DB
+from student.ctrl.tag import OK_DEL_EDU
+from student.ctrl.tag import ERR_DEL_EDU_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -256,6 +259,8 @@ def update_edu(stu_id, edu_id, major, graduation_year, edu_background, school):
     if select_rlt['tag'] == OK_SELECT:
         edu_select_rlt = edu.select(edu_id)
         if edu_select_rlt['tag'] != OK_SELECT:
+            logger.warning('尝试删除不存在的教育经历记录')
+            logger.error('获取原先的教育经历信息失败，导致更新教育经历失败')
             return {'tag': ERR_UPDATE_EDU_DB}
 
         pre_edu = edu_select_rlt['edu']
@@ -276,9 +281,12 @@ def update_edu(stu_id, edu_id, major, graduation_year, edu_background, school):
             else:
                 logger.error('数据库异常无法获取学生信息中的grade和edu_background，导致更新教育经历失败')
                 # 回滚
-                edu.update(edu_id, major=pre_edu.major, graduation_year=pre_edu.graduation_year,
-                            background=pre_edu.background, school=pre_edu.school)
+                roll_tag = edu.update(edu_id, major=pre_edu.major, graduation_year=pre_edu.graduation_year,
+                                      background=pre_edu.background, school=pre_edu.school)
+                if roll_tag != OK_UPDATE:
+                    logger.error("获取grade和edu_background失败，但无法恢复已更新的教育经历")
                 return {'tag': ERR_ADD_EDU_DB}
+        # 如果更新失败
         else:
             return {'tag': ERR_UPDATE_EDU_DB}
 
@@ -290,6 +298,62 @@ def update_edu(stu_id, edu_id, major, graduation_year, edu_background, school):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，修改教育经历失败')
         return {'tag': ERR_UPDATE_EDU_DB}
+
+
+def del_edu(stu_id, edu_id):
+    """
+    删除教育经历
+    成功：返回{'tag': OK_DEL_EDU,
+                        'grade': get_rlt['grade'],
+                        'edu_background': get_rlt['edu_background']}
+    失败：返回{'tag': ERR_DEL_EDU_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        # 保留原先的记录信息
+        edu_select_rlt = edu.select(edu_id)
+        # 如果获取原先的记录信息失败
+        if edu_select_rlt['tag'] != OK_SELECT:
+            logger.warning('尝试删除不存在的教育经历记录')
+            logger.error('获取原先的教育经历失败，导致删除教育经历失败')
+            return {'tag': ERR_DEL_EDU_DB}
+
+        # 如果获取原先的记录信息成功
+        pre_edu = edu_select_rlt['edu']
+
+        # 删除
+        del_tag = edu.id_stu_delete(edu_id=edu_id, stu=select_rlt['stu'])
+        # 如果删除成功
+        if del_tag == OK_DELETE:
+            get_rlt = get_edu(stu_id)
+            # 如果获取教育经历列表成功
+            if get_rlt['tag'] == OK_GET_EDU:
+                return {'tag': OK_DEL_EDU,
+                        'grade': get_rlt['grade'],
+                        'edu_background': get_rlt['edu_background']}
+
+            # 如果获取教育经历列表失败
+            else:
+                logger.error('数据库异常无法获取学生信息中的grade和edu_background，导致删除教育经历失败')
+                # 回滚
+                roll_rlt = edu.id_insert(edu_id=edu_id, major=pre_edu.major, graduation_year=pre_edu.graduation_year,
+                                         background=pre_edu.background, school=pre_edu.school, stu=select_rlt['stu'])
+                if roll_rlt['tag'] != OK_INSERT:
+                    logger.error('获取学生信息中的grade和edu_background失败，但无法恢复已删除的教育信息记录')
+                return {'tag': ERR_DEL_EDU_DB}
+
+        # 如果删除失败
+        else:
+            return {'tag': ERR_DEL_EDU_DB}
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试更新不存在的学生的教育经历')
+        return {'tag': ERR_DEL_EDU_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，修改教育经历失败')
+        return {'tag': ERR_DEL_EDU_DB}
 
 
 def get_intern(stu_id):
