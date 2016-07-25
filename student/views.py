@@ -18,6 +18,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       ERR_VALID_CODE, ERR_VALID_CODE_MSG, \
                                       RESUME_INVALID, RESUME_INVALID_MSG, \
                                       AVATAR_INVALID, AVATAR_INVALID_MSG, \
+                                      ERR_PROJ_FULL, ERR_PROJ_FULL_MSG, \
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                       ERR_METHOD, ERR_METHOD_MSG, \
@@ -89,6 +90,9 @@ from student.ctrl.tag import OK_UPDATE_INTERN
 from student.ctrl.tag import ERR_UPDATE_INTERN_DB
 from student.ctrl.tag import OK_DEL_INTERN
 from student.ctrl.tag import ERR_DEL_INTERN_DB
+from student.ctrl.tag import OK_ADD_PROJ
+from student.ctrl.tag import ERR_ADD_PROJ_FULL
+from student.ctrl.tag import ERR_ADD_PROJ_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -812,6 +816,46 @@ def add_intern(request):
 
 
 @csrf_exempt
+def get_intern(request):
+    """
+    获取实习经历
+    成功：返回{'err': SUCCEED, 'intern_list': get_rlt['intern_list']}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = info.get_intern(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_INTERN:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'intern_list': get_rlt['intern_list']
+            }))
+
+        # 如果该学生没有实习经历
+        elif get_rlt['tag'] == ERR_GET_NO_INTERN:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_INTERN,
+                'msg': NO_INTERN_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_INTERN_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
 def update_intern(request):
     """
     更新实习经历
@@ -879,31 +923,38 @@ def del_intern(request):
 
 
 @csrf_exempt
-def get_intern(request):
+def add_proj(request):
     """
-    获取实习经历
-    成功：返回{'err': SUCCEED, 'intern_list': get_rlt['intern_list']}
+    增加项目经历
+    成功：返回{
+                'err': SUCCEED,
+                'proj_id': add_rlt['proj_id']
+            }
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_intern(stu_id)
+        name = request.POST.get('name')
+        duty = request.POST.get('duty')
+        year = request.POST.get('year')
+        description = request.POST.get('description')
 
-        # 如果获取成功
-        if get_rlt['tag'] == OK_GET_INTERN:
+        add_rlt = info.add_proj(stu_id, name, duty, year, description)
+        # 如果增加项目经历成功
+        if add_rlt['tag'] == OK_ADD_PROJ:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
-                'intern_list': get_rlt['intern_list']
+                'proj_id': add_rlt['proj_id']
             }))
 
-        # 如果该学生没有实习经历
-        elif get_rlt['tag'] == ERR_GET_NO_INTERN:
+        # 如果项目经历已达上限
+        elif add_rlt['tag'] == ERR_ADD_PROJ_FULL:
             return HttpResponse(json_helper.dumps({
-                'err': NO_INTERN,
-                'msg': NO_INTERN_MSG
+                'err': ERR_PROJ_FULL,
+                'msg': ERR_PROJ_FULL_MSG
             }))
 
-        # get_rlt['tag'] == ERR_GET_INTERN_DB
+        # 如果数据库异常导致增加项目经历失败(add_rlt['tag'] == ERR_ADD_PROJ_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

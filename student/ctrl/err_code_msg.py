@@ -63,6 +63,8 @@ ERR_EDU_FULL_MSG = '教育经历已达上限'
 ERR_INTERN_FULL = '-124' # 用在增加实习经历
 ERR_INTERN_FULL_MSG = '实习经历已达上限'
 
+ERR_PROJ_FULL = '-125' # 用在增加项目经历
+ERR_PROJ_FULL_MSG = '项目经历已达上限'
 
 
 
