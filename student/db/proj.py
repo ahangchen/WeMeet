@@ -72,3 +72,29 @@ def id_stu_update(proj_id, stu, name=NO_INPUT, duty=NO_INPUT, year=NO_INPUT, des
     except:
         logger.error('数据库异常导致更新项目经历失败')
         return ERR_UPDATE_DB
+
+
+def id_stu_delete(proj_id, stu):
+    """
+    用id和stu删除项目经历
+    成功：返回OK_DELETE
+    失败：返回ERR_DELETE_DB
+    """
+    try:
+        delete_proj = StuProj.objects.all().get(proj_id=proj_id, stu=stu)  # 抛出MultipleObjectsReturned或DoesNotExist
+        delete_proj.delete()  # 不抛出异常
+        return OK_DELETE
+
+    except StuProj.DoesNotExist:
+        logger.error('尝试删除学生id和项目经历id不匹配的项目经历')
+        return ERR_DELETE_DB
+
+    except StuProj.MultipleObjectsReturned:
+        logger.info('数据库异常（存在重复记录）')
+        StuProj.objects.all().filter(intern_id=proj_id, stu=stu).delete()  # 不抛异常
+        return OK_DELETE
+
+    # 数据库异常
+    except:
+        logger.error('数据库异常导致删除项目经历失败')
+        return ERR_DELETE_DB

@@ -95,6 +95,8 @@ from student.ctrl.tag import ERR_ADD_PROJ_FULL
 from student.ctrl.tag import ERR_ADD_PROJ_DB
 from student.ctrl.tag import OK_UPDATE_PROJ
 from student.ctrl.tag import ERR_UPDATE_PROJ_DB
+from student.ctrl.tag import OK_DEL_PROJ
+from student.ctrl.tag import ERR_DEL_PROJ_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1052,6 +1054,36 @@ def update_proj(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
+@csrf_exempt
+def del_proj(request):
+    """
+    删除项目经历
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        proj_id = request.POST.get('proj_id')
+
+        del_rlt = info.del_proj(stu_id=stu_id, proj_id=proj_id)
+        # 如果删除成功
+        if del_rlt['tag'] == OK_DEL_PROJ:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 @csrf_exempt
 def get_works(request):
