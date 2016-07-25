@@ -45,6 +45,8 @@ from student.ctrl.tag import ERR_DEL_INTERN_DB
 from student.ctrl.tag import OK_ADD_PROJ
 from student.ctrl.tag import ERR_ADD_PROJ_FULL
 from student.ctrl.tag import ERR_ADD_PROJ_DB
+from student.ctrl.tag import OK_UPDATE_PROJ
+from student.ctrl.tag import ERR_UPDATE_PROJ_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -590,6 +592,41 @@ def add_proj(stu_id, name, duty, year, description):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，增加项目经历失败')
         return {'tag': ERR_ADD_PROJ_DB}
+
+
+def update_proj(proj_id, stu_id, name, duty, year, description):
+    """
+    修改项目经历
+    成功：返回{'tag': OK_UPDATE_PROJ}
+    失败：返回{'tag': ERR_UPDATE_PROJ_DB}
+    @proj_id: 项目记录的id
+    @stu_id:  关联的学生id
+    @name: 项目名称
+    @duty: 职责
+    @year: 年份
+    @description:  描述
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        update_tag = \
+            proj.id_stu_update(proj_id, select_rlt['stu'], name, duty, year, description)
+
+        # 如果更新成功
+        if update_tag == OK_UPDATE:
+            return {'tag': OK_UPDATE_PROJ}
+        # 如果更新失败
+        else:
+            return {'tag': ERR_UPDATE_PROJ_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试更新不存在的学生的项目经历')
+        return {'tag': ERR_UPDATE_PROJ_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，修改项目经历失败')
+        return {'tag': ERR_UPDATE_PROJ_DB}
 
 
 def get_works(stu_id):

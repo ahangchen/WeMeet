@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^info/intern/del/$', views.del_intern),
     url(r'^info/proj/add/$', views.add_proj),
     url(r'^info/proj/get/$', views.get_proj),
+    url(r'^info/proj/update/$', views.update_proj),
     url(r'^info/works/get/$', views.get_works),
     url(r'^info/skill/get/$', views.get_skill),
     url(r'^$', views.post),

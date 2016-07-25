@@ -11,6 +11,7 @@ from student.db.tag import OK_SELECT
 
 from student.models import StuProj
 from student.util.logger import logger
+from student.util.value_update import value, NO_INPUT
 
 
 def stu_filter(stu):
@@ -40,3 +41,34 @@ def insert(name, duty, year, description, stu):
     except:
         logger.error('数据库异常导致插入项目经历记录失败')
         return {'tag': ERR_INSERT_DB}
+
+
+def id_stu_update(proj_id, stu, name=NO_INPUT, duty=NO_INPUT, year=NO_INPUT, description=NO_INPUT):
+    """
+    用proj_id和stu更新项目经历
+    成功：返回OK_UPDATE
+    失败：返回ERR_UPDATE_DB
+    @proj_id: 项目id
+    @stu: 关联的学生
+    @name: 项目名称
+    @duty: 职责
+    @year: 年份
+    @description: 描述
+    """
+    try:
+        update_proj = StuProj.objects.all().get(proj_id= proj_id, stu=stu)
+
+        update_proj.name = value(update_proj.name, name)
+        update_proj.duty = value(update_proj.duty, duty)
+        update_proj.year = value(update_proj.year, year)
+        update_proj.description = value(update_proj.description, description)
+
+        update_proj.save()
+        return OK_UPDATE
+
+    except StuProj.DoesNotExist:
+        logger.warning("尝试更新学生id和项目经历id不匹配的项目经历")
+        return ERR_UPDATE_DB
+    except:
+        logger.error('数据库异常导致更新项目经历失败')
+        return ERR_UPDATE_DB

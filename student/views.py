@@ -93,6 +93,8 @@ from student.ctrl.tag import ERR_DEL_INTERN_DB
 from student.ctrl.tag import OK_ADD_PROJ
 from student.ctrl.tag import ERR_ADD_PROJ_FULL
 from student.ctrl.tag import ERR_ADD_PROJ_DB
+from student.ctrl.tag import OK_UPDATE_PROJ
+from student.ctrl.tag import ERR_UPDATE_PROJ_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1002,6 +1004,41 @@ def get_proj(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_PROJ_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_proj(request):
+    """
+    更新项目经历
+    成功：返回
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        proj_id = request.POST.get('proj_id')
+        name = request.POST.get('name')
+        duty = request.POST.get('duty')
+        year = request.POST.get('year')
+        description = request.POST.get('description')
+
+        update_rlt = info.update_proj(proj_id, stu_id, name, duty, year, description)
+        # 如果更新项目经历成功
+        if update_rlt['tag'] == OK_UPDATE_PROJ:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致更新项目经历失败(add_rlt['tag'] == ERR_UPDATE_PROJ_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
