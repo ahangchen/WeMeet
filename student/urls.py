@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^info/skill/add/$', views.add_skill),
     url(r'^info/skill/get/$', views.get_skill),
     url(r'^info/skill/update/$', views.update_skill),
+    url(r'^info/skill/del/$', views.del_skill),
     url(r'^$', views.post),
 ]

@@ -54,6 +54,8 @@ from student.ctrl.tag import ERR_ADD_SKILL_FULL
 from student.ctrl.tag import ERR_ADD_SKILL_DB
 from student.ctrl.tag import OK_UPDATE_SKILL
 from student.ctrl.tag import ERR_UPDATE_SKILL_DB
+from student.ctrl.tag import OK_DEL_SKILL
+from student.ctrl.tag import ERR_DEL_SKILL_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -811,6 +813,34 @@ def update_skill(skill_id, stu_id, name, value):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，修改技能评价失败')
         return {'tag': ERR_UPDATE_SKILL_DB}
+
+
+def del_skill(stu_id, skill_id):
+    """
+    删除技能评价
+    成功：返回{'tag': OK_DEL_SKILL}
+    失败：返回{'tag': ERR_DEL_SKILL_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        delete_tag = skill.id_stu_delete(skill_id, select_rlt['stu'])
+        if delete_tag == OK_DELETE:
+            return {'tag': OK_DEL_SKILL}
+
+        # delete_tag == ERR_DELETE_DB
+        else:
+            return {'tag': ERR_DEL_SKILL_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试删除不存在的学生的技能评价')
+        return {'tag': ERR_DEL_SKILL_DB}
+
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，删除技能评价失败')
+        return {'tag': ERR_DEL_SKILL_DB}
 
 
 
