@@ -85,6 +85,8 @@ from student.ctrl.tag import OK_DEL_EDU
 from student.ctrl.tag import OK_ADD_INTERN
 from student.ctrl.tag import ERR_ADD_INTERN_FULL
 from student.ctrl.tag import ERR_ADD_INTERN_DB
+from student.ctrl.tag import OK_UPDATE_INTERN
+from student.ctrl.tag import ERR_UPDATE_INTERN_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -749,6 +751,42 @@ def add_intern(request):
             }))
 
         # 如果数据库异常导致增加实习经历失败(add_rlt['tag'] == ERR_ADD_INTERN_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_intern(request):
+    """
+    更新实习经历
+    成功：返回
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        intern_id = request.POST.get('intern_id')
+        company = request.POST.get('company')
+        position = request.POST.get('position')
+        begin_time = request.POST.get('begin_time')
+        end_time = request.POST.get('end_time')
+        description = request.POST.get('description')
+
+        update_rlt = info.update_intern(intern_id, stu_id, company, position, begin_time, end_time, description)
+        # 如果更新实习经历成功
+        if update_rlt['tag'] == OK_UPDATE_INTERN:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致更新实习经历失败(add_rlt['tag'] == ERR_UPDATE_INTERN_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

@@ -38,6 +38,8 @@ from student.ctrl.tag import ERR_DEL_EDU_DB
 from student.ctrl.tag import OK_ADD_INTERN
 from student.ctrl.tag import ERR_ADD_INTERN_FULL
 from student.ctrl.tag import ERR_ADD_INTERN_DB
+from student.ctrl.tag import OK_UPDATE_INTERN
+from student.ctrl.tag import ERR_UPDATE_INTERN_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -262,7 +264,7 @@ def update_edu(stu_id, edu_id, major, graduation_year, edu_background, school):
     if select_rlt['tag'] == OK_SELECT:
         edu_select_rlt = edu.select(edu_id)
         if edu_select_rlt['tag'] != OK_SELECT:
-            logger.warning('尝试删除不存在的教育经历记录')
+            logger.warning('尝试更新不存在的教育经历记录')
             logger.error('获取原先的教育经历信息失败，导致更新教育经历失败')
             return {'tag': ERR_UPDATE_EDU_DB}
 
@@ -437,6 +439,43 @@ def add_intern(stu_id, company, position, begin_time, end_time, description):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，增加实习经历失败')
         return {'tag': ERR_ADD_INTERN_DB}
+
+
+def update_intern(intern_id, stu_id, company, position, begin_time, end_time, description):
+    """
+    修改实习经历
+    成功：返回{'tag': OK_UPDATE_INTERN}
+    失败：返回{'tag': ERR_UPDATE_INTERN_DB}
+    @intern_id: 实习记录的id
+    @stu_id:  关联的学生id
+    @company: 公司
+    @position: 职位
+    @begin_time: 开始时间
+    @end_time:  结束时间
+    @description:  描述
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        update_tag = \
+            intern.id_stu_update(intern_id, select_rlt['stu'], company, position, begin_time, end_time, description)
+
+        # 如果更新成功
+        if update_tag == OK_UPDATE:
+            return {'tag': OK_UPDATE_INTERN}
+        # 如果更新失败
+        else:
+            return {'tag': ERR_UPDATE_INTERN_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试更新不存在的学生的实习经历')
+        return {'tag': ERR_UPDATE_INTERN_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，修改实习经历失败')
+        return {'tag': ERR_UPDATE_INTERN_DB}
+
 
 
 def get_proj(stu_id):
