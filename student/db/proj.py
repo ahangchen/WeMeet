@@ -91,7 +91,7 @@ def id_stu_delete(proj_id, stu):
 
     except StuProj.MultipleObjectsReturned:
         logger.info('数据库异常（存在重复记录）')
-        StuProj.objects.all().filter(intern_id=proj_id, stu=stu).delete()  # 不抛异常
+        StuProj.objects.all().filter(proj_id=proj_id, stu=stu).delete()  # 不抛异常
         return OK_DELETE
 
     # 数据库异常
