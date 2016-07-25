@@ -30,6 +30,8 @@ from student.ctrl.tag import ERR_GET_WORKS_DB
 from student.ctrl.tag import OK_GET_SKILL
 from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
+from student.ctrl.tag import OK_UPDATE_EDU
+from student.ctrl.tag import ERR_UPDATE_EDU_DB
 
 from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -147,8 +149,22 @@ def add_edu(stu_id, major, graduation_year, background, school):
                                     background=background, school=school, stu=select_rlt['stu'])
             # 如果插入成功：
             if insert_rlt['tag'] == OK_INSERT:
-                return {'tag': OK_ADD_EDU,
-                        'edu_id': insert_rlt['edu'].id}
+                edu_id = insert_rlt['edu'].id
+                get_rlt = get_edu(stu_id)
+                # 如果获取教育经历列表成功
+                if get_rlt['tag'] == OK_GET_EDU:
+                    return {'tag': OK_ADD_EDU,
+                            'edu_id': edu_id,
+                            'grade': get_rlt['grade'],
+                            'edu_background': get_rlt['edu_background']}
+
+                # 如果获取教育经历列表失败
+                else:
+                    logger.error('数据库异常无法获取学生信息中的grade和edu_background，导致增加教育经历失败')
+                    # 回滚
+                    edu.delete(edu_id)
+                    return {'tag': ERR_ADD_EDU_DB}
+
             # 如果插入失败（insert_rlt['tag'] == ERR_INSERT_DB）
             else:
                 return {'tag': ERR_ADD_EDU_DB}
@@ -219,6 +235,61 @@ def get_edu(stu_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，查询教育经历失败')
         return {'tag': ERR_GET_EDU_DB}
+
+
+def update_edu(stu_id, edu_id, major, graduation_year, edu_background, school):
+    """
+    修改教育经历
+    成功：返回{'tag': OK_UPDATE_EDU,
+                        'grade': get_rlt['grade'],
+                        'edu_background': get_rlt['edu_background']}
+    失败：返回{'tag': ERR_UPDATE_EDU_DB}
+    @stu_id: 学生id
+    @edu_id: 教育经历记录的id
+    @major: 专业
+    @graduation_year: 毕业年份
+    @edu_background: 学历
+    @school: 学校
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        edu_select_rlt = edu.select(edu_id)
+        if edu_select_rlt['tag'] != OK_SELECT:
+            return {'tag': ERR_UPDATE_EDU_DB}
+
+        pre_edu = edu_select_rlt['edu']
+
+        update_tag = \
+            edu.id_stu_update(edu_id, select_rlt['stu'], major, int(graduation_year), int(edu_background), school)
+
+        # 如果更新成功
+        if update_tag == OK_UPDATE:
+            get_rlt = get_edu(stu_id)
+            # 如果获取教育经历列表成功
+            if get_rlt['tag'] == OK_GET_EDU:
+                return {'tag': OK_UPDATE_EDU,
+                        'grade': get_rlt['grade'],
+                        'edu_background': get_rlt['edu_background']}
+
+            # 如果获取教育经历列表失败
+            else:
+                logger.error('数据库异常无法获取学生信息中的grade和edu_background，导致更新教育经历失败')
+                # 回滚
+                edu.update(edu_id, major=pre_edu.major, graduation_year=pre_edu.graduation_year,
+                            background=pre_edu.background, school=pre_edu.school)
+                return {'tag': ERR_ADD_EDU_DB}
+        else:
+            return {'tag': ERR_UPDATE_EDU_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试更新不存在的学生的教育经历')
+        return {'tag': ERR_UPDATE_EDU_DB}
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，修改教育经历失败')
+        return {'tag': ERR_UPDATE_EDU_DB}
 
 
 def get_intern(stu_id):
@@ -386,32 +457,6 @@ def get_skill(stu_id):
 
 
 
-
-# def update_info(stu_id, name=NO_INPUT, school=NO_INPUT, tel=NO_INPUT, mail=NO_INPUT, avatar=NO_INPUT):
-#     if get(stu_id) != ERROR_SELECT_DOESNOTEXIST:
-#         if avatar != NO_INPUT:
-#             if check_avatar_file(avatar):
-#                 avatar_path = get_avatar_path(file_name=stu_id,
-#                                               file_type=get_file_type(avatar.name))  # use stu_id as avatar file name
-#
-#                 if not save_avatar(avatar, avatar_path):  # if failed to save avatar
-#                     return ERROR_AVATAR_SAVE_FAILED
-#
-#             else:  # if avatar file is invalid
-#                 return ERROR_AVATAR_FILE_INVALID
-#
-#     # if avatar == NO_INPUT or stu_id exists
-#     avatar_path = NO_INPUT
-#
-#     tag = update(stu_id=stu_id,
-#                  name=name,
-#                  school=school,
-#                  tel=tel,
-#                  mail=mail,
-#                  avatar_path=avatar_path,)
-#     if tag == GOOD_UPDATE:
-#         return GOOD_UPDATE_INFO
-#     return ERROR_UPDATE_INFO
 
 
 

@@ -79,6 +79,7 @@ from student.ctrl.tag import ERR_GET_WORKS_DB
 from student.ctrl.tag import OK_GET_SKILL
 from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
+from student.ctrl.tag import OK_UPDATE_EDU
 
 
 # from student.util.tag import NO_INPUT
@@ -571,8 +572,14 @@ def job_apply(request):
 @csrf_exempt
 def add_edu(request):
     """
-    @param request:
-    @return:
+    增加教育经历
+    成功：返回：{
+                'err': SUCCEED,
+                'edu_id': add_rlt['edu_id'],
+                'grade': add_rlt['grade'],
+                'edu_background': add_rlt['edu_background']
+            }
+    失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
@@ -586,7 +593,9 @@ def add_edu(request):
         if add_rlt['tag'] == OK_ADD_EDU:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
-                'edu_id': add_rlt['edu_id']
+                'edu_id': add_rlt['edu_id'],
+                'grade': add_rlt['grade'],
+                'edu_background': add_rlt['edu_background']
             }))
 
         # 如果教育经历已达上限
@@ -649,6 +658,50 @@ def get_edu(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_EDU_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_edu(request):
+    """
+    更新教育经历
+    成功：返回{
+                'err': SUCCEED,
+                'edu_id': update_rlt['edu_id'],
+                'grade': update_rlt['grade'],
+                'edu_background': update_rlt['edu_background']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        edu_id = request.POST.get('edu_id')
+        major = request.POST.get('major')
+        graduation_year = request.POST.get('graduation_year')
+        background = request.POST.get('edu_background')
+        school = request.POST.get('school')
+
+        update_rlt = info.update_edu(stu_id, edu_id, major, graduation_year, background, school)
+        # 如果更新教育经历成功
+        if update_rlt['tag'] == OK_UPDATE_EDU:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'grade': update_rlt['grade'],
+                'edu_background': update_rlt['edu_background']
+            }))
+
+        # 如果数据库异常导致更新教育经历失败(add_rlt['tag'] == ERR_UPDATE_EDU_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
@@ -840,90 +893,6 @@ def get_skill(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
-
-# @csrf_exempt
-# def update_stu_info(request):
-#     if request.method == "POST":
-#         stu_id = request.POST.get('stu_id', NO_INPUT)
-#         # check if stu_id is posted
-#         if stu_id == NO_INPUT:
-#             json_ctx = {'err': ERROR_UPDATE_STU_IDMISS,
-#                         'msg': ERROR_UPDATE_STU_IDMISS_MSG}
-#             return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#         # if stu_id is posted
-#         stu_name = request.POST.get('stu_name', NO_INPUT)
-#         stu_school = request.POST.get('stu_school', NO_INPUT)
-#         stu_tel = request.POST.get('stu_tel', NO_INPUT)
-#         stu_mail = request.POST.get('stu_mail', NO_INPUT)
-#         stu_avatar = request.FILES.get('stu_avatar', NO_INPUT)
-#
-#         tag = stu_info_op.update_info(stu_id=stu_id,
-#                                       name=stu_name,
-#                                       school=stu_school,
-#                                       tel=stu_tel,
-#                                       mail=stu_mail,
-#                                       avatar=stu_avatar)
-#
-#         if tag == GOOD_UPDATE_INFO:
-#             err = SUCCEED
-#             msg = SUCCEED_UPDATE_STU_MSG
-#         elif tag == ERROR_AVATAR_SAVE_FAILED:
-#             err = ERROR_UPDATE_STU_AVATAR_SAVE_FAILED
-#             msg = ERROR_UPDATE_STU_AVATAR_SAVE_FAILED_MSG
-#         elif tag == ERROR_AVATAR_FILE_INVALID:
-#             err = ERROR_UPDATE_STU_AVATAR_INVALID
-#             msg = ERROR_UPDATE_STU_AVATAR_INVALID_MSG
-#         else:
-#             err = ERROR_UPDATE_STU_DOESNOTEXIST
-#             msg = ERROR_UPDATE_STU_DOESNOTEXIST_MSG
-#
-#         json_ctx = {'err': err, 'msg': msg}
-#         return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#     # if request method is get
-#     json_ctx = {'err': ERROR_METHOD, 'msg': ERROR_METHOD_MSG}
-#     return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#
-# @csrf_exempt
-# def get_stu_info(request):
-#     if request.method == "POST":
-#         stu_id = request.POST.get('stu_id', NO_INPUT)
-#         # check if stu_id is posted
-#         if stu_id == NO_INPUT:
-#             json_ctx = {'err': ERROR_GET_STU_IDMISS,
-#                         'msg': ERROR_GET_STU_IDMISS_MSG}
-#             return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#         # if stu_id is posted
-#         temp = stu_info_op.get_info(stu_id)
-#         # if stu_id exists and return a Stuinfo
-#         if temp != ERROR_GET_INFO:
-#             err = SUCCEED
-#             msg = SUCCEED_GET_STU_MSG
-#             json_ctx = {'err': err,
-#                         'msg': msg,
-#                         'stu_id': temp.id,
-#                         'stu_name': temp.name,
-#                         'stu_school': temp.school,
-#                         'stu_tel': temp.tel,
-#                         'stu_mail': temp.mail,
-#                         'stu_avatar': temp.avatar_path}
-#             return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#         # if stu_id does not exist
-#         json_ctx = {'err': ERROR_GET_STU_DOESNOTEXIST,
-#                     'msg': ERROR_GET_STU_DOESNOTEXIST_MSG}
-#         return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-#     # if post method is get
-#     json_ctx = {'err': ERROR_METHOD, 'msg': ERROR_METHOD_MSG}
-#     return HttpResponse(json.dumps(json_ctx, ensure_ascii=False))
-#
-
-
-
 
 
 
