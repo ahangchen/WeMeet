@@ -69,6 +69,8 @@ ERR_PROJ_FULL_MSG = '项目经历已达上限'
 ERR_SKILL_FULL = '-126' # 用在增加技能评
 ERR_SKILL_FULL_MSG = '技能评价已达上限'
 
+WORKS_INVALID = '-127'  # 用在上传作品集文件
+WORKS_INVALID_MSG = '作品集不合法'
 
 
 

@@ -20,6 +20,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       AVATAR_INVALID, AVATAR_INVALID_MSG, \
                                       ERR_SKILL_FULL, ERR_SKILL_FULL_MSG, \
                                       ERR_PROJ_FULL, ERR_PROJ_FULL_MSG, \
+                                      WORKS_INVALID, WORKS_INVALID_MSG, \
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
                                       ERR_METHOD, ERR_METHOD_MSG, \
@@ -104,6 +105,9 @@ from student.ctrl.tag import OK_UPDATE_SKILL
 from student.ctrl.tag import ERR_UPDATE_SKILL_DB
 from student.ctrl.tag import OK_DEL_SKILL
 from student.ctrl.tag import ERR_DEL_SKILL_DB
+from student.ctrl.tag import OK_SAVE_WORKS
+from student.ctrl.tag import ERR_SAVE_WORKS_FAIL
+from student.ctrl.tag import ERR_WORKS_FILE_INVALID
 
 
 # from student.util.tag import NO_INPUT
@@ -1126,6 +1130,47 @@ def get_works(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_WORKS_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def upload_works(request):
+    """
+    保存上传的作品集文件
+    成功：返回err:SUCCEED, 作品集路径
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        works_file = request.FILES.get('works')
+
+        upload_rlt = info.upload_works(stu_id=stu_id, works=works_file)
+        # 如果保存上传的作品集文件成功
+        if upload_rlt['tag'] == OK_SAVE_WORKS:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'path': upload_rlt['path']
+            }))
+
+        # 如果简历文件不合法
+        elif upload_rlt['tag'] == ERR_WORKS_FILE_INVALID:
+            return HttpResponse(json_helper.dumps({
+                'err': WORKS_INVALID,
+                'msg': WORKS_INVALID_MSG
+            }))
+
+        # 如果保存失败 tag == ERR_SAVE_WORKS_FAIL
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

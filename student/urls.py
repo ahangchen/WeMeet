@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^info/proj/update/$', views.update_proj),
     url(r'^info/proj/del/$', views.del_proj),
     url(r'^info/works/get/$', views.get_works),
+    url(r'^info/works/upload/$', views.upload_works),
     url(r'^info/skill/add/$', views.add_skill),
     url(r'^info/skill/get/$', views.get_skill),
     url(r'^info/skill/update/$', views.update_skill),
