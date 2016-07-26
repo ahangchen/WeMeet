@@ -135,7 +135,7 @@ def activate(account_cipher):
         logger.error('数据库异常导致无法激活账号')
         return ERR_ACTIVATE_DB
 
-    tag = account.update(account=select_rlt.account, is_activated=True)
+    tag = account.update(account=select_rlt['acnt'].account, is_activated=True)
 
     # 如果更新激活状态失败（账号不存在）
     if tag == ERR_UPDATE_NOTEXIST:
