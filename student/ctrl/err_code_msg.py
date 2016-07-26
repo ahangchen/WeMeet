@@ -75,6 +75,10 @@ WORKS_INVALID_MSG = '作品集不合法'
 WORKS_EXIST = '-126'  # 用在增加作品集信息
 WORKS_EXIST_MSG = '已有作品集'
 
+NO_APPLY = '-129'  # 用在获取实习经历
+NO_APPLY_MSG = '无投递记录'
+
+
 
 
 

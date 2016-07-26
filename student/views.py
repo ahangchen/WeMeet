@@ -7,6 +7,7 @@ from student.ctrl import info
 from student.ctrl import account
 from student.ctrl import avatar
 from student.ctrl import resume
+from student.ctrl import apply
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                       ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                       ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -119,6 +120,9 @@ from student.ctrl.tag import ERR_DEL_WORKS_DB
 from student.ctrl.tag import OK_GET_RESUME
 from student.ctrl.tag import ERR_GET_NO_RESUME
 from student.ctrl.tag import ERR_GET_RESUME_DB
+from student.ctrl.tag import OK_GET_APPLY
+from student.ctrl.tag import ERR_GET_NO_APPLY
+from student.ctrl.tag import ERR_GET_APPLY_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1486,6 +1490,47 @@ def del_skill(request):
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
 
         # 如果数据库异常导致删除技能评价失败(add_rlt['tag'] == ERR_DEL_SKILL_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def stu_get_apply(request):
+    """
+    学生获取投递记录
+    成功：返回
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        state = request.POST.get('state')
+        get_rlt = apply.stu_get_apply(stu_id, state)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_APPLY:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'apply_list': get_rlt['apply_list']
+            }))
+
+        # 如果该学生没有投递记录
+        elif get_rlt['tag'] == ERR_GET_NO_APPLY:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_APPLY,
+                'msg': NO_APPLY_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_APPLY_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

@@ -7,7 +7,7 @@ from student.ctrl.tag import OK_SAVE_RESUME, ERR_SAVE_RESUME_FAIL, ERR_RESUME_FI
                              OK_APPLY, ERR_APPLY_DB, ERR_APPLY_NO_RESUME, ERR_APPLY_EXIST, \
                              OK_GET_RESUME, ERR_GET_RESUME_DB, ERR_GET_NO_RESUME
 from student.util.logger import logger
-from student.util import file_helper
+from student.util import file_helper, date_helper
 from student.util.value_update import NO_INPUT
 import time
 
@@ -111,7 +111,8 @@ def apply(stu_id, job_id):
                 # 如果尚未投递
                 if select_apply_rlt['tag'] == ERR_SELECT_NOTEXIST:
                     insert_apply_rlt = \
-                        job_apply.insert(stu=stu, job=select_job_rlt, team=team, resume_path=stu.resume_path)
+                        job_apply.insert(stu=stu, job=select_job_rlt, state=0, team=team, resume_path=stu.resume_path,
+                                         change_time=date_helper.now(), stu_read=True, team_read=False)
 
                     # 如果投递成功
                     if insert_apply_rlt['tag'] == OK_INSERT:
@@ -170,7 +171,7 @@ def get(stu_id):
         logger.warning('尝试获取不存在学生的简历路径')
         return {'tag': ERR_GET_RESUME_DB}
 
-    #如果数据库异常导致无法确认学生是否存在 select_rlt['tag'] == ERR_SELECT_DB
+    # 如果数据库异常导致无法确认学生是否存在 select_rlt['tag'] == ERR_SELECT_DB
     else:
         logger.error('数据库异常导致无法确认学生是否存在，获取简历路径失败')
         return {'tag': ERR_GET_RESUME_DB}

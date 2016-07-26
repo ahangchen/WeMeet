@@ -15,7 +15,7 @@ from student.models import JobApply
 from student.util.logger import logger
 
 
-def insert(stu, job, team, resume_path):
+def insert(stu, job, state, team, resume_path, change_time, stu_read, team_read):
     """
     插入一条投递简历的记录
     成功：{'tag': OK_INSERT, 'apply': new_apply}
@@ -24,9 +24,12 @@ def insert(stu, job, team, resume_path):
     try:
         new_apply = JobApply(stu=stu,
                              job=job,
-                             state=0,
+                             state=state,
                              team=team,
-                             resume_path=resume_path)
+                             resume_path=resume_path,
+                             change_time=change_time,
+                             stu_read=stu_read,
+                             team_read=team_read)
         new_apply.save()
         return {'tag': OK_INSERT,
                 'apply': new_apply}
@@ -53,6 +56,14 @@ def stu_job_select(stu, job):
     except:
         logger.error('数据库异常导致查询投递记录失败')
         return {'tag': ERR_SELECT_DB}
+
+
+def stu_state_filter(stu, state):
+    """
+    用学生和投递状态查询投递记录
+    返回QuerySet
+    """
+    return JobApply.objects.filter(stu=stu, state=state)
 
 
 
