@@ -13,6 +13,7 @@ def validate(request):
     img, validate_code = create_validate_code()
     img.save(mstream, "GIF")
     request.session['code'] = validate_code
+    print(validate_code)
     # StuInfo().save()
     # StuInfo.objects.all()
     img_bytes = base64.b64encode(mstream.getvalue()).decode()
