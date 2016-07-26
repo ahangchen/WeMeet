@@ -112,6 +112,9 @@ from student.ctrl.tag import ERR_WORKS_FILE_INVALID
 from student.ctrl.tag import OK_ADD_WORKS
 from student.ctrl.tag import ERR_ADD_WORKS_EXIST
 from student.ctrl.tag import ERR_ADD_WORKS_DB
+from student.ctrl.tag import OK_UPDATE_WORKS
+from student.ctrl.tag import ERR_UPDATE_WORKS_DB
+
 
 
 # from student.util.tag import NO_INPUT
@@ -1220,6 +1223,39 @@ def upload_works(request):
             }))
 
         # 如果保存失败 tag == ERR_SAVE_WORKS_FAIL
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_works(request):
+    """
+    更新作品集信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        works_id = request.POST.get('works_id')
+        path = request.POST.get('path')
+        site = request.POST.get('site')
+
+        update_rlt = info.update_works(works_id, stu_id, path, site)
+        # 如果更新作品集信息成功
+        if update_rlt['tag'] == OK_UPDATE_WORKS:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致更新作品集信息失败(add_rlt['tag'] == ERR_UPDATE_WORKS_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

@@ -10,6 +10,7 @@ from student.db.tag import OK_UPDATE
 from student.db.tag import OK_SELECT
 
 from student.models import StuWorks
+from student.util.value_update import value, NO_INPUT
 from student.util.logger import logger
 
 
@@ -47,5 +48,26 @@ def insert(path, site, stu):
         logger.error('数据库异常导致插入作品集记录失败')
         return {'tag': ERR_INSERT_DB}
 
+
+def id_stu_update(works_id, stu, path=NO_INPUT, site=NO_INPUT):
+    """
+    成功：返回OK_UPDATE
+    失败：返回ERR_UPDATE_NOTEXIST
+            或ERR_UPDATE_DB
+    """
+    try:
+        update_works = StuWorks.objects.all().get(works_id=works_id, stu=stu)
+
+        update_works.path = value(update_works.path, path)
+        update_works.site = value(update_works.site, site)
+
+        update_works.save()
+        return OK_UPDATE
+    except StuWorks.DoesNotExist:
+        logger.error('尝试更新学生id和作品集信息id不匹配的作品集信息')
+        return ERR_UPDATE_NOTEXIST
+    except:
+        logger.error('数据库异常导致更新作品集信息失败')
+        return ERR_UPDATE_DB
 
 
