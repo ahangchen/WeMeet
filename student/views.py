@@ -292,7 +292,7 @@ def fetch(request):
     成功：返回渲染页面
     失败：返回相应的err和msg的JSON
     """
-    return render(request, 'team/fetch.html', {'hash_tid': request.GET['reset_key'], 'mail': request.GET['mail']})
+    return render(request, 'stu/fetch.html', {'hash_tid': request.GET['reset_key'], 'mail': request.GET['mail']})
 
 
 @csrf_exempt
