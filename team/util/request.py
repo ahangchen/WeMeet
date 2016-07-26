@@ -12,9 +12,10 @@ def resp_method_err():
 
 
 def is_valid_ok(request):
-    # print(request.session['code'])
-    # print(request.POST['code'])
+    print(request.session['code'])
+    print(request.POST['code'])
     return request.session['code'].upper() == request.POST.get('code').upper()
+    # return True
 
 
 def resp_valid_err():

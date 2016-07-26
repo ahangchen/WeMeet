@@ -134,8 +134,7 @@ def post(request):
 def register(request):
     if request.method == "POST":
         # 如果验证码错误
-        # if request.session['code'] != request.POST.get('code'):
-        if False:
+        if request.session['code'] != request.POST.get('code'):
             return HttpResponse(json_helper.dumps(
                 {'err': ERR_VALID_CODE,
                  'msg': ERR_VALID_CODE_MSG}
