@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^activate/(.+)/$', views.activate),
     url(r'^login/$', views.login),
     url(r'^rsmail/$', views.send_rsmail),  # rsmail: reset mail
+    url(r'^fetch/$', views.fetch),
     url(r'^reset/$', views.reset),
     url(r'^cpwd/$', views.change_pwd),  # cpwd: change password
     url(r'^info/get/$', views.get_info),
