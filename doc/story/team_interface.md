@@ -548,7 +548,7 @@
  ``` 
    
 ### 22 团队信息
-- http://110.64.69.66.8081/team/info?tid=xxxx
+- http://110.64.69.66:8081/team/info?tid=xxxx
 - 参数：
   - tid: 团队id
 - 返回：
