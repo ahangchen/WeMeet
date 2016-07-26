@@ -79,6 +79,7 @@ def info(tid):
         'stus': stu_dict,
         'imgs': img_dict,
         'label': label_dict,
+        'name': team.name,
     }
 
 
