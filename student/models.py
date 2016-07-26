@@ -5,37 +5,26 @@ from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENG
 
 
 class JobApply(models.Model):
-    # By default, id = models.AutoField(primary_key=True)
+    apply_id = models.AutoField(primary_key=True)
     # 学生。on_delete默认为CASCADE，当学生被删除的时候，投递关系级联删除
     stu = models.ForeignKey('StuInfo')
     # 职位，on_delete默认为CASCADE，当职位被删除的时候，投递关系级联删除
     job = models.ForeignKey('team.Job')
     # 投递状态，0表示待查看，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
     state = models.IntegerField(default=0)
-    # # 学生简历，on_delete默认为CASCADE，当简历被删除的时候，投递关系级联删除
-    # resume = models.ForeignKey('Resume')
+    # 状态更改时间
+    change_time = models.CharField(max_length=DATE_MAX_LENGTH, blank=True, null=True, default='')
     # 团队，多app外键最好用字符串引用防止循环import，on_delete默认为CASCADE，当团队被删除的时候，投递关系级联删除
     team = models.ForeignKey('team.Team')
     # 简历文件路径
     resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
+    # 学生已阅读
+    stu_read = models.BooleanField()
+    # 团队已阅读
+    team_read = models.BooleanField()
 
     class Meta:
         db_table = 'job_apply'
-
-
-# class Resume(models.Model):
-#     id = models.AutoField(primary_key=True)
-#     stu = models.ForeignKey('StuInfo', models.DO_NOTHING)
-#     resume_edu = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
-#     resume_internship = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
-#     resume_project = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
-#     resume_stu_work = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
-#     resume_award = models.CharField(max_length=LONGTEXT_MAX_LENGTH, blank=True, null=True)
-#     # 附件路径
-#     file_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True)
-#
-#     class Meta:
-#         db_table = 'resume'
 
 
 class StuInfo(models.Model):

@@ -39,6 +39,13 @@ def mail_team(mail):
         return team.id
 
 
+def id_team(team_id):
+    team = Team.objects.filter(id=team_id).first()
+    if team is None:
+        return None
+    return team
+
+
 def is_mail_valid(mail):
     return Pwd.objects.filter(mail=mail).count() > 0
 
