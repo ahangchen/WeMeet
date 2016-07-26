@@ -116,11 +116,15 @@ from student.ctrl.tag import OK_UPDATE_WORKS
 from student.ctrl.tag import ERR_UPDATE_WORKS_DB
 from student.ctrl.tag import OK_DEL_WORKS
 from student.ctrl.tag import ERR_DEL_WORKS_DB
-
+from student.ctrl.tag import OK_GET_RESUME
+from student.ctrl.tag import ERR_GET_NO_RESUME
+from student.ctrl.tag import ERR_GET_RESUME_DB
 
 
 # from student.util.tag import NO_INPUT
 from student.util import json_helper
+from team.util.request import is_valid_ok
+from team.util.request import resp_valid_err
 
 
 def post(request):
@@ -132,12 +136,8 @@ def post(request):
 def register(request):
     if request.method == "POST":
         # 如果验证码错误
-        # if request.session['code'] != request.POST.get('code'):
-        if False:
-            return HttpResponse(json_helper.dumps(
-                {'err': ERR_VALID_CODE,
-                 'msg': ERR_VALID_CODE_MSG}
-            ))
+        if not is_valid_ok(request):
+            return resp_valid_err()
 
         # 如果验证码正确
         acnt = request.POST.get('account')
@@ -290,7 +290,7 @@ def fetch(request):
     成功：返回渲染页面
     失败：返回相应的err和msg的JSON
     """
-    return render(request, 'team/fetch.html', {'hash_tid': request.GET['reset_key'], 'mail': request.GET['mail']})
+    return render(request, 'stu/fetch.html', {'hash_tid': request.GET['reset_key'], 'mail': request.GET['mail']})
 
 
 @csrf_exempt
@@ -547,6 +547,49 @@ def upload_resume(request):
             }))
 
         # 如果保存失败 tag == ERR_SAVE_RESUME_FAIL
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def get_resume(request):
+    """
+    获取学生的简历路径
+    成功:返回{
+                'err': SUCCEED,
+                'resume_path': get_rlt['resume_path'],
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = resume.get(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_RESUME:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'resume_path': get_rlt['resume_path'],
+            }))
+
+        # 如果该学生没有简历
+        elif get_rlt['tag'] == ERR_GET_NO_RESUME:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_RESUME,
+                'msg': NO_RESUME_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_RESUME_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

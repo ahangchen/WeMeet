@@ -244,7 +244,7 @@ def add_job(request):
         req_data = json.loads(request.body.decode('utf-8'))
     else:
         req_data = request.POST
-
+    print(req_data)
     job_form = JobForm(req_data,request.FILES)
     if job_form.is_valid():
         job = Job(**job_form.cleaned_data)
@@ -295,13 +295,14 @@ def search_job(request):
         return resp_method_err()
 
     team_id = job_type = request.POST.get('teamId')
-    job_type = request.POST.get('jobTags')
+    job_type = request.POST.getlist('jobTags[]')
+    print(job_type)
 
     if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
         return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'message':MSG_POST_TYPE}, ensure_ascii=False))
 
     res_list = Job.objects.filter(j_type__in=job_type,team_id = team_id).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
-                          'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly',
+                          'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly', 'city', 'town',
                                                             'exp', 'job_state')
 
     res = json.dumps({'err': SUCCEED, 'message': list(res_list)}, ensure_ascii=False)

@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^activate/(.+)/$', views.activate),
     url(r'^login/$', views.login),
     url(r'^rsmail/$', views.send_rsmail),  # rsmail: reset mail
+    url(r'^fetch/$', views.fetch),
     url(r'^reset/$', views.reset),
     url(r'^cpwd/$', views.change_pwd),  # cpwd: change password
     url(r'^info/get/$', views.get_info),
@@ -14,6 +15,7 @@ urlpatterns = [
     url(r'^fetch/$', views.fetch),  # render reset page
     url(r'^resume/upload/$', views.upload_resume),
     url(r'^resume/apply/$', views.job_apply),
+    url(r'^resume/get/$', views.get_resume),
     url(r'^info/edu/add/$', views.add_edu),
     url(r'^info/edu/get/$', views.get_edu),
     url(r'^info/edu/update/$', views.update_edu),

@@ -1,9 +1,11 @@
+from django.core.mail import send_mail
+
 from student.util.encrypt_decrypt import encrypt
 
 from team.db import team
 from team.db.team import DB_ACC_NOT_FOUND, DB_OK, is_mail_valid, mail_team
-from team.models import Pwd
-from team.util.smtp_mail import send_163_mail
+
+
 
 ACC_MNG_OK = 0
 REG_FAIL_INV_ACC = 1
@@ -53,7 +55,7 @@ def login(mail, pwd):
 
 
 def reset_mail_content(reset_key, mail):
-    return '<h1>点此重置密码</h1><p>http://110.64.69.66/team/fetch?reset_key=%s&mail=%s</p>' % (reset_key, mail)
+    return '点此重置密码　http://110.64.69.66:8081/team/fetch?reset_key=%s&mail=%s ' % (reset_key, mail)
 
 
 def send_reset_mail(mail):
@@ -71,7 +73,8 @@ def send_reset_mail(mail):
         # 账号密文
         hash_tid = encrypt(str(tid))
         team.reset_team(mail, hash_tid)
-        send_163_mail(mail, '来自WeMeet', reset_mail_content(hash_tid, mail))
+        send_mail('来自WeMeet', reset_mail_content(hash_tid, mail),  # TODO(hjf): 修改邮件内容、收发邮箱
+                  'm18826076291@sina.com', [mail])
         return ACC_MNG_OK
 
 

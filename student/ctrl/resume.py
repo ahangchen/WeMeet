@@ -4,7 +4,8 @@ from team.db import job
 from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, OK_INSERT,\
                            OK_UPDATE, ERR_UPDATE_NOTEXIST
 from student.ctrl.tag import OK_SAVE_RESUME, ERR_SAVE_RESUME_FAIL, ERR_RESUME_FILE_INVALID, \
-                             OK_APPLY, ERR_APPLY_DB, ERR_APPLY_NO_RESUME, ERR_APPLY_EXIST
+                             OK_APPLY, ERR_APPLY_DB, ERR_APPLY_NO_RESUME, ERR_APPLY_EXIST, \
+                             OK_GET_RESUME, ERR_GET_RESUME_DB, ERR_GET_NO_RESUME
 from student.util.logger import logger
 from student.util import file_helper
 from student.util.value_update import NO_INPUT
@@ -52,6 +53,11 @@ def upload(stu_id, resume):
                             'path': resume_path}
                 # 如果简历文件上传失败，
                 else:
+                    logger.error('简历文件上传失败')
+                    # 回滚
+                    roll_tag = stu_info.update(stu_id=stu_id, resume_path=pre_resume_path)
+                    if roll_tag != OK_UPDATE:
+                        logger.error('简历文件上传失败，但学生的简历路径已更新，无法回滚')
                     return {'tag': ERR_SAVE_RESUME_FAIL}
 
             # 如果更新学生的当前简历路径时学生记录不存在
@@ -141,6 +147,33 @@ def apply(stu_id, job_id):
         logger.error('数据库异常导致无法确认学生是否存在，投递简历失败')
         return {'tag': ERR_APPLY_DB}
 
+
+def get(stu_id):
+    """
+    获取学生的简历路径
+    成功：返回{'tag': OK_GET_RESUME, 'resume_path': select_rlt['stu'].resume_path}
+    失败：返回{'tag': ERR_GET_RESUME_DB}
+    """
+    select_rlt = stu_info.select(stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        # 如果没有简历
+        if select_rlt['stu'].resume_path == NO_INPUT:
+            return {'tag': ERR_GET_NO_RESUME}
+
+        # 如果成功
+        return {'tag': OK_GET_RESUME,
+                'resume_path': select_rlt['stu'].resume_path}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在学生的简历路径')
+        return {'tag': ERR_GET_RESUME_DB}
+
+    #如果数据库异常导致无法确认学生是否存在 select_rlt['tag'] == ERR_SELECT_DB
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，获取简历路径失败')
+        return {'tag': ERR_GET_RESUME_DB}
 
 
 
