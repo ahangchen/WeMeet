@@ -48,6 +48,8 @@ from student.util import date_helper
 
 from django.core.mail import send_mail
 
+from team.util.smtp_mail import send_163_mail
+
 
 def register(acnt, pwd):
     """
@@ -113,7 +115,7 @@ def register(acnt, pwd):
             # 记录账号密文成功
             else:
                 send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext),  # TODO(hjf): 修改邮件内容、收发邮箱
-                          'm18826076291@sina.com', ['961437466@qq.com'])
+                          'm18826076291@sina.com', [acnt])
                 return OK_REG
 
 
