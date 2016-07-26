@@ -48,7 +48,70 @@ from student.util import date_helper
 
 from django.core.mail import send_mail
 
-from team.util.smtp_mail import send_163_mail
+from team.util.data import random6
+
+
+def invite(acnt):
+    pwd = str(random6())
+    exist = account.acnt_select(account=acnt)
+
+    # 如果数据库异常导致无法查询账号是否存在
+    if exist['tag'] == ERR_SELECT_DB:
+        logger.error('数据库异常导致无法查询账号是否存在，导致注册失败')
+        return REG_FAIL_DB, -1
+
+    # 如果账号已存在
+    elif exist['tag'] != ERR_SELECT_NOTEXIST:
+        return REG_FAIL_EXIST
+
+    # 如果账号尚未被注册
+    stu_tag = stu_info.insert(name='', school='', tel='',
+                              mail=acnt, avatar_path=DEFAULT_AVATAR,
+                              sex=0, year=-1, month=-1, location='', major='')
+
+    # 如果插入学生失败
+    if stu_tag == ERR_INSERT_DB:
+        logger.error('数据库异常导致插入学生失败，注册失败')
+        return REG_FAIL_DB, -1
+
+    # 如果插入学生成功
+    else:
+        acnt_tag = account.insert(account=acnt, pwd=pwd, stu=stu_tag)
+        # 如果插入账号失败
+        if acnt_tag == ERR_INSERT_DB:
+            logger.error('数据库异常导致插入账号失败，注册失败')
+            delete_tag = stu_info.delete(stu_tag.id)
+
+            if delete_tag == ERR_DELETE_DB:
+                logger.error('注册失败，数据库异常导致无法回滚状态（无法删除已插入的学生）')
+            return REG_FAIL_DB, -1
+
+        # 如果插入账号成功
+        else:
+            # 记录账号密文
+            ciphertext = encrypt(acnt)
+            update_tag = account.update(account=acnt, ciphertext=ciphertext)
+            # 如果记录密文失败
+            if update_tag != OK_UPDATE:
+                logger.error('记录账号密文失败，注册失败')
+
+                # 记录密文失败，回滚，删除已插入的账号
+                delete_acnt_tag = account.delete(account=acnt)
+                if delete_acnt_tag == ERR_DELETE_DB:
+                    logger.error('注册失败，数据库异常导致无法回滚状态（无法删除已插入的账号）')
+
+                # 删除已插入的学生
+                delete_stu_tag = stu_info.delete(stu_tag.id)
+                if delete_stu_tag == ERR_DELETE_DB:
+                    logger.error('注册失败，数据库异常导致无法回滚状态（无法删除已插入的学生）')
+
+                return ERR_UPDATE_DB, -1
+
+            # 记录账号密文成功
+            else:
+                send_mail('WeMeet注册验证邮件', "hash_id:" + ciphertext, "pwd: " + pwd,  # TODO(cwh): 修改邮件内容、收发邮箱
+                          'm18826076291@sina.com', ['961437466@qq.com'])
+                return OK_REG, acnt_tag.stu_id
 
 
 def register(acnt, pwd):

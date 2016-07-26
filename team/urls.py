@@ -37,4 +37,5 @@ urlpatterns = [
     url(r'^update_team_contact/$', views.update_team_contact),
     url(r'^business/$', views.business),
     url(r'^name2mail/$', views.name2mail),
+    url(r'^invite_stu/$', views.invite_stu),
 ]

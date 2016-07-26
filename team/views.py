@@ -2,6 +2,8 @@
 from django.shortcuts import render
 
 # Create your views here.
+from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
+from student.ctrl.tag import OK_REG
 from team.ctrl import acc_mng
 from team.ctrl import team, product
 from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
@@ -22,6 +24,7 @@ from student.util import json_helper
 from team.db import job as db_job
 from team.db import product as db_product
 from team.db.tag import PRODUCT_SUCCEED
+from student.ctrl.account import invite
 
 import json
 import operator
@@ -38,6 +41,7 @@ def test(request):
 def valid_code(request):
     return validate(request)
 
+
 @csrf_exempt
 def search_product(request):
     """
@@ -50,14 +54,15 @@ def search_product(request):
 
     team_id = request.POST.get('teamId')
 
-    if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
-        return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'msg':MSG_POST_TYPE}, ensure_ascii=False))
+    if False:  # ToDo(wang) check param # not job_type[0].isdigit():
+        return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'msg': MSG_POST_TYPE}, ensure_ascii=False))
 
-    res_list = Product.objects.filter(team_id = team_id).values('name', 'img_path', 'content', 'reward', 'team_id',
-                                                            'last_visit_cnt', 'week_visit_cnt')
+    res_list = Product.objects.filter(team_id=team_id).values('name', 'img_path', 'content', 'reward', 'team_id',
+                                                              'last_visit_cnt', 'week_visit_cnt')
 
     res = json.dumps({'err': SUCCEED, 'msg': list(res_list)}, ensure_ascii=False)
     return HttpResponse(res)
+
 
 @csrf_exempt
 def info_product(request):
@@ -66,7 +71,7 @@ def info_product(request):
         成功: 返回项目信息
         失败：返回相应的err和message的JSON
     """
-    prod_list = ['name', 'img_path','content','reward', 'team_id',
+    prod_list = ['name', 'img_path', 'content', 'reward', 'team_id',
                  'last_visit_cnt', 'week_visit_cnt']
 
     if not is_post(request):
@@ -76,11 +81,12 @@ def info_product(request):
     res = db_product.select(prod_id)
 
     if res['err'] == PRODUCT_SUCCEED:
-        prod_dict = {key:res['msg'].__dict__[key] for key in prod_list}
+        prod_dict = {key: res['msg'].__dict__[key] for key in prod_list}
         res = {'err': SUCCEED,
                'msg': prod_dict}
 
     return HttpResponse(json.dumps(res, ensure_ascii=False))
+
 
 @csrf_exempt
 def delete_product(request):
@@ -104,6 +110,7 @@ def delete_product(request):
 
     return HttpResponse(json.dumps({'err': SUCCEED, 'msg': MSG_SUCC}, ensure_ascii=False))
 
+
 @csrf_exempt
 def add_product(request):
     """
@@ -121,7 +128,7 @@ def add_product(request):
         req_data = request.POST
 
     # 判断参数类型
-    prod_form = ProductForm(req_data,request.FILES)
+    prod_form = ProductForm(req_data, request.FILES)
     if not prod_form.is_valid():
         return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
 
@@ -159,7 +166,7 @@ def update_product(request):
             return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': MSG_PROD_TYPE}, ensure_ascii=False))
 
     # 判断参数类型
-    prod_form = ProductForm(req_data,request.FILES)
+    prod_form = ProductForm(req_data, request.FILES)
     if not prod_form.is_valid():
         return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
 
@@ -179,6 +186,7 @@ def update_product(request):
             return HttpResponse(json.dumps(res_img, ensure_ascii=False))
     return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC, 'msg': res['msg'].id}, ensure_ascii=False))
 
+
 @csrf_exempt
 def save_prod_img(request):
     """
@@ -192,10 +200,11 @@ def save_prod_img(request):
 
     prod_id = request.POST.get('id')
     prod_img = request.FILES.get('prod_img')
-    res = product.save_img(prod_id=prod_id,prod_img=prod_img)
+    res = product.save_img(prod_id=prod_id, prod_img=prod_img)
 
     return HttpResponse(json.dumps({'err': res['err'],
                                     'msg': res['msg']}))
+
 
 @csrf_exempt
 def update_job(request):
@@ -207,7 +216,7 @@ def update_job(request):
     if not is_post(request):
         return resp_method_err()
 
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE','application/json')) == 'application/json':
+    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
         req_data = json.loads(request.body.decode('utf-8'))
         id = req_data['id']
     else:
@@ -220,9 +229,9 @@ def update_job(request):
         return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
 
     job = Job.objects.get(id=id)
-    job_form = JobForm(req_data,request.FILES)
+    job_form = JobForm(req_data, request.FILES)
     if job_form.is_valid():
-        for (key,value) in job_form.cleaned_data.items():
+        for (key, value) in job_form.cleaned_data.items():
             if value:
                 job.__dict__[key] = value
             job.save()
@@ -246,11 +255,14 @@ def add_job(request):
         req_data = request.POST
     print(req_data)
     job_form = JobForm(req_data,request.FILES)
+
+    job_form = JobForm(req_data, request.FILES)
     if job_form.is_valid():
         job = Job(**job_form.cleaned_data)
         job.save()
-        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC,'msg':job.id}, ensure_ascii=False))
+        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC, 'msg': job.id}, ensure_ascii=False))
     return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
+
 
 @csrf_exempt
 def delete_job(request):
@@ -272,6 +284,7 @@ def delete_job(request):
     job.delete()
 
     return HttpResponse(json.dumps({'err': SUCCEED, 'msg': MSG_SUCC}, ensure_ascii=False))
+
 
 @csrf_exempt
 def job_type(request):
@@ -298,8 +311,8 @@ def search_job(request):
     job_type = request.POST.getlist('jobTags[]')
     print(job_type)
 
-    if  False:   # ToDo(wang) check param # not job_type[0].isdigit():
-        return HttpResponse(json.dumps({'err':ERR_POST_TYPE,'message':MSG_POST_TYPE}, ensure_ascii=False))
+    if False:  # ToDo(wang) check param # not job_type[0].isdigit():
+        return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
 
     res_list = Job.objects.filter(j_type__in=job_type,team_id = team_id).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
                           'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly', 'city', 'town',
@@ -307,6 +320,7 @@ def search_job(request):
 
     res = json.dumps({'err': SUCCEED, 'message': list(res_list)}, ensure_ascii=False)
     return HttpResponse(res)
+
 
 @csrf_exempt
 def hot_product(request):
@@ -491,7 +505,7 @@ def info(request):
 def invite(request):
     if not is_post(request):
         return resp_method_err()
-    name = request.POST['mail']
+    name = request.POST['name']
     leader = request.POST['leader']
     tel = request.POST['tel']
     mail = request.POST['mail']
@@ -539,35 +553,110 @@ def job_info(request):
 
 
 def update_team_contact(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    tel = request.POST['tel']
+    mail = request.GET['mail']
+    ret = team.update_contact(tid, tel, mail)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def rm_team_photo(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    img_id = request.POST['img_id']
+    ret = team.rm_photo(tid, img_id)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def add_team_photo(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    name = request.POST['name']
+    img = request.POST['photo']
+    ret = team.save_photo(tid, name, img)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, ret))
 
 
 def add_team_stu(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    sid = request.POST['sid']
+    ret = team.add_stu(tid, sid)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    elif ret == team.STU_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STU_NOT_FOUND, MSG_STU_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def rm_team_stu(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    sid = request.POST['sid']
+    ret = team.rm_stu(tid, sid)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    elif ret == team.NO_MATCH:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STU_NOT_FOUND, MSG_STU_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def add_team_label(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    name = request.POST['name']
+    ret = team.add_label(tid, name)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, ret))
 
 
 def rm_team_label(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    lid = request.POST['lid']
+    ret = team.rm_label(tid, lid)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def update_team_info(request):
-    return HttpResponse()
+    if not is_post(request):
+        return resp_method_err()
+    tid = request.POST['tid']
+    name = request.POST['name']
+    logo_path = request.GET['logo_path']
+    slogan = request.GET['slogan']
+    about = request.GET['about']
+    history = request.GET['history']
+    b_type = request.GET['b_type']
+    ret = team.update_info(tid, name, logo_path, slogan, about, history, b_type)
+    if ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
 def business(request):
@@ -580,3 +669,19 @@ def business(request):
 
 def name2mail(request):
     return HttpResponse()
+
+
+def invite_stu(request):
+    """团队邀请成员"""
+    if not is_post(request):
+        return resp_method_err()
+    mail = request.POST['mail']
+    tid = request.POST['tid']
+    ret, sid = invite(mail)
+    add_ret = team.add_stu(tid, sid)
+    if ret != OK_REG:
+        return HttpResponse(json_helper.dump_err_msg(ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG))
+    if add_ret == team.ACC_NO_FOUND:
+        return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
+    else:
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
