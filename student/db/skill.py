@@ -91,5 +91,5 @@ def id_stu_delete(skill_id, stu):
 
     # 数据库异常
     except:
-        logger.error('数据库异常导致删除项目技能评价')
+        logger.error('数据库异常导致删除项目技能评价失败')
         return ERR_DELETE_DB
