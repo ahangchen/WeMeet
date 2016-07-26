@@ -223,7 +223,7 @@ def send_reset_mail(acnt):
         return ERR_RESET_MAIL_DB
 
     # 如果日期记录成功，发送邮件
-    send_mail('WeMeet重置密码邮件', reset_mail.get_content(ciphertext),  # TODO(hjf): 修改邮件内容、收发邮箱
+    send_mail('WeMeet重置密码邮件', reset_mail.get_content(ciphertext, acnt),  # TODO(hjf): 修改邮件内容、收发邮箱
               'm18826076291@sina.com', [acnt])
     return OK_RESET_MAIL
 
