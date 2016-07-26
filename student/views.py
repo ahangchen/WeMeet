@@ -114,6 +114,8 @@ from student.ctrl.tag import ERR_ADD_WORKS_EXIST
 from student.ctrl.tag import ERR_ADD_WORKS_DB
 from student.ctrl.tag import OK_UPDATE_WORKS
 from student.ctrl.tag import ERR_UPDATE_WORKS_DB
+from student.ctrl.tag import OK_DEL_WORKS
+from student.ctrl.tag import ERR_DEL_WORKS_DB
 
 
 
@@ -929,7 +931,7 @@ def del_intern(request):
         if del_rlt['tag'] == OK_DEL_INTERN:
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
 
-        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_INTERN_DB)
+        # 如果数据库异常导致删除实习经历失败(add_rlt['tag'] == ERR_DEL_INTERN_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
@@ -1089,7 +1091,7 @@ def del_proj(request):
         if del_rlt['tag'] == OK_DEL_PROJ:
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
 
-        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
+        # 如果数据库异常导致删除项目经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
@@ -1271,6 +1273,37 @@ def update_works(request):
 
 
 @csrf_exempt
+def del_works(request):
+    """
+    删除作品集信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        works_id = request.POST.get('works_id')
+
+        del_rlt = info.del_works(stu_id=stu_id, works_id=works_id)
+        # 如果删除成功
+        if del_rlt['tag'] == OK_DEL_WORKS:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致删除作品集信息失败(add_rlt['tag'] == ERR_DEL_WORKS_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
 def add_skill(request):
     """
     增加技能评价
@@ -1409,7 +1442,7 @@ def del_skill(request):
         if del_rlt['tag'] == OK_DEL_SKILL:
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
 
-        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_SKILL_DB)
+        # 如果数据库异常导致删除技能评价失败(add_rlt['tag'] == ERR_DEL_SKILL_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

@@ -64,6 +64,8 @@ from student.ctrl.tag import ERR_ADD_WORKS_EXIST
 from student.ctrl.tag import ERR_ADD_WORKS_DB
 from student.ctrl.tag import OK_UPDATE_WORKS
 from student.ctrl.tag import ERR_UPDATE_WORKS_DB
+from student.ctrl.tag import OK_DEL_WORKS
+from student.ctrl.tag import ERR_DEL_WORKS_DB
 
 # from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -838,6 +840,34 @@ def update_works(works_id, stu_id, path, site):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，修改作品集信息失败')
         return {'tag': ERR_UPDATE_WORKS_DB}
+
+
+def del_works(stu_id, works_id):
+    """
+    删除作品集信息
+    成功：返回{'tag': OK_DEL_WORKS}
+    失败：返回{'tag': ERR_DEL_WORKS_DB}
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        delete_tag = works.id_stu_delete(works_id, select_rlt['stu'])
+        if delete_tag == OK_DELETE:
+            return {'tag': OK_DEL_WORKS}
+
+        # delete_tag == ERR_DELETE_DB
+        else:
+            return {'tag': ERR_DEL_WORKS_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试删除不存在的学生的作品集信息')
+        return {'tag': ERR_DEL_WORKS_DB}
+
+    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，删除作品集信息失败')
+        return {'tag': ERR_DEL_WORKS_DB}
 
 
 def get_skill(stu_id):

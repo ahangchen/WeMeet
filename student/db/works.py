@@ -71,3 +71,29 @@ def id_stu_update(works_id, stu, path=NO_INPUT, site=NO_INPUT):
         return ERR_UPDATE_DB
 
 
+def id_stu_delete(works_id, stu):
+    """
+    用works_id和stu删除作品集信息
+    成功：返回OK_DELETE
+    失败：返回ERR_DELETE_DB
+    """
+    try:
+        delete_works = StuWorks.objects.all().get(works_id=works_id, stu=stu)  # 抛出MultipleObjectsReturned或DoesNotExist
+        delete_works.delete()  # 不抛出异常
+        return OK_DELETE
+
+    except StuWorks.DoesNotExist:
+        logger.error('尝试删除学生id和作品集信息id不匹配的作品集信息')
+        return ERR_DELETE_DB
+
+    except StuWorks.MultipleObjectsReturned:
+        logger.info('数据库异常（存在重复记录）')
+        StuWorks.objects.all().filter(works_id=works_id, stu=stu).delete()  # 不抛异常
+        return OK_DELETE
+
+    # 数据库异常
+    except:
+        logger.error('数据库异常导致删除项目作品集信息失败')
+        return ERR_DELETE_DB
+
+
