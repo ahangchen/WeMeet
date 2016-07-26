@@ -97,3 +97,55 @@ def invite(name, leader, tel, mail):
 def bus_names():
     business = list(BusinessType.objects.values())
     return business
+
+
+def get(tid):
+    return Team.objects.filter(id=tid)
+
+
+def is_team_exist(tid):
+    return Team.objects.filter(id=tid).count() > 0
+
+
+def add_team_label(team, name):
+    label = Label(team=team, name=name)
+    label.save()
+    return label.id
+
+
+def rm_team_label(team, lid):
+    label = Label.objects.filter(team=team, id=lid)
+    if label.count() < 1:
+        return False
+    else:
+        label.delete()
+        return True
+
+
+def add_stu(team, stu):
+    team_stu = TeamStu(team=team, stu=stu)
+    team_stu.save()
+    return True
+
+
+def rm_team_stu(team, stu):
+    team_stus = TeamStu(team=team, stu=stu)
+    if team_stus.count() < 1:
+        return False
+    else:
+        team_stus.delete()
+        return True
+
+
+def acc(tid):
+    return Team.objects.filter(id=tid)
+
+
+def img_cnt():
+    return TeamImg.objects.count()
+
+
+def add_img(team, path):
+    img = TeamImg(team=team, path=path)
+    img.save()
+    return img.id
