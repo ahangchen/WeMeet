@@ -844,7 +844,7 @@
 - 参数
   - tid: 团队id
   - name: 本地图片名字
-- FILES：photo: 图片
+- FILES：img: 图片
 
 - 返回
    - 成功：
