@@ -45,6 +45,7 @@ CORS_ALLOW_HEADERS = (
     'authorization',
     'x-csrftoken',
     'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials'
 )
 
 INSTALLED_APPS = [
