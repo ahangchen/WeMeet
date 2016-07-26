@@ -42,35 +42,96 @@ $('#pwd').blur(function () {
     }
 }); //密码判断；
 $("#finish").click(function () {
-    var account;//未获取
     var credential = document.getElementById("hash_id").innerHTML;
+    var mail = document.getElementById("mail").innerHTML;
+     var account = document.getElementById("hash_id").innerHTML;
     var pwd = document.getElementById('pwd').value;
-    var pwd_hash = hex_sha1("pwd");
+    var pwd_hash = hex_sha1(pwd);
     if (pwd_flag == true) {
-        var data = {account: account, credential: credential, pwd: pwd_hash};
-        $.ajax({
-            type: 'POST',
-            data: data,
-            url: '../../data/find.json',
-            dataType: 'json',
-            success: function (data) {
-                if (data.err == 0) {
-                    $("#return_show").css("display", "none");
-                    $("#success-show").css("display", "block");
+        var return_url = window.location.href;
+        if (!return_url.match("stu")) {
+            var url = 'http://110.64.69.66:8081/team/update_pwd/';
+            var data = {mail: mail, key: credential, pwd: pwd_hash};
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.err == 0) {
+                        $("#return_show").css("display", "none");
+                        $("#success-show").css("display", "block");
+                    }
+                    if (data.err == -4) {
+                        document.getElementById('result').innerHTML = "账号不存在";
+                    }
+                    if (data.err == -7) {
+                        document.getElementById('result').innerHTML = "凭据错误";
+                    }
+                    if (data.err == -10) {
+                        document.getElementById('result').innerHTML = "操作失败";
+                    }
+                    if (data.err == -1) {
+                        document.getElementById('result').innerHTML = "请求方法错误";
+                    }
+                },
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
                 }
-                if (data.err == -4) {
-                    document.getElementById('result').innerHTML = "账号不存在";
+            });
+        }
+        else {
+            var url = 'http://110.64.69.66:8081/student/reset/';
+            var data = {account: account};
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: url,
+                dataType: 'json',
+                success: function (data) {
+                    if (data.err == 0) {
+                        $.ajax({
+                            type: 'POST',
+                            data: {account: data.account, credential: data.credential, pwd: pwd_hash},
+                            url: 'http://110.64.69.66:8081/student/cpwd/',
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.err == 0) {
+                                    $("#return_show").css("display", "none");
+                                    $("#success-show").css("display", "block");
+                                }
+                                if (data.err == -4) {
+                                    document.getElementById('result').innerHTML = "账号不存在";
+                                }
+                                if (data.err == -10) {
+                                    document.getElementById('result').innerHTML = "操作失败";
+                                }
+                                if (data.err == -7) {
+                                    document.getElementById('result').innerHTML = "凭据错误";
+                                }
+                                if (data.err == -1) {
+                                    document.getElementById('result').innerHTML = "请求方法错误";
+                                }
+                            }
+                        });
+                    }
+                    if (data.err == -4) {
+                        document.getElementById('result').innerHTML = "账号不存在";
+                    }
+                    if (data.err == -10) {
+                        document.getElementById('result').innerHTML = "操作失败";
+                    }
+                    if (data.err == -11) {
+                        document.getElementById('result').innerHTML = "请求已过期";
+                    }
+                    if (data.err == -1) {
+                        document.getElementById('result').innerHTML = "请求方法错误";
+                    }
+                },
+                headers: {
+                    "Access-Control-Allow-Origin": "*"
                 }
-                if (data.err == -7) {
-                    document.getElementById('result').innerHTML = "凭据错误";
-                }
-                if (data.err == -10) {
-                    document.getElementById('result').innerHTML = "操作失败";
-                }
-                if (data.err == -1) {
-                    document.getElementById('result').innerHTML = "请求方法错误";
-                }
-            }
-        });
+            });
+        }
     }
 })
