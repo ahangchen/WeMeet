@@ -29,6 +29,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
                                       NO_WORKS, NO_WORKS_MSG, \
+                                      NO_APPLY, NO_APPLY_MSG, \
                                       NO_SKILL, NO_SKILL_MSG, \
                                       NO_PROJ, NO_PROJ_MSG, \
                                       NO_EDU, NO_EDU_MSG, \
