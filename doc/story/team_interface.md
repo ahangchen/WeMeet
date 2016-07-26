@@ -812,7 +812,7 @@
 ### 30 邀请团队成员注册
 
 - url
-  -  http://110.64.69.66.8081/team/invite/
+  -  http://110.64.69.66.8081/team/invite_stu/
   - post
 - 参数
   - mail: 学生邮箱
@@ -876,7 +876,7 @@
   - post
 - 参数
   - tid: 团队id
-  - name: timg_id
+  - img_id: 照片id
 
 - 返回
    - 成功：
