@@ -23,6 +23,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       WORKS_INVALID, WORKS_INVALID_MSG, \
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
+                                      WORKS_EXIST, WORKS_EXIST_MSG, \
                                       ERR_METHOD, ERR_METHOD_MSG, \
                                       NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
@@ -108,6 +109,9 @@ from student.ctrl.tag import ERR_DEL_SKILL_DB
 from student.ctrl.tag import OK_SAVE_WORKS
 from student.ctrl.tag import ERR_SAVE_WORKS_FAIL
 from student.ctrl.tag import ERR_WORKS_FILE_INVALID
+from student.ctrl.tag import OK_ADD_WORKS
+from student.ctrl.tag import ERR_ADD_WORKS_EXIST
+from student.ctrl.tag import ERR_ADD_WORKS_DB
 
 
 # from student.util.tag import NO_INPUT
@@ -1083,6 +1087,51 @@ def del_proj(request):
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
 
         # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def add_works(request):
+    """
+    增加作品集信息
+    成功：返回{
+                'err': SUCCEED,
+                'works_id': add_rlt['works_id']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        path = request.POST.get('path')
+        site = request.POST.get('site')
+
+        add_rlt = info.add_works(stu_id, path, site)
+        # 如果增加作品集信息成功
+        if add_rlt['tag'] == OK_ADD_WORKS:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'works_id': add_rlt['works_id']
+            }))
+
+        # 如果已有作品集信息
+        elif add_rlt['tag'] == ERR_ADD_WORKS_EXIST:
+            return HttpResponse(json_helper.dumps({
+                'err': WORKS_EXIST,
+                'msg': WORKS_EXIST_MSG
+            }))
+
+        # 如果数据库异常导致增加作品集信息失败(add_rlt['tag'] == ERR_ADD_WORKS_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

@@ -59,6 +59,9 @@ from student.ctrl.tag import ERR_DEL_SKILL_DB
 from student.ctrl.tag import OK_SAVE_WORKS
 from student.ctrl.tag import ERR_SAVE_WORKS_FAIL
 from student.ctrl.tag import ERR_WORKS_FILE_INVALID
+from student.ctrl.tag import OK_ADD_WORKS
+from student.ctrl.tag import ERR_ADD_WORKS_EXIST
+from student.ctrl.tag import ERR_ADD_WORKS_DB
 
 # from student.util.file_helper import get_file_type
 from student.util.logger import logger
@@ -575,7 +578,7 @@ def add_proj(stu_id, name, duty, year, description):
     """
     增加项目经历
     成功：返回{'tag': OK_ADD_PROJ, 'proj_id': insert_rlt['proj'].proj_id}
-    失败：返回{'tag': ERR_ADD_PROJ_DB}
+    失败：返回{'tag': ERR_ADD_PROJ_DB}或{'tag': ERR_ADD_PROJ_FULL}
     @stu_id:关联的学生id
     @name: 项目名称
     @duty: 职责
@@ -760,6 +763,48 @@ def upload_works(stu_id, works):
         return {'tag': ERR_SAVE_WORKS_FAIL}
 
 
+def add_works(stu_id, path, site):
+    """
+    增加作品集信息
+    成功：返回{'tag': OK_ADD_WORKS, 'works_id': insert_rlt['works'].works_id}
+    失败：返回{'tag': ERR_ADD_WORKS_DB}或{'tag': ERR_ADD_WORKS_EXIST}
+    @stu_id:关联的学生id
+    @path: 作品集路径
+    @site: 作品集在线网址
+    """
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        works_select_rlt = works.stu_select(stu=select_rlt['stu'])
+        # 如果还没有作品集信息
+        if works_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+            insert_rlt = \
+                works.insert(path=path, site=site, stu=select_rlt['stu'])
+            # 如果插入成功：
+            if insert_rlt['tag'] == OK_INSERT:
+                return {'tag': OK_ADD_WORKS,
+                        'works_id': insert_rlt['works'].works_id}
+            # 如果插入失败（insert_rlt['tag'] == ERR_INSERT_DB）
+            else:
+                return {'tag': ERR_ADD_WORKS_DB}
+        # 如果已有作品集信息
+        elif works_select_rlt['tag'] == OK_SELECT:
+            return {'tag': ERR_ADD_WORKS_EXIST}
+        # 如果数据库异常导致无法确认是否已有作品集
+        else:
+            logger.error('数据库异常导致无法确认学生是否存在，增加作品集信息失败')
+            return {'tag': ERR_ADD_WORKS_DB}
+
+    # 如果学生记录不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试为不存在的学生增加作品集信息')
+        return {'tag': ERR_ADD_WORKS_DB}
+    # 如果数据库异常导致获取学生信息失败(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，增加作品集信息失败')
+        return {'tag': ERR_ADD_WORKS_DB}
+
+
 def get_skill(stu_id):
     """
     获取技能评价
@@ -803,7 +848,7 @@ def add_skill(stu_id, name, value):
     """
     增加技能评价
     成功：返回{'tag': OK_ADD_SKILL, 'skill_id': insert_rlt['skill'].skill_id}
-    失败：返回{'tag': ERR_ADD_SKILL_DB}
+    失败：返回{'tag': ERR_ADD_SKILL_DB}或{'tag': ERR_ADD_SKILL_FULL}
     @stu_id:关联的学生id
     @name: 技能名称
     @duty: 技能值
@@ -829,11 +874,11 @@ def add_skill(stu_id, name, value):
     # 如果学生记录不存在
     elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.warning('尝试为不存在的学生增加技能评价')
-        return {'tag': ERR_ADD_PROJ_DB}
+        return {'tag': ERR_ADD_SKILL_DB}
     # 如果数据库异常导致获取学生信息失败(select_rlt['tag'] == ERR_SELECT_DB)
     else:
         logger.error('数据库异常导致无法确认学生是否存在，增加技能评价失败')
-        return {'tag': ERR_ADD_PROJ_DB}
+        return {'tag': ERR_ADD_SKILL_DB}
 
 
 def update_skill(skill_id, stu_id, name, value):
