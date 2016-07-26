@@ -123,6 +123,8 @@ from student.ctrl.tag import ERR_GET_RESUME_DB
 
 # from student.util.tag import NO_INPUT
 from student.util import json_helper
+from team.util.request import is_valid_ok
+from team.util.request import resp_valid_err
 
 
 def post(request):
@@ -134,11 +136,8 @@ def post(request):
 def register(request):
     if request.method == "POST":
         # 如果验证码错误
-        if request.session['code'] != request.POST.get('code'):
-            return HttpResponse(json_helper.dumps(
-                {'err': ERR_VALID_CODE,
-                 'msg': ERR_VALID_CODE_MSG}
-            ))
+        if not is_valid_ok(request):
+            return resp_valid_err()
 
         # 如果验证码正确
         acnt = request.POST.get('account')
