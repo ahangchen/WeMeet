@@ -13,6 +13,8 @@ from student.db.tag import OK_SELECT
 from student.models import JobApply
 
 from student.util.logger import logger
+from student.util import value_update
+from student.util.value_update import NO_INPUT
 
 
 def insert(stu, job, state, team, resume_path, change_time, stu_read, team_read):
@@ -66,5 +68,28 @@ def stu_state_filter(stu, state):
     return JobApply.objects.filter(stu=stu, state=state)
 
 
+def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT, team_read=NO_INPUT):
+    """
+    用apply_id更新技能评价
+    成功：返回OK_UPDATE
+    失败：返回ERR_UPDATE_DB
+    """
+    try:
+        update_apply = JobApply.objects.all().get(apply_id=apply_id)
+
+        update_apply.state = value_update.value(update_apply.state, state)
+        update_apply.change_time = value_update.value(update_apply.change_time, change_time)
+        update_apply.stu_read = value_update.value(update_apply.stu_read, stu_read)
+        update_apply.team_read = value_update.value(update_apply.team_read, team_read)
+
+        update_apply.save()
+        return OK_UPDATE
+
+    except JobApply.DoesNotExist as e:
+        logger.warning(e.__str__() + "尝试更新不存在的投递记录")
+        return ERR_UPDATE_DB
+    except Exception as e:
+        logger.error(e.__str__() + ':数据库异常导致更新投递记录失败')
+        return ERR_UPDATE_DB
 
 

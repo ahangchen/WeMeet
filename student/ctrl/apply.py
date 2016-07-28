@@ -1,6 +1,8 @@
-from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB
+from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, \
+                           OK_UPDATE, ERR_UPDATE_DB
 
-from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB
+from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
+                             OK_READ_APPLY, ERR_READ_APPLY_DB
 
 from student.db import stu_info, job_apply
 from team.db import job, team
@@ -85,3 +87,26 @@ def stu_get_apply(stu_id, state):
     else:
         logger.error('数据库异常导致无法确认学生是否存在,获取学生的投递信息失败')
         return {'tag': ERR_GET_APPLY_DB}
+
+
+def set_read(apply_list):
+    """
+    设置投递记录为已读(学生)
+    成功：返回{'tag': OK_READ_APPLY}
+    失败：返回{'tag': ERR_READ_APPLY_DB}
+    """
+    fail_tag = False
+    for apply_id in apply_list:
+        update_tag = job_apply.update(apply_id=apply_id, stu_read=True)
+        # 如果更新失败(update_tag == ERR_UPDATE_DB)
+        if update_tag == ERR_UPDATE_DB:
+            logger.warning('apply_id为%s的投递记录设置已读失败' % apply_id)
+            fail_tag = True
+
+    # 如果更新成功
+    if not fail_tag:
+        return {'tag': OK_READ_APPLY}
+    # 如果更新失败(fail_tag)
+    else:
+        return {'tag': ERR_READ_APPLY_DB}
+

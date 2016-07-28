@@ -124,6 +124,9 @@ from student.ctrl.tag import ERR_GET_RESUME_DB
 from student.ctrl.tag import OK_GET_APPLY
 from student.ctrl.tag import ERR_GET_NO_APPLY
 from student.ctrl.tag import ERR_GET_APPLY_DB
+from student.ctrl.tag import OK_READ_APPLY
+from student.ctrl.tag import ERR_READ_APPLY_DB
+
 
 
 # from student.util.tag import NO_INPUT
@@ -1545,6 +1548,35 @@ def stu_get_apply(request):
             'msg': ERR_METHOD_MSG
         }))
 
+
+@csrf_exempt
+def set_apply_read(request):
+    """
+    设置投递记录为已读（学生）
+    成功：返回
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        apply_list = request.POST.getlist('apply_list[]')
+
+        rlt = apply.set_read(apply_list)
+        # 如果设置投递记录为已读
+        if rlt['tag'] == OK_READ_APPLY:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致设置投递记录为已读失败(add_rlt['tag'] == ERR_READ_APPLY_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 
