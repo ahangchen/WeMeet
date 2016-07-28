@@ -3,11 +3,13 @@ from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, \
 
 from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
                              OK_READ_APPLY, ERR_READ_APPLY_DB, \
+                             OK_APPLY_INFO, ERR_APPLY_INFO_DB, \
                              OK_DUMP, ERR_DUMP_DB
 
 from student.db import stu_info, job_apply
 from team.db import job, team
 from student.util.logger import logger
+from student.util.date_helper import curr_year, curr_month
 
 
 def dump_stu_apply(stu, state, rlt_list):
@@ -69,7 +71,7 @@ def dump_team_apply(team, state, rlt_list, unread_num):
     return OK_DUMP
 
 
-def stu_get_apply(stu_id, state):
+def stu_get_list(stu_id, state):
     """
     学生获取投递列表
     @stu_id: 学生id
@@ -144,7 +146,7 @@ def set_read(apply_list):
         return {'tag': ERR_READ_APPLY_DB}
 
 
-def team_get_apply(team_id, state):
+def team_get_list(team_id, state):
 
     """
     团队获取投递列表
@@ -214,3 +216,63 @@ def team_get_apply(team_id, state):
         logger.warning('尝试获取不存在团队的投递信息')
         return {'tag': ERR_GET_APPLY_DB}
 
+
+def team_get_info(apply_id):
+    """
+    团队获取投递信息
+    成功：返回{'tag': OK_APPLY_INFO,
+                    'stu_id': apply.stu_id,
+                    'name': stu.name,
+                    'avatar_path': stu.avatar_path,
+                    'sex': stu.sex,
+                    'age': stu.age,
+                    'mail': stu.mail,
+                    'tel': stu.tel,
+                    'school': stu.school,
+                    'major': stu.major,
+                    'location': stu.location,
+                    'resume_path': apply.resume_path,
+                    'state': apply.state
+                    }
+    失败：返回{'tag': ERR_APPLY_INFO_DB}
+    """
+    apply_select_rlt = job_apply.id_select(apply_id)
+
+    # 如果查询投递记录成功
+    if apply_select_rlt['tag'] == OK_SELECT:
+        apply = apply_select_rlt['apply']
+        stu_select_rlt = stu_info.select(apply.stu_id)
+
+        # 如果获取关联的学生成功
+        if stu_select_rlt['tag'] == OK_SELECT:
+            stu = stu_select_rlt['stu']
+            age = curr_year() - stu.year
+            if curr_month() < stu.month:
+                age -= 1
+            return {'tag': OK_APPLY_INFO,
+                    'stu_id': apply.stu_id,
+                    'name': stu.name,
+                    'avatar_path': stu.avatar_path,
+                    'sex': stu.sex,
+                    'age': age,
+                    'mail': stu.mail,
+                    'tel': stu.tel,
+                    'school': stu.school,
+                    'major': stu.major,
+                    'location': stu.location,
+                    'resume_path': apply.resume_path,
+                    'state': apply.state
+                    }
+
+        # 如果无法获取关联的学生
+        else:
+            logger.error('数据库异常，无法获取与投递记录关联的学生信息')
+            return {'tag': ERR_APPLY_INFO_DB}
+
+    # 如果投递记录不存在
+    elif apply_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试获取不存在的投递记录的信息')
+        return {'tag': ERR_APPLY_INFO_DB}
+    # 如果数据库异常导致获取投递信息失败
+    else:
+        return {'tag': ERR_APPLY_INFO_DB}

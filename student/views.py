@@ -126,6 +126,8 @@ from student.ctrl.tag import ERR_GET_NO_APPLY
 from student.ctrl.tag import ERR_GET_APPLY_DB
 from student.ctrl.tag import OK_READ_APPLY
 from student.ctrl.tag import ERR_READ_APPLY_DB
+from student.ctrl.tag import OK_APPLY_INFO
+from student.ctrl.tag import ERR_APPLY_INFO_DB
 
 
 
@@ -1518,7 +1520,7 @@ def stu_get_apply(request):
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
         state = request.POST.get('state')
-        get_rlt = apply.stu_get_apply(stu_id, state)
+        get_rlt = apply.stu_get_list(stu_id, state)
 
         # 如果获取成功
         if get_rlt['tag'] == OK_GET_APPLY:
@@ -1592,7 +1594,7 @@ def team_get_apply(request):
     if request.method == 'POST':
         team_id = request.POST.get('team_id')
         state = request.POST.get('state')
-        get_rlt = apply.team_get_apply(team_id, state)
+        get_rlt = apply.team_get_list(team_id, state)
 
         # 如果获取成功
         if get_rlt['tag'] == OK_GET_APPLY:
@@ -1624,7 +1626,62 @@ def team_get_apply(request):
         }))
 
 
+@csrf_exempt
+def apply_info(request):
+    """
+    团队获取投递信息
+    成功：返回{
+                    'err': SUCCEED,
+                    'stu_id': get_rlt['stu_id'],
+                    'name': get_rlt['name'],
+                    'avatar_path': get_rlt['avatar_path'],
+                    'sex': get_rlt['sex'],
+                    'age': get_rlt['age'],
+                    'mail': get_rlt['mail'],
+                    'tel': get_rlt['tel'],
+                    'school': get_rlt['school'],
+                    'major': get_rlt['major'],
+                    'location': get_rlt['location'],
+                    'resume_path': get_rlt['resume_path'],
+                    'state': get_rlt['state']
+                    }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        apply_id = request.POST.get('apply_id')
+        get_rlt = apply.team_get_info(apply_id)
 
+        # 如果获取成功
+        if get_rlt['tag'] == OK_APPLY_INFO:
+            return HttpResponse(json_helper.dumps({
+                    'err': SUCCEED,
+                    'stu_id': get_rlt['stu_id'],
+                    'name': get_rlt['name'],
+                    'avatar_path': get_rlt['avatar_path'],
+                    'sex': get_rlt['sex'],
+                    'age': get_rlt['age'],
+                    'mail': get_rlt['mail'],
+                    'tel': get_rlt['tel'],
+                    'school': get_rlt['school'],
+                    'major': get_rlt['major'],
+                    'location': get_rlt['location'],
+                    'resume_path': get_rlt['resume_path'],
+                    'state': get_rlt['state']
+                    }))
+
+        # get_rlt['tag'] == ERR_APPLY_INFO_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 

@@ -102,3 +102,19 @@ def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT, te
         return ERR_UPDATE_DB
 
 
+def id_select(apply_id):
+    """
+    成功：返回{'tag': OK_SELECT, 'apply': select_apply}
+    失败：返回{'tag': ERR_SELECT_NOTEXIST}
+           或{'tag': ERR_SELECT_DB}
+    """
+    try:
+        select_apply = JobApply.objects.all().get(apply_id=apply_id)
+        return {'tag': OK_SELECT,
+                'apply': select_apply}
+    except JobApply.DoesNotExist:
+        return {'tag': ERR_SELECT_NOTEXIST}
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致查询投递记录失败')
+        return {'tag': ERR_SELECT_DB}
+
