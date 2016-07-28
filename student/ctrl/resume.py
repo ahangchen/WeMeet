@@ -111,13 +111,14 @@ def apply(stu_id, job_id):
                 # 如果尚未投递
                 if select_apply_rlt['tag'] == ERR_SELECT_NOTEXIST:
                     insert_apply_rlt = \
-                        job_apply.insert(stu=stu, job=select_job_rlt, state=0, team=team, resume_path=stu.resume_path,
+                        job_apply.insert(stu=stu, job=select_job_rlt, state=0, team=team,
+                                         apply_time=date_helper.curr_time(), resume_path=stu.resume_path,
                                          change_time=date_helper.now(), stu_read=True, team_read=False)
 
                     # 如果投递成功
                     if insert_apply_rlt['tag'] == OK_INSERT:
                         return {'tag': OK_APPLY,
-                                'apply_id': insert_apply_rlt['apply'].id}
+                                'apply_id': insert_apply_rlt['apply'].apply_id}
 
                     # 如果投递失败insert_apply_rlt['tag'] == ERR_INSERT_DB
                     else:

@@ -86,8 +86,8 @@ def select(stu_id):
                 'stu': select_stu}
     except StuInfo.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致查询学生失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致查询学生失败')
         return {'tag': ERR_SELECT_DB}
 
 

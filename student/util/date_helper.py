@@ -48,3 +48,12 @@ def curr_month():
     return datetime.datetime.now().month
 
 
+def curr_time():
+    """hh
+    返回%s年%s月%s日%s:%s
+    """
+    t = datetime.datetime.now()
+    return '%s年%s月%s日%s:%s' % (t.year, t.month, t.day, t.hour, t.minute)
+
+
+

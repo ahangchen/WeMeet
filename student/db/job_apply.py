@@ -17,7 +17,7 @@ from student.util import value_update
 from student.util.value_update import NO_INPUT
 
 
-def insert(stu, job, state, team, resume_path, change_time, stu_read, team_read):
+def insert(stu, job, state, team, apply_time, resume_path, change_time, stu_read, team_read):
     """
     插入一条投递简历的记录
     成功：{'tag': OK_INSERT, 'apply': new_apply}
@@ -28,6 +28,7 @@ def insert(stu, job, state, team, resume_path, change_time, stu_read, team_read)
                              job=job,
                              state=state,
                              team=team,
+                             apply_time=apply_time,
                              resume_path=resume_path,
                              change_time=change_time,
                              stu_read=stu_read,
@@ -37,8 +38,8 @@ def insert(stu, job, state, team, resume_path, change_time, stu_read, team_read)
                 'apply': new_apply}
 
     # 如果插入投递记录发生异常
-    except:
-        logger.error('数据库异常导致插入投递简历记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入投递简历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -55,8 +56,8 @@ def stu_job_select(stu, job):
                 'apply': select_apply}
     except JobApply.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致查询投递记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致查询投递记录失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -66,6 +67,14 @@ def stu_state_filter(stu, state):
     返回QuerySet
     """
     return JobApply.objects.filter(stu=stu, state=state)
+
+
+def team_state_filter(team, state):
+    """
+    用团队和投递状态查询投递记录
+    返回QuerySet
+    """
+    return JobApply.objects.filter(team=team, state=state)
 
 
 def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT, team_read=NO_INPUT):

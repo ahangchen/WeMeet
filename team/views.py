@@ -2,6 +2,7 @@
 from django.shortcuts import render
 
 # Create your views here.
+from student.views import team_get_apply
 from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
 from student.ctrl.tag import OK_REG
 from team.ctrl import acc_mng
@@ -683,3 +684,14 @@ def invite_stu(request):
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
+
+
+@csrf_exempt
+def get_apply_list(request):
+    """
+    团队获取投递列表
+    """
+    return team_get_apply(request)
+
+
+

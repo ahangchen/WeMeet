@@ -1511,7 +1511,7 @@ def del_skill(request):
 @csrf_exempt
 def stu_get_apply(request):
     """
-    学生获取投递记录
+    学生获取投递列表
     成功：返回
     失败：返回相应的err和msg的JSON
     """
@@ -1579,6 +1579,49 @@ def set_apply_read(request):
         }))
 
 
+@csrf_exempt
+def team_get_apply(request):
+    """
+    团队获取投递列表
+    成功：返回{
+                'err': SUCCEED,
+                'apply_list': get_rlt['apply_list']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        state = request.POST.get('state')
+        get_rlt = apply.team_get_apply(team_id, state)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_APPLY:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'apply_list': get_rlt['apply_list'],
+                'unread_num': get_rlt['unread_num']
+            }))
+
+        # 如果该团队没有投递记录
+        elif get_rlt['tag'] == ERR_GET_NO_APPLY:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_APPLY,
+                'msg': NO_APPLY_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_APPLY_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 
