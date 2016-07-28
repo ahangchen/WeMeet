@@ -253,8 +253,6 @@ def add_job(request):
         req_data = json.loads(request.body.decode('utf-8'))
     else:
         req_data = request.POST
-    print(req_data)
-    job_form = JobForm(req_data,request.FILES)
 
     job_form = JobForm(req_data, request.FILES)
     if job_form.is_valid():

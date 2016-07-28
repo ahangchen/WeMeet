@@ -15,6 +15,7 @@ class JobForm(forms.Form):
     work_cmd = forms.CharField(required=False, initial='')
     pub_state = forms.IntegerField(required=False, initial=0)
     team_id = forms.IntegerField(required=False, initial=2)
+    address = forms.CharField(required=False, initial='')
 
     def clean(self):
         cleaned_data = super(JobForm, self).clean()

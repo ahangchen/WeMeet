@@ -218,6 +218,7 @@
   - prince: 工作地点省份
   - city: 工作地点城市
   - town: 工作地点区
+  - address: 详细地址
   - exp_cmd: 工作经验
   - w_type: 工作类型
   - job_cmd：岗位要求
