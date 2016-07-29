@@ -53,6 +53,10 @@ def dump_team_apply(team, state, rlt_list, unread_num):
             logger.error('数据库异常导致无法查询apply_id为%s的投递关联的学生' % (apply.apply_id))
             return ERR_DUMP_DB
 
+        is_read = True
+        if state == 0:
+            is_read = False
+
         # 如果获取学生成功
         apply_stu = select_rlt['stu']
         rlt_list.append({'apply_id': apply.apply_id,
@@ -62,10 +66,10 @@ def dump_team_apply(team, state, rlt_list, unread_num):
                          'job_name': apply_job.name,
                          'stu_name': apply_stu.name,
                          'apply_time': apply.apply_time,
-                         'is_read': int(apply.team_read)
+                         'is_read': int(is_read)
                          })
 
-        if not apply.team_read:
+        if not is_read:
             unread_num[0] += 1
 
     return OK_DUMP

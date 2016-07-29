@@ -113,7 +113,7 @@ def apply(stu_id, job_id):
                     insert_apply_rlt = \
                         job_apply.insert(stu=stu, job=select_job_rlt, state=0, team=team,
                                          apply_time=date_helper.curr_time(), resume_path=stu.resume_path,
-                                         change_time=date_helper.now(), stu_read=True, team_read=False)
+                                         change_time=date_helper.now(), stu_read=True)
 
                     # 如果投递成功
                     if insert_apply_rlt['tag'] == OK_INSERT:
