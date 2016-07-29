@@ -88,7 +88,7 @@ def stu_get_list(stu_id, state):
     if select_rlt['tag'] == OK_SELECT:
         apply_list = []
         if state == 5:
-            for s in range(1, 5):
+            for s in range(0, 5):
                 dump_stu_apply(stu=select_rlt['stu'], state=s, rlt_list=apply_list)
 
             if not apply_list:
@@ -98,7 +98,7 @@ def stu_get_list(stu_id, state):
                 'apply_list': apply_list
             }
 
-        elif state in range(1, 5):
+        elif state in range(0, 5):
             dump_stu_apply(stu=select_rlt['stu'], state=state, rlt_list=apply_list)
 
             if not apply_list:

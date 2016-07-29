@@ -254,7 +254,7 @@ def add_job(request):
         req_data = json.loads(request.body.decode('utf-8'))
     else:
         req_data = request.POST
-
+    print(req_data)
     job_form = JobForm(req_data, request.FILES)
     if job_form.is_valid():
         job = Job(**job_form.cleaned_data)
@@ -307,7 +307,11 @@ def search_job(request):
         return resp_method_err()
 
     team_id = job_type = request.POST.get('teamId')
-    job_type = request.POST.getlist('jobTags[]')
+    job_tags = request.POST.getlist('jobTags[]')
+    job_type = list()
+    for job_tag in job_tags:
+        if job_tag != '':
+            job_type.append(job_tag)
     print(job_type)
 
     if False:  # ToDo(wang) check param # not job_type[0].isdigit():

@@ -583,6 +583,7 @@ def get_resume(request):
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
+        print(stu_id)
         get_rlt = resume.get(stu_id)
 
         # 如果获取成功
@@ -1520,6 +1521,8 @@ def stu_get_apply(request):
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
         state = request.POST.get('state')
+        print(stu_id)
+        print(state)
         get_rlt = apply.stu_get_list(stu_id, state)
 
         # 如果获取成功
