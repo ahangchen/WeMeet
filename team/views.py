@@ -423,8 +423,8 @@ def login(request):
     """
     if not is_post(request):
         return resp_method_err()
-    if not is_valid_ok(request):
-        return resp_valid_err()
+    # if not is_valid_ok(request):
+    #     return resp_valid_err()
     acnt = request.POST.get('mail')
     pwd = request.POST.get('pwd')
     ret, tid = acc_mng.login(acnt, pwd)
