@@ -38,8 +38,8 @@ def insert(name, duty, year, description, stu):
         new_proj.save()
         return {'tag': OK_INSERT,
                 'proj': new_proj}
-    except:
-        logger.error('数据库异常导致插入项目经历记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入项目经历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -69,8 +69,8 @@ def id_stu_update(proj_id, stu, name=NO_INPUT, duty=NO_INPUT, year=NO_INPUT, des
     except StuProj.DoesNotExist:
         logger.warning("尝试更新学生id和项目经历id不匹配的项目经历")
         return ERR_UPDATE_DB
-    except:
-        logger.error('数据库异常导致更新项目经历失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致更新项目经历失败')
         return ERR_UPDATE_DB
 
 
@@ -95,6 +95,6 @@ def id_stu_delete(proj_id, stu):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除项目经历失败')
+    except Exception as e:
+        logger.error(e.__str__()+ '数据库异常导致删除项目经历失败')
         return ERR_DELETE_DB

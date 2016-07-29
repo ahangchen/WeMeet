@@ -25,8 +25,8 @@ def stu_select(stu):
                 'works': select_works}
     except StuWorks.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致获取作品信息失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致获取作品信息失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -44,8 +44,8 @@ def insert(path, site, stu):
         new_works.save()
         return {'tag': OK_INSERT,
                 'works': new_works}
-    except:
-        logger.error('数据库异常导致插入作品集记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入作品集记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -66,8 +66,8 @@ def id_stu_update(works_id, stu, path=NO_INPUT, site=NO_INPUT):
     except StuWorks.DoesNotExist:
         logger.error('尝试更新学生id和作品集信息id不匹配的作品集信息')
         return ERR_UPDATE_NOTEXIST
-    except:
-        logger.error('数据库异常导致更新作品集信息失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致更新作品集信息失败')
         return ERR_UPDATE_DB
 
 
@@ -92,8 +92,8 @@ def id_stu_delete(works_id, stu):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除项目作品集信息失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除项目作品集信息失败')
         return ERR_DELETE_DB
 
 

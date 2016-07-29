@@ -37,8 +37,8 @@ def insert(name, value, stu):
         new_skill.save()
         return {'tag': OK_INSERT,
                 'skill': new_skill}
-    except:
-        logger.error('数据库异常导致插入技能评价记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入技能评价记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -64,8 +64,8 @@ def id_stu_update(skill_id, stu, name=NO_INPUT, value=NO_INPUT):
     except StuSkill.DoesNotExist:
         logger.warning("尝试更新学生id和技能评价id不匹配的技能评价")
         return ERR_UPDATE_DB
-    except:
-        logger.error('数据库异常导致更新技能评价失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致更新技能评价失败')
         return ERR_UPDATE_DB
 
 
@@ -90,6 +90,6 @@ def id_stu_delete(skill_id, stu):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除项目技能评价失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除项目技能评价失败')
         return ERR_DELETE_DB

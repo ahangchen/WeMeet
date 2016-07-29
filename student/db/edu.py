@@ -37,8 +37,8 @@ def select(id):
                 'edu': select_edu}
     except StuEdu.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致查询教育经历记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致查询教育经历记录失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -68,8 +68,8 @@ def id_stu_update(edu_id, stu, major=NO_INPUT, graduation_year=NO_INPUT, backgro
     except StuEdu.DoesNotExist:
         logger.warning("尝试更新学生id和教育经历id不匹配的教育经历")
         return ERR_UPDATE_DB
-    except:
-        logger.error('数据库异常导致更新教育经历失败')
+    except Exception as e:
+        logger.error(e.__str__() +'数据库异常导致更新教育经历失败')
         return ERR_UPDATE_DB
 
 
@@ -99,8 +99,8 @@ def update(edu_id, major=NO_INPUT, graduation_year=NO_INPUT, background=NO_INPUT
     except StuEdu.DoesNotExist:
         logger.error('尝试更新不存在的教育经历记录')
         return ERR_UPDATE_NOTEXIST
-    except:
-        logger.error('数据库异常导致更新教育经历失败')
+    except Exception as e:
+        logger.error(e.__str__()+ '数据库异常导致更新教育经历失败')
         return ERR_UPDATE_DB
 
 
@@ -120,8 +120,8 @@ def insert(major, graduation_year, background, school, stu):
         new_edu.save()
         return {'tag': OK_INSERT,
                 'edu': new_edu}
-    except:
-        logger.error('数据库异常导致插入教育经历记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入教育经历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -142,8 +142,8 @@ def id_insert(edu_id, major, graduation_year, background, school, stu):
         new_edu.save()
         return {'tag': OK_INSERT,
                 'edu': new_edu}
-    except:
-        logger.error('数据库异常导致插入教育经历记录失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入教育经历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -168,8 +168,8 @@ def delete(edu_id):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除教育经历失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除教育经历失败')
         return ERR_DELETE_DB
 
 
@@ -194,8 +194,8 @@ def id_stu_delete(edu_id, stu):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除教育经历失败')
+    except Exception as e:
+        logger.error(e.__str__()+ '数据库异常导致删除教育经历失败')
         return ERR_DELETE_DB
 
 
