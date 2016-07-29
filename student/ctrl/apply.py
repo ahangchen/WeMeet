@@ -2,6 +2,7 @@ from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, \
                            OK_UPDATE, ERR_UPDATE_DB
 
 from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
+                             OK_HANDLE, ERR_HANDLE_DB, ERR_STATE, \
                              OK_READ_APPLY, ERR_READ_APPLY_DB, \
                              OK_APPLY_INFO, ERR_APPLY_INFO_DB, \
                              OK_REPLY, ERR_REPLY_DB, \
@@ -318,3 +319,38 @@ def reply(apply_id, text):
     # 如果数据库异常导致获取投递信息失败
     else:
         return ERR_REPLY_DB
+
+
+def handle(apply_id, new_state):
+    """
+    处理投递（团队）
+    @apply_id:
+    @state: 投递状态，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
+    成功：返回OK_HANDLE
+    失败：返回ERR_STATE或ERR_HANDLE_DB
+    """
+    new_state = int(new_state)
+
+    if new_state not in range(1, 5):
+        logger.warning('尝试用不合法的state处理投递')
+        return ERR_STATE
+
+    apply_select_rlt = job_apply.id_select(apply_id)
+    # 如果查询投递记录成功
+    if apply_select_rlt['tag'] == OK_SELECT:
+        update_tag = job_apply.update(apply_id=apply_id, state=new_state, stu_read=False)
+
+        # 如果处理成功
+        if update_tag == OK_UPDATE:
+            return OK_HANDLE
+        # 如果处理失败(update_tag == ERR_UPDATE_DB)
+        else:
+            return ERR_HANDLE_DB
+
+    # 如果投递记录不存在
+    elif apply_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试处理不存在的投递记录的信息')
+        return ERR_HANDLE_DB
+    # 如果数据库异常导致获取投递信息失败
+    else:
+        return ERR_HANDLE_DB

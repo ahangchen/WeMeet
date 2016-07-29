@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'^apply/list/$', views.get_apply_list),
     url(r'^apply/info/$', views.get_apply_info),
     url(r'^apply/mail/$', views.apply_mail),
+    url(r'^apply/handle/$', views.apply_handle),
 ]
