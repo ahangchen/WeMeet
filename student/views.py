@@ -204,8 +204,8 @@ def activate(request, cipher):
             }))
 
         # 如果激活成功
-        return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
+        # return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+        return render(request, 'stu/act_succ.html')
     # 如果请求的方法是POST
     else:
         return HttpResponse(json_helper.dumps({

@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: "Roboto", sans-serif;
+    box-sizing: content-box;
+}
+html{
+    background-image: url(../img/bg.svg);
+    background-size: 100% auto;
+}
+
+body{
+    margin: auto;
+    background: rgba(0, 0, 0, 0);
+}
+
