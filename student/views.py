@@ -128,6 +128,11 @@ from student.ctrl.tag import OK_READ_APPLY
 from student.ctrl.tag import ERR_READ_APPLY_DB
 from student.ctrl.tag import OK_APPLY_INFO
 from student.ctrl.tag import ERR_APPLY_INFO_DB
+from student.ctrl.tag import OK_REPLY
+from student.ctrl.tag import ERR_REPLY_DB
+from student.ctrl.tag import OK_HANDLE
+from student.ctrl.tag import ERR_STATE
+from student.ctrl.tag import ERR_HANDLE_DB
 
 
 
@@ -1687,7 +1692,66 @@ def apply_info(request):
         }))
 
 
+@csrf_exempt
+def apply_reply(request):
+    """
+    邮件回复投递（团队）
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        apply_id = request.POST.get('apply_id')
+        text = request.POST.get('text')
+        tag = apply.reply(apply_id, text)
 
+        # 如果获取成功
+        if tag == OK_REPLY:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # tag == ERR_REPLY_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def team_apply_handle(request):
+    """
+    处理投递（团队）
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        apply_id = request.POST.get('apply_id')
+        state = request.POST.get('state')
+        tag = apply.handle(apply_id, state)
+
+        # 如果处理成功
+        if tag == OK_HANDLE:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # tag == ERR_STATE或tag == ERR_HANDLE_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 

@@ -22,8 +22,6 @@ class JobApply(models.Model):
     apply_time = models.CharField(max_length=DATE_MAX_LENGTH, blank=True, null=True, default='')
     # 学生已阅读
     stu_read = models.BooleanField(default=False)
-    # 团队已阅读
-    team_read = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'job_apply'

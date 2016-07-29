@@ -2,14 +2,18 @@ from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, \
                            OK_UPDATE, ERR_UPDATE_DB
 
 from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
+                             OK_HANDLE, ERR_HANDLE_DB, ERR_STATE, \
                              OK_READ_APPLY, ERR_READ_APPLY_DB, \
                              OK_APPLY_INFO, ERR_APPLY_INFO_DB, \
+                             OK_REPLY, ERR_REPLY_DB, \
                              OK_DUMP, ERR_DUMP_DB
 
 from student.db import stu_info, job_apply
 from team.db import job, team
 from student.util.logger import logger
 from student.util.date_helper import curr_year, curr_month
+
+from django.core.mail import send_mail
 
 
 def dump_stu_apply(stu, state, rlt_list):
@@ -53,6 +57,10 @@ def dump_team_apply(team, state, rlt_list, unread_num):
             logger.error('数据库异常导致无法查询apply_id为%s的投递关联的学生' % (apply.apply_id))
             return ERR_DUMP_DB
 
+        is_read = True
+        if state == 0:
+            is_read = False
+
         # 如果获取学生成功
         apply_stu = select_rlt['stu']
         rlt_list.append({'apply_id': apply.apply_id,
@@ -62,10 +70,10 @@ def dump_team_apply(team, state, rlt_list, unread_num):
                          'job_name': apply_job.name,
                          'stu_name': apply_stu.name,
                          'apply_time': apply.apply_time,
-                         'is_read': int(apply.team_read)
+                         'is_read': int(is_read)
                          })
 
-        if not apply.team_read:
+        if not is_read:
             unread_num[0] += 1
 
     return OK_DUMP
@@ -276,3 +284,73 @@ def team_get_info(apply_id):
     # 如果数据库异常导致获取投递信息失败
     else:
         return {'tag': ERR_APPLY_INFO_DB}
+
+
+def reply(apply_id, text):
+    """
+    邮件回复投递（团队）
+    @apply_id:
+    @text: 邮件内容
+    成功：返回OK_REPLY
+    失败：返回ERR_REPLY_DB
+    """
+    apply_select_rlt = job_apply.id_select(apply_id)
+
+    # 如果查询投递记录成功
+    if apply_select_rlt['tag'] == OK_SELECT:
+        apply = apply_select_rlt['apply']
+        stu_select_rlt = stu_info.select(apply.stu_id)
+
+        # 如果获取关联的学生成功
+        if stu_select_rlt['tag'] == OK_SELECT:
+            mail = stu_select_rlt['stu'].mail
+            send_mail('WeMeet投递职位回复邮件', text, 'm18826076291@sina.com', [mail])  # TODO(hjf): 修改邮件标题、发送邮箱
+            return OK_REPLY
+
+        # 如果无法获取关联的学生
+        else:
+            logger.error('数据库异常，无法获取与投递记录关联的学生信息')
+            return ERR_REPLY_DB
+
+    # 如果投递记录不存在
+    elif apply_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试回复不存在的投递')
+        return ERR_REPLY_DB
+    # 如果数据库异常导致获取投递信息失败
+    else:
+        return ERR_REPLY_DB
+
+
+def handle(apply_id, new_state):
+    """
+    处理投递（团队）
+    @apply_id:
+    @state: 投递状态，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
+    成功：返回OK_HANDLE
+    失败：返回ERR_STATE或ERR_HANDLE_DB
+    """
+    new_state = int(new_state)
+
+    if new_state not in range(1, 5):
+        logger.warning('尝试用不合法的state处理投递')
+        return ERR_STATE
+
+    apply_select_rlt = job_apply.id_select(apply_id)
+    # 如果查询投递记录成功
+    if apply_select_rlt['tag'] == OK_SELECT:
+        update_tag = job_apply.update(apply_id=apply_id, state=new_state, stu_read=False)
+
+        # 如果处理成功
+        if update_tag == OK_UPDATE:
+            return OK_HANDLE
+        # 如果处理失败(update_tag == ERR_UPDATE_DB)
+        else:
+            return ERR_HANDLE_DB
+
+    # 如果投递记录不存在
+    elif apply_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试处理不存在的投递记录的信息')
+        return ERR_HANDLE_DB
+    # 如果数据库异常导致获取投递信息失败
+    else:
+        return ERR_HANDLE_DB

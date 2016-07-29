@@ -2,7 +2,7 @@
 from django.shortcuts import render
 
 # Create your views here.
-from student.views import team_get_apply, apply_info
+from student.views import team_get_apply, apply_info, apply_reply, team_apply_handle
 from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
 from student.ctrl.tag import OK_REG
 from team.ctrl import acc_mng
@@ -704,5 +704,21 @@ def get_apply_info(request):
     团队获取投递信息
     """
     return apply_info(request)
+
+
+@csrf_exempt
+def apply_mail(request):
+    """
+    团队邮件回复投递
+    """
+    return apply_reply(request)
+
+
+@csrf_exempt
+def apply_handle(request):
+    """
+    团队邮件回复投递
+    """
+    return team_apply_handle(request)
 
 

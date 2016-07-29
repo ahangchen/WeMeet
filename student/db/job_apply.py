@@ -17,7 +17,7 @@ from student.util import value_update
 from student.util.value_update import NO_INPUT
 
 
-def insert(stu, job, state, team, apply_time, resume_path, change_time, stu_read, team_read):
+def insert(stu, job, state, team, apply_time, resume_path, change_time, stu_read):
     """
     插入一条投递简历的记录
     成功：{'tag': OK_INSERT, 'apply': new_apply}
@@ -31,8 +31,7 @@ def insert(stu, job, state, team, apply_time, resume_path, change_time, stu_read
                              apply_time=apply_time,
                              resume_path=resume_path,
                              change_time=change_time,
-                             stu_read=stu_read,
-                             team_read=team_read)
+                             stu_read=stu_read)
         new_apply.save()
         return {'tag': OK_INSERT,
                 'apply': new_apply}
@@ -77,7 +76,7 @@ def team_state_filter(team, state):
     return JobApply.objects.filter(team=team, state=state)
 
 
-def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT, team_read=NO_INPUT):
+def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT):
     """
     用apply_id更新技能评价
     成功：返回OK_UPDATE
@@ -89,7 +88,6 @@ def update(apply_id, state=NO_INPUT, change_time=NO_INPUT, stu_read=NO_INPUT, te
         update_apply.state = value_update.value(update_apply.state, state)
         update_apply.change_time = value_update.value(update_apply.change_time, change_time)
         update_apply.stu_read = value_update.value(update_apply.stu_read, stu_read)
-        update_apply.team_read = value_update.value(update_apply.team_read, team_read)
 
         update_apply.save()
         return OK_UPDATE

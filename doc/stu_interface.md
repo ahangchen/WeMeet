@@ -45,7 +45,7 @@
     * 成功：
         * JSON: {"err": err, 'id': stu_id}
             * err: 0
-            * id: 对应的学生id
+            * id: 对应的学生id 
     * 失败：
         * JSON: {"err": err, "msg": msg}
             * err: -4/-5/-6/-1/-10
@@ -106,7 +106,7 @@
 ***
 
 ###7. 获取学生信息
-* http://110.64.69.66:8081/student/info/
+* http://110.64.69.66:8081/student/info/get/
 * POST
 * 参数：
     * id： 学生id（由登陆获得）
@@ -116,14 +116,19 @@
             　　　　　"avatar_pah": avatar_path,   
             　　　　　"name": name,   
             　　　　　"school": school,  
-            　　　　　"edu_background": edu_background,  
-            　　　　　"grade": grade,  
             　　　　　"major": major,  
+            　　　　　"sex": sex,  
+            　　　　　"age": age,  
+            　　　　　"year": year,  
+            　　　　　"month": month,     
             　　　　　"location": location,  
             　　　　　"tel": tel,  
             　　　　　"mail": mail}  
 
             * err: 0
+            * sex: 性别 0表示未填，1表示男，2表示女  
+            * year: 出生年份  -1表示空
+            * month：出生月份  -1表示空
             
     * 失败：
         * JSON: {"err": err, "msg": msg}
@@ -158,10 +163,11 @@
     * path： 头像路径（由上传头像获得） 
     * name 
     * school  
-    * major: 专业  
-    * location：所在地  
-    * edu_background： 学历 
-    * grade： 年级 
+    * major: 专业 
+    * sex: 性别 0表示未填，1表示男，2表示女 
+    * year: 出生年份 
+    * month： 出生月份 
+    * location：所在城市 
     * mail 
     * tel： 联系方式
 * 返回： 
@@ -203,10 +209,626 @@
     * 成功：
         * JSON： {"err": err, "apply_id": job_apply_id}
             * err: 0
-            * apply_id: 投递记录的id
+            * apply_id: 投递记录的id 
     * 失败：
         * JSON： {"err": err, "msg": msg}
             * err: -15/-16/-1/10
             * msg: 未上传简历/多次投递同一职位/请求方法错误/操作失败
+
+***
+
+###12. 查询简历
+* http://110.64.69.66:8081/student/resume/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "path": resume_path}
+            * err: 0
+            * resume_path: 简历的路径
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -15/-1/10
+            * msg: 未上传简历/请求方法错误/操作失败
+
+***
+
+###13. 查询教育经历
+* http://110.64.69.66:8081/student/info/edu/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err,  "grade": grade,  "edu_background": edu_background,    
+        　　　"edu_list": [{  
+            　　　　　"edu_id": edu_id,  
+            　　　　　"major": major,   
+            　　　　　"graduation_year": graduation_year,   
+            　　　　　"edu_background": edu_background,   
+            　　　　　"school": school},  
+            　　　...]}
+            * err: 0
+            * grade: 个人信息中的年级
+            * edu_background: 个人信息中的学历 
+            * edu_list.edu_id: 教育经历记录的id
+            * edu_list.major: 教育经历的专业
+            * edu_list.graduation_year: 教育经历的毕业年份 
+            * edu_list.edu_background: 教育经历的学历 
+            * edu_list.school: 教育经历的学校
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -118/-1/-10
+            * msg: 无教育经历/请求方法错误/操作失败
+            
+***
+
+###14. 查询实习经历
+* http://110.64.69.66:8081/student/info/intern/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err,    
+        　　　　"intern_list": [{  
+            　　　　　　"intern_id": intern_id,  
+            　　　　　　"company": company,   
+            　　　　　　"position": position,   
+            　　　　　　"begin_time": begin_time,   
+            　　　　　　"end_time": end_time,  
+            　　　　　　"description": description},  
+            　　　...]}
+            * err: 0
+            * intern_list.intern_id: 实习经历记录的id 
+            * intern_list.company: 公司
+            * intern_list.position: 职位
+            * intern_list.begin_time: 开始时间
+            * intern_list.end_time: 结束时间
+            * intern_list.description: 职能描述
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -119/-1/-10
+            * msg: 无实习经历/请求方法错误/操作失败
+            
+***
+
+###15. 查询项目经历
+* http://110.64.69.66:8081/student/info/proj/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err,    
+        　　　　"proj_list": [{  
+            　　　　　　"proj_id": proj_id,  
+            　　　　　　"name": name,   
+            　　　　　　"duty": duty,   
+            　　　　　　"year": year,     
+            　　　　　　"description": description},  
+            　　　...]}
+            * err: 0
+            * proj_id: 项目经历记录的id 
+            * name: 项目名称
+            * duty: 职责
+            * year: 项目年份 
+            * description: 项目简述
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -120/-1/-10
+            * msg: 无项目经历/请求方法错误/操作失败
+                        
+***
+
+###16. 查询作品集
+* http://110.64.69.66:8081/student/info/works/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "work_id": work_id, "path": path, "site": site}
+            * err: 0
+            * works_id: 作品集记录的id 
+            * path: 作品集的路径
+            * site: 作品集的在线网址
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -121/-1/-10
+            * msg: 无作品集/请求方法错误/操作失败
+
+***
+
+###17. 查询技能评价
+* http://110.64.69.66:8081/student/info/skill/get/
+* POST
+* 参数：
+    * stu_id: 学生id
+* 返回：
+    * 成功：
+        * JSON： {"err": err,    
+        　　　　"skill_list": [{  
+            　　　　　　"skill_id": skill_id,  
+            　　　　　　"name": name,   
+            　　　　　　"value": value},  
+            　　　...]}
+            * err: 0
+            * skill_id: 技能评价记录的id 
+            * name: 技能名称
+            * value: 技能评价的值 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -122/-1/-10
+            * msg: 无技能评价/请求方法错误/操作失败
+
+***                                   
+
+###18. 增加教育经历
+* http://110.64.69.66:8081/student/info/edu/add/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * major: 专业
+    * graduation_year: 毕业年份
+    * edu_background: 学历（0表示其他，1表示大专，2表示本科，3表示硕士，4表示博士） 
+    * school: 学校
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "edu_id": edu_id}
+            * err: 0
+            * edu_id: 增加的教育经历记录的id 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -123/-1/-10
+            * msg: 教育经历已达上限/请求方法错误/操作失败
+
+***
+
+###19. 更新教育经历
+* http://110.64.69.66:8081/student/info/edu/update/
+* POST
+* 参数：
+    * stu_id
+    * edu_id: 
+    * major: 专业
+    * graduation_year: 毕业年份
+    * edu_background: 学历（0表示其他，1表示大专，2表示本科，3表示硕士，4表示博士）
+    * school: 学校
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "grade": grade, "edu_background": edu_background}
+            * err: 0
+            * grade: 个人信息中的年级
+            * edu_background: 个人信息中的学历 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###20. 增加实习经历
+* http://110.64.69.66:8081/student/info/intern/add/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * company: 公司
+    * position: 职位
+    * begin_time: 开始时间
+    * end_time: 结束时间
+    * description: 职能描述
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "intern_id": intern_id}
+            * err: 0
+            * intern_id: 增加的实习经历记录的id 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -124/-1/-10
+            * msg: 实习经历已达上限/请求方法错误/操作失败
+        
+***
+
+###21. 更新实习经历
+* http://110.64.69.66:8081/student/info/intern/update/
+* POST
+* 参数：
+    * stu_id
+    * intern_id: 
+    * company: 公司
+    * position: 职位
+    * begin_time: 开始时间
+    * end_time: 结束时间
+    * description: 职能描述
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###22. 增加项目经历
+* http://110.64.69.66:8081/student/info/proj/add/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * name: 项目名称
+    * duty: 职责
+    * year: 项目年份
+    * description: 项目简述
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "proj_id": proj_id}
+            * err: 0
+            * proj_id: 增加的项目经历记录的id 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -125/-1/-10
+            * msg: 项目经历已达上限/请求方法错误/操作失败
+
+***
+
+###23. 更新项目经历
+* http://110.64.69.66:8081/student/info/proj/update/
+* POST
+* 参数：
+    * stu_id
+    * proj_id: 
+    * name: 项目名称
+    * duty: 职责
+    * year: 项目年份
+    * description: 项目简述
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###24. 增加作品集
+* http://110.64.69.66:8081/student/info/works/add/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * path: 作品集的路径
+    * site: 作品集的在线网址
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "works_id": works_id}
+            * err: 0
+            * works_id: 增加的作品集的id 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -126/-1/-10
+            * msg: 已有作品集/请求方法错误/操作失败
+
+***
+
+###25. 更新作品集
+* http://110.64.69.66:8081/student/info/works/update/
+* POST
+* 参数：
+    * stu_id
+    * works_id: 
+    * path: 作品集的路径
+    * site: 作品集的在线网址
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###26. 增加技能评价
+* http://110.64.69.66:8081/student/info/skill/add/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * name: 技能名称
+    * value: 技能评价的值
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "skill_id": skill_id}
+            * err: 0
+            * skill_id: 增加的技能评价的id 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -127/-1/-10
+            * msg: 技能评价已达上限/请求方法错误/操作失败
+
+***
+
+###27. 更新技能评价
+* http://110.64.69.66:8081/student/info/skill/update/
+* POST
+* 参数：
+    * stu_id
+    * skill_id: 
+    * name: 技能名称
+    * value: 技能评价的值
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###28. 上传作品集
+* http://110.64.69.66:8081/student/info/works/upload/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * works： 作品集文件
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "path": works_path}
+            * err: 0
+            * path: 作品集的路径
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -128/-1/10
+            * msg: 作品集文件不合法/请求方法错误/操作失败
+
+***
+
+###29. 删除教育经历
+* http://110.64.69.66:8081/student/info/edu/del/
+* POST
+* 参数：
+    * stu_id: 
+    * edu_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "grade": grade, "edu_background": edu_background}
+            * err: 0
+            * grade: 个人信息中的年级
+            * edu_background: 个人信息中的学历
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###30. 删除实习经历
+* http://110.64.69.66:8081/student/info/intern/del/
+* POST
+* 参数：
+    * stu_id
+    * intern_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###31. 删除项目经历
+* http://110.64.69.66:8081/student/info/proj/del/
+* POST
+* 参数：
+    * stu_id:
+    * proj_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###32. 删除作品集
+* http://110.64.69.66:8081/student/info/works/del/
+* POST
+* 参数：
+    * stu_id
+    * works_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###33. 删除技能评价
+* http://110.64.69.66:8081/student/info/skill/del/
+* POST
+* 参数：
+    * stu_id
+    * skill_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+###34. 获取投递列表(学生）
+* http://110.64.69.66:8081/student/apply/list/
+* POST
+* 参数：
+    * stu_id: 学生id
+    * state: 投递状态，0表示待查看，1表示待沟通，2表示待面试，3表示录用， 4表示不合适，5表示全部
+* 返回：
+    * 成功：
+        * JSON: {"err": err,  
+         　　　"apply_list": [{   
+        　　　　　"apply_id": apply_id,  
+        　　　　　"state": state  
+        　　　　　"job_id": job_id,  
+        　　　　　"is_read": is_read,    
+        　　　　　"job_name": job_name,  
+        　　　　　"prince": prince,  
+        　　　　　"city": city,  
+        　　　　　"town": town,  
+        　　　　　"address": address,  
+        　　　　　"team_name": team_name,  
+        　　　　　"min_salary": min_salary,  
+        　　　　　"max_salary": max_salary,  
+        　　　　　"change_time": change_time,  
+        　　　　　"contact": leader,  
+         　　　　　"mail": mail},...  
+        　　　　]}
+        * err: 0
+        * is_read: 0表示未读，1表示已读， 
+        * team_name: 公司
+        * change_time: 状态更改时间
+        * contact: 联系人名字（待查看和不合适时为"")
+        * mail： 联系邮箱（待查看和不合适时为"")
+    * 失败：
+        * 返回：
+            * JOSN: {"err": err, "msg": msg}
+                * err: -129/-1/-10
+                * msg: 无投递记录/请求方法错误/操作失败
+
+***
+
+###35. 标记投递纪录为已读(学生)
+* http://110.64.69.66:8081/student/apply/read/
+* POST
+* 参数：
+    * apply_list: apply_id的数组
+* 返回：
+    * 成功：
+        * JSON: {"err": err}
+        * err: 0
+    * 失败：
+        * 返回：
+            * JOSN: {"err": err, "msg": msg}
+                * err: -1/-10
+                * msg: 请求方法错误/操作失败
+
+***
+
+###36. 获取投递列表(团队）
+* http://110.64.69.66:8081/team/apply/list/
+* POST
+* 参数：
+    * team_id: 团队id
+    * state: 投递状态，0表示新接收，1表示待沟通，2表示待面试，3表示完成
+* 返回：
+    * 成功：
+        * JSON: {"err": err,  
+        　　　"unread_num": num  
+         　　　"apply_list": [{   
+        　　　　　"apply_id": apply_id,  
+        　　　　　"state": state  
+        　　　　　"job_id": job_id,  
+        　　　　　"stu_id": stu_id,    
+        　　　　　"job_name": job_name,  
+        　　　　　"stu_name": stu_name,  
+        　　　　　"apply_time": apply_time,  
+        　　　　　"is_read": is_read},...  
+        　　　　]}
+        * err: 0
+        * unread_num: 待查看投递数量 
+        * apply_time: 投递时间
+        * is_read: 0表示未读，1表示已读
+        * state: 0表示新接收，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
+    * 失败：
+        * 返回：
+            * JOSN: {"err": err, "msg": msg}
+                * err: -129/-1/-10
+                * msg: 无投递记录/请求方法错误/操作失败
+
+***
+
+###37. 查看投递(团队)  
+* http://110.64.69.66:8081/team/apply/info/
+* POST
+* 参数：
+    * apply_id: 
+* 返回：
+    * 成功：
+        * JSON：  　{"err": err,   
+            　　　　　"stu_id": stu_id,   
+            　　　　　"name": name,   
+            　　　　　"avatar_pah": avatar_path,   
+            　　　　　"sex": sex,   
+            　　　　　"age": age,   
+            　　　　　"mail": mail,   
+            　　　　　"tel": tel,  
+            　　　　　"school": school,  
+            　　　　　"major": major,  
+            　　　　　"location": location,  
+            　　　　　"resume_path": resume_path,  
+            　　　　　"state": state}
+            
+            * state: 0表示待查看，1表示待沟通，2表示待面试，3表示录用， 4表示不合适
+
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+        
+***
+
+###38. 发送邮件通知(团队）
+* http://110.64.69.66:8081/team/apply/mail/
+* POST
+* 参数：
+    * apply_id
+    * text：内容
+ * 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+   * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败  
+
+***
+
+###39. 处理投递(团队）
+* http://110.64.69.66:8081/team/apply/handle/
+* POST
+* 参数：
+    * apply_id: 
+    * state：投递状态，1表示待沟通，2表示待面试，3表示录用， 4表示不合适，
+ * 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0
+
+   * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败  
+
+***
 
 
