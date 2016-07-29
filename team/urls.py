@@ -40,4 +40,5 @@ urlpatterns = [
     url(r'^invite_stu/$', views.invite_stu),
     url(r'^apply/list/$', views.get_apply_list),
     url(r'^apply/info/$', views.get_apply_info),
+    url(r'^apply/mail/$', views.apply_mail),
 ]

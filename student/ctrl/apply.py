@@ -4,12 +4,15 @@ from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, \
 from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
                              OK_READ_APPLY, ERR_READ_APPLY_DB, \
                              OK_APPLY_INFO, ERR_APPLY_INFO_DB, \
+                             OK_REPLY, ERR_REPLY_DB, \
                              OK_DUMP, ERR_DUMP_DB
 
 from student.db import stu_info, job_apply
 from team.db import job, team
 from student.util.logger import logger
 from student.util.date_helper import curr_year, curr_month
+
+from django.core.mail import send_mail
 
 
 def dump_stu_apply(stu, state, rlt_list):
@@ -280,3 +283,38 @@ def team_get_info(apply_id):
     # 如果数据库异常导致获取投递信息失败
     else:
         return {'tag': ERR_APPLY_INFO_DB}
+
+
+def reply(apply_id, text):
+    """
+    邮件回复投递（团队）
+    @apply_id:
+    @text: 邮件内容
+    成功：返回OK_REPLY
+    失败：返回ERR_REPLY_DB
+    """
+    apply_select_rlt = job_apply.id_select(apply_id)
+
+    # 如果查询投递记录成功
+    if apply_select_rlt['tag'] == OK_SELECT:
+        apply = apply_select_rlt['apply']
+        stu_select_rlt = stu_info.select(apply.stu_id)
+
+        # 如果获取关联的学生成功
+        if stu_select_rlt['tag'] == OK_SELECT:
+            mail = stu_select_rlt['stu'].mail
+            send_mail('WeMeet投递职位回复邮件', text, 'm18826076291@sina.com', [mail])  # TODO(hjf): 修改邮件标题、发送邮箱
+            return OK_REPLY
+
+        # 如果无法获取关联的学生
+        else:
+            logger.error('数据库异常，无法获取与投递记录关联的学生信息')
+            return ERR_REPLY_DB
+
+    # 如果投递记录不存在
+    elif apply_select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试回复不存在的投递')
+        return ERR_REPLY_DB
+    # 如果数据库异常导致获取投递信息失败
+    else:
+        return ERR_REPLY_DB
