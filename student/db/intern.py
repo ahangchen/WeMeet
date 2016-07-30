@@ -38,8 +38,8 @@ def insert(company, position, begin_time, end_time, description, stu):
         new_intern.save()
         return {'tag': OK_INSERT,
                 'intern': new_intern}
-    except:
-        logger.error('数据库异常导致插入实习经历记录失败')
+    except Exception as e:
+        logger.error(e.__str__()+ '数据库异常导致插入实习经历记录失败')
         return {'tag': ERR_INSERT_DB}
 
 
@@ -71,8 +71,8 @@ def id_stu_update(intern_id, stu, company=NO_INPUT, position=NO_INPUT, begin_tim
     except StuIntern.DoesNotExist:
         logger.warning("尝试更新学生id和实习经历id不匹配的实习经历")
         return ERR_UPDATE_DB
-    except:
-        logger.error('数据库异常导致更新实习经历失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致更新实习经历失败')
         return ERR_UPDATE_DB
 
 
@@ -97,6 +97,6 @@ def id_stu_delete(intern_id, stu):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除实习经历失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除实习经历失败')
         return ERR_DELETE_DB

@@ -37,8 +37,8 @@ def delete(stu_id):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除学生失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除学生失败')
         return ERR_DELETE_DB
 
 
@@ -69,8 +69,8 @@ def update(stu_id, name=NO_INPUT, sex=NO_INPUT, year=NO_INPUT, month=NO_INPUT, s
     except StuInfo.DoesNotExist:
         logger.error('尝试更新不存在的学生')
         return ERR_UPDATE_NOTEXIST
-    except:
-        logger.error('数据库异常导致更新学生失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致更新学生失败')
         return ERR_UPDATE_DB
 
 
@@ -111,8 +111,8 @@ def insert(name, school, tel, mail, avatar_path, sex, year, month, major, locati
         new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError
         return new_stu
 #        return GOOD_INSERT
-    except:
-        # TODO(hjf): log到日志
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入学生失败')
         return ERR_INSERT_DB
 
 

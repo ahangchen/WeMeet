@@ -29,8 +29,8 @@ def insert(account, pwd, stu):
         return new_account
 
     # 如果插入账号发生异常
-    except:
-        logger.error('数据库异常导致插入账号失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致插入账号失败')
         return ERR_INSERT_DB
 
 
@@ -47,8 +47,8 @@ def update(account, pwd=NO_INPUT, is_activated=NO_INPUT, ciphertext=NO_INPUT, re
         return OK_UPDATE
     except StuAccount.DoesNotExist:
         return ERR_UPDATE_NOTEXIST
-    except:
-        logger.error('数据库异常导致账号更新失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致账号更新失败')
         return ERR_UPDATE_DB
 
 
@@ -60,8 +60,8 @@ def stu_update(stu_id, account):
         return OK_UPDATE
     except StuAccount.DoesNotExist:
         return ERR_UPDATE_NOTEXIST
-    except:
-        logger.error('数据库异常导致账号更新失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致账号更新失败')
         return ERR_UPDATE_DB
 
 
@@ -79,8 +79,8 @@ def acnt_select(account):
 
     except StuAccount.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致账号查询失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致账号查询失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -97,8 +97,8 @@ def ciphertext_select(ciphertext):
                 'acnt': select_acnt}
     except StuAccount.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致账号查询失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致账号查询失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -115,8 +115,8 @@ def stu_select(stu_id):
                 'acnt': select_acnt}
     except StuAccount.DoesNotExist:
         return {'tag': ERR_SELECT_NOTEXIST}
-    except:
-        logger.error('数据库异常导致账号查询失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致账号查询失败')
         return {'tag': ERR_SELECT_DB}
 
 
@@ -136,8 +136,8 @@ def delete(account):
         return OK_DELETE
 
     # 数据库异常
-    except:
-        logger.error('数据库异常导致删除账号失败')
+    except Exception as e:
+        logger.error(e.__str__() + '数据库异常导致删除账号失败')
         return ERR_DELETE_DB
 
 
