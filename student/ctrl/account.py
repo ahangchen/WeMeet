@@ -62,7 +62,7 @@ def invite(acnt):
 
     # 如果账号已存在
     elif exist['tag'] != ERR_SELECT_NOTEXIST:
-        return REG_FAIL_EXIST
+        return REG_FAIL_EXIST, -1
 
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', school='', tel='',
@@ -109,8 +109,8 @@ def invite(acnt):
 
             # 记录账号密文成功
             else:
-                send_mail('WeMeet注册验证邮件', "hash_id:" + ciphertext, "pwd: " + pwd,  # TODO(cwh): 修改邮件内容、收发邮箱
-                          'm18826076291@sina.com', ['961437466@qq.com'])
+                send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext) + "\npwd: " + pwd,  # TODO(cwh): 修改邮件内容、收发邮箱
+                          'm18826076291@sina.com', [acnt])
                 return OK_REG, acnt_tag.stu_id
 
 

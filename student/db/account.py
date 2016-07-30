@@ -141,6 +141,9 @@ def delete(account):
         return ERR_DELETE_DB
 
 
+def name2mail(name):
+    stus = StuInfo.objects.filter(name=name)
+    return [{'sid': stu.id, 'mail': stu.mail} for stu in stus]
 
 
 

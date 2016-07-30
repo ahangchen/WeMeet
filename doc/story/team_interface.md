@@ -582,8 +582,14 @@
 			}
 		],
 		"imgs": [
-			"team/1/pic.png",
-			"team/1/pic2.png"
+            {
+                id: 3,
+                path: "media/team/info/10"
+            },
+            {
+                id: 4,
+                path: "media/team/info/10"
+            }     
 		],
 		"label": [
 			"school",
@@ -604,7 +610,7 @@
  ``` 
 ### 23 更新团队信息
 - url
-  -  http://110.64.69.66.8081/team/update_team_info/
+  -  http://110.64.69.66:8081/team/update_team_info/
   - post
 - 参数
   - tid: 团队id
@@ -638,7 +644,7 @@
 
 ### 24 增加团队标签
 - url
-  -  http://110.64.69.66.8081/team/add_team_label/
+  -  http://110.64.69.66:8081/team/add_team_label/
   - post
 - 参数
   - tid: 团队id
@@ -667,7 +673,7 @@
 
 ### 25 删除团队标签
 - url
-  -  http://110.64.69.66.8081/team/rm_team_label/
+  -  http://110.64.69.66:8081/team/rm_team_label/
   - post
 - 参数
   - tid: 团队id
@@ -713,11 +719,11 @@
 
 ### 27 新增团队学生
 - url
-  -  http://110.64.69.66.8081/team/add_team_stu/
+  -  http://110.64.69.66:8081/team/add_team_stu/
   - post
 - 参数
   - tid: 团队id
-  - sid: 标签id
+  - sid: 学生id
   
 - 返回
    - 成功：
@@ -742,7 +748,7 @@
   
 ### 28 删除团队学生
 - url
-  -  http://110.64.69.66.8081/team/rm_team_stu/
+  -  http://110.64.69.66:8081/team/rm_team_stu/
   - post
 - 参数
   - tid: 团队id
@@ -773,7 +779,7 @@
 ### 29 查询学生邮箱
 
 - url
-  -  http://110.64.69.66.8081/student/name2mail?name=cwh
+  -  http://110.64.69.66:8081/team/name2mail?name=cwh
   - get
 - 参数
   - name: 学生名字
@@ -813,9 +819,10 @@
 ### 30 邀请团队成员注册
 
 - url
-  -  http://110.64.69.66.8081/team/invite_stu/
+  -  http://110.64.69.66:8081/team/invite_stu/
   - post
 - 参数
+  - tid: 团队id 
   - mail: 学生邮箱
   
 - 返回
@@ -839,7 +846,7 @@
 
 ### 31 新增团队照片
 - url
-  -  http://110.64.69.66.8081/team/add_team_photo/
+  -  http://110.64.69.66:8081/team/add_team_photo/
   - post
 - 参数
   - tid: 团队id
@@ -873,11 +880,11 @@
 
 ### 32 删除团队照片
 - url
-  -  http://110.64.69.66.8081/team/rm_team_photo/
+  -  http://110.64.69.66:8081/team/rm_team_photo/
   - post
 - 参数
   - tid: 团队id
-  - img_id: 照片id
+  - img_id: 照片路径
 
 - 返回
    - 成功：
@@ -903,7 +910,7 @@
 
 ### 33 更新团队联系方式
 - url
-  -  http://110.64.69.66.8081/team/update_team_contact/
+  -  http://110.64.69.66:8081/team/update_team_contact/
   - post
 - 参数
   - tid: 团队id

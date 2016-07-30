@@ -1,4 +1,5 @@
 from student.db.stu_info import query
+from student.db import account
 from team.db import team
 
 from student.util.file_helper import save
@@ -124,3 +125,7 @@ def rm_photo(tid, img_id):
         return ACC_NO_FOUND
     imgs.delete()
     return TEAM_OK
+
+
+def name2mail(name):
+    return account.name2mail(name)

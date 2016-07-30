@@ -1,4 +1,5 @@
-from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType
+from team.ctrl.team import URL_HEADER
+from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType, TeamType
 from team.util.data import random6
 
 DB_OK = 0
@@ -69,8 +70,9 @@ def info(tid):
         return None
     stu_s = TeamStu.objects.select_related().filter(team=team)
     stu_dict = [{'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path} for stu in stu_s]
+    print()
     img_s = TeamImg.objects.filter(team=team)
-    img_dict = [img.path for img in img_s]
+    img_dict = [{'id': img.id, 'path': img.path} for img in img_s]
     label_s = Label.objects.filter(team=team)
     label_dict = [label.name for label in label_s]
     return {
@@ -102,7 +104,7 @@ def invite(name, leader, tel, mail):
 
 
 def bus_names():
-    business = list(BusinessType.objects.values())
+    business = list(TeamType.objects.values())
     return business
 
 
@@ -136,7 +138,7 @@ def add_stu(team, stu):
 
 
 def rm_team_stu(team, stu):
-    team_stus = TeamStu(team=team, stu=stu)
+    team_stus = TeamStu.objects.filter(team=team, stu=stu)
     if team_stus.count() < 1:
         return False
     else:
@@ -145,7 +147,7 @@ def rm_team_stu(team, stu):
 
 
 def acc(tid):
-    return Team.objects.filter(id=tid)
+    return Pwd.objects.filter(id=tid)
 
 
 def img_cnt():

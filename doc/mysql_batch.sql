@@ -39,3 +39,31 @@ ALTER TABLE team_teamimg CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_teamstu CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_teamtype CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_worktype CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+update stu_info set year=1995, month='12', school='华南理工大学', major='软件工程', location='广州', tel='18813299013' where id = 2;
+update stu_info set sex=1, name='张铭杰' where id = 2;
+update stu_info set year=1993, month='12', school='华南理工大学', major='软件工程', location='广州', tel='18813299013' where id = 1;
+update stu_info set sex=1, name='陈伟航' where id = 1;
+
+insert into team_teamtype (name) values ('校园服务');
+insert into team_teamtype (name) values ('O2O');
+insert into team_teamtype (name) values ('移动互联网');
+insert into team_teamtype (name) values ('电子商务');
+insert into team_teamtype (name) values ('医疗健康');
+insert into team_teamtype (name) values ('金融');
+insert into team_teamtype (name) values ('法务');
+insert into team_teamtype (name) values ('咨询');
+insert into team_teamtype (name) values ('数据安全');
+insert into team_teamtype (name) values ('文化娱乐');
+insert into team_teamtype (name) values ('食品化工');
+insert into team_teamtype (name) values ('广告营销');
+insert into team_teamtype (name) values ('游戏');
+insert into team_teamtype (name) values ('招聘');
+insert into team_teamtype (name) values ('教育');
+insert into team_teamtype (name) values ('旅游');
+insert into team_teamtype (name) values ('社交网络');
+insert into team_teamtype (name) values ('硬件');
+insert into team_teamtype (name) values ('分类信息');
+insert into team_teamtype (name) values ('生活服务');
+insert into team_teamtype (name) values ('其他');
+

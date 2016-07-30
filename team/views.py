@@ -25,7 +25,7 @@ from student.util import json_helper
 from team.db import job as db_job
 from team.db import product as db_product
 from team.db.tag import PRODUCT_SUCCEED
-from student.ctrl.account import invite
+from student.ctrl import account
 
 import json
 import operator
@@ -555,12 +555,13 @@ def job_info(request):
         return HttpResponse(json_helper.dump_err_msg(ERR_JOB_NOT_FOUND, MSG_JOB_NOT_FOUND))
 
 
+@csrf_exempt
 def update_team_contact(request):
     if not is_post(request):
         return resp_method_err()
     tid = request.POST['tid']
     tel = request.POST['tel']
-    mail = request.GET['mail']
+    mail = request.POST['mail']
     ret = team.update_contact(tid, tel, mail)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
@@ -568,6 +569,7 @@ def update_team_contact(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def rm_team_photo(request):
     if not is_post(request):
         return resp_method_err()
@@ -580,12 +582,13 @@ def rm_team_photo(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def add_team_photo(request):
     if not is_post(request):
         return resp_method_err()
     tid = request.POST['tid']
     name = request.POST['name']
-    img = request.POST['photo']
+    img = request.FILES['photo']
     ret = team.save_photo(tid, name, img)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
@@ -593,6 +596,7 @@ def add_team_photo(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, ret))
 
 
+@csrf_exempt
 def add_team_stu(request):
     if not is_post(request):
         return resp_method_err()
@@ -607,6 +611,7 @@ def add_team_stu(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def rm_team_stu(request):
     if not is_post(request):
         return resp_method_err()
@@ -621,6 +626,7 @@ def rm_team_stu(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def add_team_label(request):
     if not is_post(request):
         return resp_method_err()
@@ -633,6 +639,7 @@ def add_team_label(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, ret))
 
 
+@csrf_exempt
 def rm_team_label(request):
     if not is_post(request):
         return resp_method_err()
@@ -645,16 +652,17 @@ def rm_team_label(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def update_team_info(request):
     if not is_post(request):
         return resp_method_err()
     tid = request.POST['tid']
     name = request.POST['name']
-    logo_path = request.GET['logo_path']
-    slogan = request.GET['slogan']
-    about = request.GET['about']
-    history = request.GET['history']
-    b_type = request.GET['b_type']
+    logo_path = request.POST['logo_path']
+    slogan = request.POST['slogan']
+    about = request.POST['about']
+    history = request.POST['history']
+    b_type = request.POST['b_type']
     ret = team.update_info(tid, name, logo_path, slogan, about, history, b_type)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
@@ -662,6 +670,7 @@ def update_team_info(request):
         return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
 
 
+@csrf_exempt
 def business(request):
     name = bus_names()
     if name is not None:
@@ -670,17 +679,21 @@ def business(request):
         return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
 
 
+@csrf_exempt
 def name2mail(request):
-    return HttpResponse()
+    name = request.GET['name']
+    mails = team.name2mail(name)
+    return HttpResponse(json_helper.dumps_err(SUCCEED, mails))
 
 
+@csrf_exempt
 def invite_stu(request):
     """团队邀请成员"""
     if not is_post(request):
         return resp_method_err()
     mail = request.POST['mail']
     tid = request.POST['tid']
-    ret, sid = invite(mail)
+    ret, sid = account.invite(mail)
     add_ret = team.add_stu(tid, sid)
     if ret != OK_REG:
         return HttpResponse(json_helper.dump_err_msg(ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG))
