@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^info/$', views.info),
     url(r'^invite/$', views.invite),
     url(r'^update_team_info/$', views.update_team_info),
+    url(r'^upload_logo/$', views.upload_logo),
     url(r'^add_team_label/$', views.add_team_label),
     url(r'^rm_team_label/$', views.rm_team_label),
     url(r'^rm_team_stu/$', views.rm_team_stu),

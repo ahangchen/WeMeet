@@ -1,3 +1,5 @@
+import time
+
 from student.db.stu_info import query
 from student.db import account
 from team.db import team
@@ -109,11 +111,19 @@ def save_photo(tid, name, img):
     if teams.count() < 1:
         return ACC_NO_FOUND
     img_count = team.img_cnt()
-    name += str(img_count)
+    name = str(img_count) + name
     path = name2path(name)
     save(img, path)
     img_id = team.add_img(teams.first(), path)
     return img_id
+
+
+def save_logo(name, img):
+    name = str(time.time()) + name
+    path = name2path(name)
+    print(path)
+    save(img, path)
+    return path
 
 
 def rm_photo(tid, img_id):

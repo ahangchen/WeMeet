@@ -734,3 +734,11 @@ def apply_handle(request):
     return team_apply_handle(request)
 
 
+@csrf_exempt
+def upload_logo(request):
+    if not is_post(request):
+        return resp_method_err()
+    name = request.POST['name']
+    img = request.FILES['photo']
+    path = team.save_logo(name, img)
+    return HttpResponse(json_helper.dump_err_msg(SUCCEED, path))
