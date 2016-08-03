@@ -96,9 +96,14 @@
 <p>add_team_photo</p>
 <form enctype="multipart/form-data" action="http://110.64.69.66:8081/team/add_team_photo/" method="post">
     tid: <input name="tid" type="text"/><br/>
-    name: <input name="name" type="text"/><br/>
     img: <input name="photo" type="file"/><br/>
     <input type="submit" value="提交"/></form>
+
+<p>upload_logo</p>
+<form enctype="multipart/form-data" action="http://110.64.69.66:8081/team/upload_logo/" method="post">
+    img: <input name="photo" type="file"/><br/>
+    <input type="submit" value="提交"/></form>
+
 <p>rm_team_photo</p>
 <form action="http://110.64.69.66:8081/team/rm_team_photo/" method="post">
     tid: <input name="tid" type="text"/><br/>

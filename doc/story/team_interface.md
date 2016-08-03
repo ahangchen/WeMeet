@@ -850,8 +850,7 @@
   - post
 - 参数
   - tid: 团队id
-  - name: 本地图片名字
-- FILES：img: 图片
+- FILES['photo']：img: 图片
 
 - 返回
    - 成功：
@@ -944,7 +943,7 @@
   - post
 - 参数
   - name: 本地图片名字
-- FILES：img: 图片
+- FILES['photo']：img: 图片
 
 - 返回
    - 成功：

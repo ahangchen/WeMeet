@@ -587,8 +587,8 @@ def add_team_photo(request):
     if not is_post(request):
         return resp_method_err()
     tid = request.POST['tid']
-    name = request.POST['name']
     img = request.FILES['photo']
+    name = str(img)
     ret = team.save_photo(tid, name, img)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
@@ -738,7 +738,7 @@ def apply_handle(request):
 def upload_logo(request):
     if not is_post(request):
         return resp_method_err()
-    name = request.POST['name']
     img = request.FILES['photo']
+    name = str(img)
     path = team.save_logo(name, img)
     return HttpResponse(json_helper.dump_err_msg(SUCCEED, path))
