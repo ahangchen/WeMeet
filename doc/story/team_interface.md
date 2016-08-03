@@ -937,3 +937,35 @@
   
   - err_code: -4/-1/-10
   - msg: 账号错误/请求方法错误/其他错误
+  
+### 34 上传团队logo
+- url
+  -  http://110.64.69.66:8081/team/upload_logo/
+  - post
+- 参数
+  - name: 本地图片名字
+- FILES：img: 图片
+
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "logo_path"
+  }
+``` 
+  - 会返回团队logo路径
+  
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -6/-4/-1/-10
+  - msg: 参数错误/请求方法错误/其他错误
+
