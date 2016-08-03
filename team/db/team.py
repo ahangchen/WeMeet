@@ -104,7 +104,7 @@ def invite(name, leader, tel, mail):
 
 
 def bus_names():
-    business = list(TeamType.objects.values())
+    business = list(BusinessType.objects.values())
     return business
 
 
@@ -122,8 +122,8 @@ def add_team_label(team, name):
     return label.id
 
 
-def rm_team_label(team, lid):
-    label = Label.objects.filter(team=team, id=lid)
+def rm_team_label(team, name):
+    label = Label.objects.filter(team=team, name=name)
     if label.count() < 1:
         return False
     else:

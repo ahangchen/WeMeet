@@ -25,12 +25,12 @@ def bus_names():
     return team.bus_names()
 
 
-def update_info(tid, name, logo_path, slogan, about, history, b_type):
+def update_info(tid, name, logo_path, slogan, about, history):
     teams = team.get(tid)
     if teams.count() < 1:
         return ACC_NO_FOUND
     else:
-        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history, b_type=b_type)
+        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history)
         return TEAM_OK
 
 
@@ -54,11 +54,11 @@ def add_label(tid, name):
         return team.add_team_label(teams.first(), name)
 
 
-def rm_label(tid, lid):
+def rm_label(tid, name):
     teams = team.get(tid)
     if teams.count() < 1:
         return ACC_NO_FOUND
-    elif team.rm_team_label(teams.first(), lid):
+    elif team.rm_team_label(teams.first(), name):
         return TEAM_OK
     else:
         return LABEL_NO_FOUND

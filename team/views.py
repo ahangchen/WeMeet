@@ -644,8 +644,8 @@ def rm_team_label(request):
     if not is_post(request):
         return resp_method_err()
     tid = request.POST['tid']
-    lid = request.POST['lid']
-    ret = team.rm_label(tid, lid)
+    name = request.POST['name']
+    ret = team.rm_label(tid, name)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
@@ -662,8 +662,7 @@ def update_team_info(request):
     slogan = request.POST['slogan']
     about = request.POST['about']
     history = request.POST['history']
-    b_type = request.POST['b_type']
-    ret = team.update_info(tid, name, logo_path, slogan, about, history, b_type)
+    ret = team.update_info(tid, name, logo_path, slogan, about, history)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
