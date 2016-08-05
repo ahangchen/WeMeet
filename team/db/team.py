@@ -1,4 +1,3 @@
-from team.ctrl.team import URL_HEADER
 from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType, TeamType
 from team.util.data import random6
 
