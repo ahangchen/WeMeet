@@ -2,6 +2,7 @@ import time
 
 from student.db.stu_info import query
 from student.db import account
+from team.ctrl.defines import URL_HEADER, LOCAL_HEADER
 from team.db import team
 
 from student.util.file_helper import save
@@ -13,10 +14,6 @@ STU_NO_FOUND = -2
 NO_MATCH = -3
 ACC_NO_FOUND = -4
 LABEL_NO_FOUND = -5
-
-URL_HEADER = 'http://110.64.69.66:8081/media/team/info/'
-# 相对路径是相对于启动脚本所在的位置，一般是manage.py所在位置
-LOCAL_HEADER = 'media/team/info/'
 
 
 def info(tid):
