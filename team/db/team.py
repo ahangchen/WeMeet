@@ -157,3 +157,11 @@ def add_img(team, path):
     img = TeamImg(team=team, path=path)
     img.save()
     return img.id
+
+
+def newest(new_count):
+    teams = Team.objects.all().order_by('-id')[: new_count]
+    team_ret = [{'tid': team.id, 'logo_path': team.logo_path, 'name': team.name} for team in teams]
+    return {
+        'team': team_ret
+    }

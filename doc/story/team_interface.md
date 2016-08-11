@@ -968,3 +968,76 @@
   - err_code: -6/-4/-1/-10
   - msg: 参数错误/请求方法错误/其他错误
 
+
+### 35 团队最新动态
+- url: http://110.64.69.66:8081/team/all/newest/
+- 响应：
+```json
+
+{"res": [
+    {
+        "team": [
+          {
+              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+              "tid": 1, 
+              "name": "wemeet"
+          }
+        ]
+    }, 
+    {
+        "products": [
+           {
+              "p_name": "first_prj", 
+              "tid": 1, 
+              "t_name": "wemeet", 
+              "pid": 1, 
+              "p_img": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png"
+           }
+          ]
+    }, 
+    {
+        "jobs": [
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 7, 
+                "j_name": "sfa"
+            }, 
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 6, 
+                "j_name": "sdaf"
+            }, 
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 5, 
+                "j_name": "测试啊"
+            }
+          ]
+    }
+  ], 
+  "err": "0"
+  }
+```
+
+### 36 最新团队
+- url: http://110.64.69.66:8081/team/team/newest/
+- 响应：
+```json
+{"res": {
+        "team": [
+          {
+              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+              "tid": 1, 
+              "name": "wemeet"
+          }
+        ]
+  },
+  "err": "0"
+}
+```

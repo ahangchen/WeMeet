@@ -12,6 +12,7 @@ def id_job(job_id):
     else:
         return job
 
+
 def select(job_id):
     """
         查询product,如果存在,返回项目信息,否则,返回错误信息
@@ -29,3 +30,16 @@ def select(job_id):
     except:
         return {'err': ERR_PROD_TABLE,
                 'msg': MSG_PROD_TABLE}
+
+
+def newest():
+    jobs = Job.objects.all().order_by('-id')[: 3]
+    jobs_ret = [
+        {'jid': job.id,
+         'tid': job.team_id,
+         'team_logo': job.team.logo_path,
+         'j_name': job.name,
+         't_name': job.team.name
+         } for job in jobs
+        ]
+    return {'jobs': jobs_ret}

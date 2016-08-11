@@ -9,4 +9,4 @@ DATE_MAX_LENGTH = 20
 
 URL_HEADER = 'http://110.64.69.66:8081/media/team/info/'
 # 相对路径是相对于启动脚本所在的位置，一般是manage.py所在位置
-LOCAL_HEADER = 'media/team/info/'
+LOCAL_HEADER = 'team/info/'

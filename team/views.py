@@ -742,3 +742,12 @@ def upload_logo(request):
     name = str(img)
     path = team.save_logo(name, img)
     return HttpResponse(json_helper.dump_err_msg(SUCCEED, path))
+
+
+@csrf_exempt
+def newest(request):
+    return HttpResponse(json_helper.dumps_err(SUCCEED, team.new_team_project_job()))
+
+
+def newest_teams(request):
+    return HttpResponse(json_helper.dumps_err(SUCCEED, team.newest_teams()))

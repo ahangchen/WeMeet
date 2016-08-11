@@ -3,6 +3,8 @@ import time
 from student.db.stu_info import query
 from student.db import account
 from team.ctrl.defines import URL_HEADER, LOCAL_HEADER
+from team.db import job
+from team.db import product
 from team.db import team
 
 from student.util.file_helper import save
@@ -136,3 +138,15 @@ def rm_photo(tid, img_id):
 
 def name2mail(name):
     return account.name2mail(name)
+
+
+def new_team_project_job():
+    team_dict = team.newest(3)
+    product_dict = product.newest()
+    job_dict = job.newest()
+    return [team_dict, product_dict, job_dict]
+
+
+def newest_teams():
+    team_dict = team.newest(9)
+    return team_dict

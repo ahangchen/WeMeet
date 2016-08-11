@@ -45,6 +45,7 @@ def select(prod_id):
         return {'err': ERR_PROD_TABLE,
                 'msg': MSG_PROD_TABLE}
 
+
 def insert(team_id, name=None, content=None, reward=None):
     """
         插入项目信息
@@ -65,3 +66,16 @@ def insert(team_id, name=None, content=None, reward=None):
     except:
         return {'err': ERR_PROD_TABLE,
                 'msg': MSG_PROD_TABLE}
+
+
+def newest():
+    products = Product.objects.all().order_by('-id')[: 3]
+    products_ret = [
+        {'pid': product.id,
+         'tid': product.team_id,
+         'p_img': product.img_path,
+         'p_name': product.name,
+         't_name': product.team.name
+         } for product in products
+        ]
+    return {'products': products_ret}

@@ -43,4 +43,6 @@ urlpatterns = [
     url(r'^apply/info/$', views.get_apply_info),
     url(r'^apply/mail/$', views.apply_mail),
     url(r'^apply/handle/$', views.apply_handle),
+    url(r'^all/newest$', views.newest),
+    url(r'^team/newest$', views.newest_teams),
 ]
