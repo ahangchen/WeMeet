@@ -1,4 +1,4 @@
-from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType, TeamType
+from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType, TeamType, Product, Job
 from team.util.data import random6
 
 DB_OK = 0
@@ -162,6 +162,17 @@ def add_img(team, path):
 def newest(new_count):
     teams = Team.objects.all().order_by('-id')[: new_count]
     team_ret = [{'tid': team.id, 'logo_path': team.logo_path, 'name': team.name} for team in teams]
-    return {
-        'team': team_ret
-    }
+    return team_ret
+
+
+def newest_more(new_count):
+    teams = Team.objects.all().order_by('-id')[: new_count]
+    team_ret = [
+        {
+            'tid': team.id, 'logo_path': team.logo_path, 'name': team.name, 'slogan': team.slogan,
+            'proj_cnt': Product.objects.filter(team=team).count(),
+            'job_cnt': Job.objects.filter(team=team).count(),
+            'stu_cnt': team.man_cnt
+         } for team in teams
+        ]
+    return team_ret

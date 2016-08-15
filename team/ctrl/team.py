@@ -110,7 +110,7 @@ def save_photo(tid, name, img):
     if teams.count() < 1:
         return ACC_NO_FOUND
     img_count = team.img_cnt()
-    name = str(time.time()).replace('.', '') + str(img_count) + name
+    name = str(time.time()).replace('.', '').replace(' ', '') + str(img_count) + name
     path = name2path(name)
     save(img, path)
     img_id = team.add_img(teams.first(), path)
@@ -118,7 +118,7 @@ def save_photo(tid, name, img):
 
 
 def save_logo(name, img):
-    name = str(time.time()).replace('.', '') + name
+    name = str(time.time()).replace('.', '').replace(' ', '') + name
     path = name2path(name)
     print(path)
     save(img, path)
@@ -144,9 +144,9 @@ def new_team_project_job():
     team_dict = team.newest(3)
     product_dict = product.newest()
     job_dict = job.newest()
-    return [team_dict, product_dict, job_dict]
+    return {'teams': team_dict, 'products': product_dict, 'jobs': job_dict}
 
 
 def newest_teams():
-    team_dict = team.newest(9)
+    team_dict = team.newest_more(9)
     return team_dict

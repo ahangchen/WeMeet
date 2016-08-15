@@ -78,4 +78,4 @@ def newest():
          't_name': product.team.name
          } for product in products
         ]
-    return {'products': products_ret}
+    return products_ret

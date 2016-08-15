@@ -42,4 +42,4 @@ def newest():
          't_name': job.team.name
          } for job in jobs
         ]
-    return {'jobs': jobs_ret}
+    return jobs_ret
