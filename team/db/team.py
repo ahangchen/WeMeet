@@ -68,8 +68,16 @@ def info(tid):
     if team is None:
         return None
     stu_s = TeamStu.objects.select_related().filter(team=team)
-    stu_dict = [{'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path} for stu in stu_s]
-    print()
+    stu_dict = []
+    for stu in stu_s:
+        if len(stu.stu.name) == 0:
+            stu_dict.append({
+                'id': stu.stu.id, 'name': stu.stu.mail, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
+            })
+        else:
+            stu_dict.append({
+                'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
+            })
     img_s = TeamImg.objects.filter(team=team)
     img_dict = [{'id': img.id, 'path': img.path} for img in img_s]
     label_s = Label.objects.filter(team=team)
