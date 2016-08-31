@@ -111,6 +111,7 @@ def save_photo(tid, name, img):
         return ACC_NO_FOUND
     img_count = team.img_cnt()
     name = str(time.time()).replace('.', '').replace(' ', '') + str(img_count) + name
+    name = name.replace(' ', '')
     path = name2path(name)
     save(img, path)
     img_id = team.add_img(teams.first(), path)
@@ -119,6 +120,7 @@ def save_photo(tid, name, img):
 
 def save_logo(name, img):
     name = str(time.time()).replace('.', '').replace(' ', '') + name
+    name = name.replace(' ', '')
     path = name2path(name)
     print(path)
     save(img, path)
