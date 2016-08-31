@@ -699,7 +699,7 @@ def invite_stu(request):
     if add_ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
-        return HttpResponse(json_helper.dump_err_msg(SUCCEED, MSG_SUCC))
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, sid))
 
 
 @csrf_exempt
