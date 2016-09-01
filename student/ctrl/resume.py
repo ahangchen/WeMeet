@@ -37,25 +37,26 @@ def upload(stu_id, resume):
     if select_rlt['tag'] == OK_SELECT:
         # 如果简历文件合法
         if check_resume_file(resume):
-            pre_resume_path = select_rlt['stu'].resume_path
+            pre_ref_path = select_rlt['stu'].resume_path
             resume_path = get_resume_path(folder=stu_id,
                                           file_name=int(time.time()),
                                           file_type=file_helper.get_file_type(resume.name))  # 用时间作简历文件名称
+            ref_path = '/media/' + resume_path
 
             # 更新学生的当前简历路径
-            update_stu_tag = stu_info.update(stu_id=stu_id, resume_path=resume_path)
+            update_stu_tag = stu_info.update(stu_id=stu_id, resume_path=ref_path)
             # 如果更新学生的当前简历路径成功：
             if update_stu_tag == OK_UPDATE:
 
                 # 如果简历文件上传成功
                 if file_helper.save(resume, resume_path):
                     return {'tag': OK_SAVE_RESUME,
-                            'path': resume_path}
+                            'path': ref_path}
                 # 如果简历文件上传失败，
                 else:
                     logger.error('简历文件上传失败')
                     # 回滚
-                    roll_tag = stu_info.update(stu_id=stu_id, resume_path=pre_resume_path)
+                    roll_tag = stu_info.update(stu_id=stu_id, resume_path=pre_ref_path)
                     if roll_tag != OK_UPDATE:
                         logger.error('简历文件上传失败，但学生的简历路径已更新，无法回滚')
                     return {'tag': ERR_SAVE_RESUME_FAIL}
