@@ -1,4 +1,4 @@
-from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType
+from team.models import Pwd, Team, TeamImg, TeamStu, Label, BusinessType, TeamType, Product, Job
 from team.util.data import random6
 
 DB_OK = 0
@@ -68,9 +68,18 @@ def info(tid):
     if team is None:
         return None
     stu_s = TeamStu.objects.select_related().filter(team=team)
-    stu_dict = [{'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path} for stu in stu_s]
+    stu_dict = []
+    for stu in stu_s:
+        if len(stu.stu.name) == 0:
+            stu_dict.append({
+                'id': stu.stu.id, 'name': stu.stu.mail, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
+            })
+        else:
+            stu_dict.append({
+                'id': stu.stu.id, 'name': stu.stu.name, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
+            })
     img_s = TeamImg.objects.filter(team=team)
-    img_dict = [img.path for img in img_s]
+    img_dict = [{'id': img.id, 'path': img.path} for img in img_s]
     label_s = Label.objects.filter(team=team)
     label_dict = [label.name for label in label_s]
     return {
@@ -120,8 +129,8 @@ def add_team_label(team, name):
     return label.id
 
 
-def rm_team_label(team, lid):
-    label = Label.objects.filter(team=team, id=lid)
+def rm_team_label(team, name):
+    label = Label.objects.filter(team=team, name=name)
     if label.count() < 1:
         return False
     else:
@@ -136,7 +145,7 @@ def add_stu(team, stu):
 
 
 def rm_team_stu(team, stu):
-    team_stus = TeamStu(team=team, stu=stu)
+    team_stus = TeamStu.objects.filter(team=team, stu=stu)
     if team_stus.count() < 1:
         return False
     else:
@@ -145,7 +154,7 @@ def rm_team_stu(team, stu):
 
 
 def acc(tid):
-    return Team.objects.filter(id=tid)
+    return Pwd.objects.filter(id=tid)
 
 
 def img_cnt():
@@ -156,3 +165,22 @@ def add_img(team, path):
     img = TeamImg(team=team, path=path)
     img.save()
     return img.id
+
+
+def newest(new_count):
+    teams = Team.objects.all().order_by('-id')[: new_count]
+    team_ret = [{'tid': team.id, 'logo_path': team.logo_path, 'name': team.name} for team in teams]
+    return team_ret
+
+
+def newest_more(new_count):
+    teams = Team.objects.all().order_by('-id')[: new_count]
+    team_ret = [
+        {
+            'tid': team.id, 'logo_path': team.logo_path, 'name': team.name, 'slogan': team.slogan,
+            'proj_cnt': Product.objects.filter(team=team).count(),
+            'job_cnt': Job.objects.filter(team=team).count(),
+            'stu_cnt': team.man_cnt
+         } for team in teams
+        ]
+    return team_ret

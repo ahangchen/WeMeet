@@ -1,4 +1,10 @@
+import time
+
 from student.db.stu_info import query
+from student.db import account
+from team.ctrl.defines import URL_HEADER, LOCAL_HEADER
+from team.db import job
+from team.db import product
 from team.db import team
 
 from student.util.file_helper import save
@@ -11,10 +17,6 @@ NO_MATCH = -3
 ACC_NO_FOUND = -4
 LABEL_NO_FOUND = -5
 
-URL_HEADER = 'http://110.64.69.66:8081/media/team/info/'
-# 相对路径是相对于启动脚本所在的位置，一般是manage.py所在位置
-LOCAL_HEADER = 'media/team/info/'
-
 
 def info(tid):
     return team.info(tid)
@@ -24,12 +26,12 @@ def bus_names():
     return team.bus_names()
 
 
-def update_info(tid, name, logo_path, slogan, about, history, b_type):
+def update_info(tid, name, logo_path, slogan, about, history):
     teams = team.get(tid)
     if teams.count() < 1:
         return ACC_NO_FOUND
     else:
-        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history, b_type=b_type)
+        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history)
         return TEAM_OK
 
 
@@ -53,11 +55,11 @@ def add_label(tid, name):
         return team.add_team_label(teams.first(), name)
 
 
-def rm_label(tid, lid):
+def rm_label(tid, name):
     teams = team.get(tid)
     if teams.count() < 1:
         return ACC_NO_FOUND
-    elif team.rm_team_label(teams.first(), lid):
+    elif team.rm_team_label(teams.first(), name):
         return TEAM_OK
     else:
         return LABEL_NO_FOUND
@@ -108,11 +110,21 @@ def save_photo(tid, name, img):
     if teams.count() < 1:
         return ACC_NO_FOUND
     img_count = team.img_cnt()
-    name += str(img_count)
+    name = str(time.time()).replace('.', '').replace(' ', '') + str(img_count) + name
+    name = name.replace(' ', '')
     path = name2path(name)
     save(img, path)
     img_id = team.add_img(teams.first(), path)
     return img_id
+
+
+def save_logo(name, img):
+    name = str(time.time()).replace('.', '').replace(' ', '') + name
+    name = name.replace(' ', '')
+    path = name2path(name)
+    print(path)
+    save(img, path)
+    return path
 
 
 def rm_photo(tid, img_id):
@@ -124,3 +136,19 @@ def rm_photo(tid, img_id):
         return ACC_NO_FOUND
     imgs.delete()
     return TEAM_OK
+
+
+def name2mail(name):
+    return account.name2mail(name)
+
+
+def new_team_project_job():
+    team_dict = team.newest(3)
+    product_dict = product.newest()
+    job_dict = job.newest()
+    return {'teams': team_dict, 'products': product_dict, 'jobs': job_dict}
+
+
+def newest_teams():
+    team_dict = team.newest_more(9)
+    return team_dict

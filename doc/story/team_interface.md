@@ -582,8 +582,14 @@
 			}
 		],
 		"imgs": [
-			"team/1/pic.png",
-			"team/1/pic2.png"
+            {
+                id: 3,
+                path: "media/team/info/10"
+            },
+            {
+                id: 4,
+                path: "media/team/info/10"
+            }     
 		],
 		"label": [
 			"school",
@@ -604,7 +610,7 @@
  ``` 
 ### 23 更新团队信息
 - url
-  -  http://110.64.69.66.8081/team/update_team_info/
+  -  http://110.64.69.66:8081/team/update_team_info/
   - post
 - 参数
   - tid: 团队id
@@ -638,7 +644,7 @@
 
 ### 24 增加团队标签
 - url
-  -  http://110.64.69.66.8081/team/add_team_label/
+  -  http://110.64.69.66:8081/team/add_team_label/
   - post
 - 参数
   - tid: 团队id
@@ -667,11 +673,11 @@
 
 ### 25 删除团队标签
 - url
-  -  http://110.64.69.66.8081/team/rm_team_label/
+  -  http://110.64.69.66:8081/team/rm_team_label/
   - post
 - 参数
   - tid: 团队id
-  - lid: 标签id
+  - name: 标签名
   
 - 返回
    - 成功：
@@ -713,11 +719,11 @@
 
 ### 27 新增团队学生
 - url
-  -  http://110.64.69.66.8081/team/add_team_stu/
+  -  http://110.64.69.66:8081/team/add_team_stu/
   - post
 - 参数
   - tid: 团队id
-  - sid: 标签id
+  - sid: 学生id
   
 - 返回
    - 成功：
@@ -742,7 +748,7 @@
   
 ### 28 删除团队学生
 - url
-  -  http://110.64.69.66.8081/team/rm_team_stu/
+  -  http://110.64.69.66:8081/team/rm_team_stu/
   - post
 - 参数
   - tid: 团队id
@@ -773,7 +779,7 @@
 ### 29 查询学生邮箱
 
 - url
-  -  http://110.64.69.66.8081/student/name2mail?name=cwh
+  -  http://110.64.69.66:8081/team/name2mail?name=cwh
   - get
 - 参数
   - name: 学生名字
@@ -813,9 +819,10 @@
 ### 30 邀请团队成员注册
 
 - url
-  -  http://110.64.69.66.8081/team/invite_stu/
+  -  http://110.64.69.66:8081/team/invite_stu/
   - post
 - 参数
+  - tid: 团队id 
   - mail: 学生邮箱
   
 - 返回
@@ -839,12 +846,11 @@
 
 ### 31 新增团队照片
 - url
-  -  http://110.64.69.66.8081/team/add_team_photo/
+  -  http://110.64.69.66:8081/team/add_team_photo/
   - post
 - 参数
   - tid: 团队id
-  - name: 本地图片名字
-- FILES：img: 图片
+- FILES['photo']：img: 图片
 
 - 返回
    - 成功：
@@ -873,11 +879,11 @@
 
 ### 32 删除团队照片
 - url
-  -  http://110.64.69.66.8081/team/rm_team_photo/
+  -  http://110.64.69.66:8081/team/rm_team_photo/
   - post
 - 参数
   - tid: 团队id
-  - img_id: 照片id
+  - img_id: 照片路径
 
 - 返回
    - 成功：
@@ -903,7 +909,7 @@
 
 ### 33 更新团队联系方式
 - url
-  -  http://110.64.69.66.8081/team/update_team_contact/
+  -  http://110.64.69.66:8081/team/update_team_contact/
   - post
 - 参数
   - tid: 团队id
@@ -930,3 +936,112 @@
   
   - err_code: -4/-1/-10
   - msg: 账号错误/请求方法错误/其他错误
+  
+### 34 上传团队logo
+- url
+  -  http://110.64.69.66:8081/team/upload_logo/
+  - post
+- 参数
+  - name: 本地图片名字
+- FILES['photo']：img: 图片
+
+- 返回
+   - 成功：
+   
+```json 
+  {
+    "err": "0",
+    "msg": "logo_path"
+  }
+``` 
+  - 会返回团队logo路径
+  
+  - 失败
+  
+```json 
+  {
+    "err": "err_code",
+    "msg": "对应的提示"
+  }
+``` 
+  
+  - err_code: -6/-4/-1/-10
+  - msg: 参数错误/请求方法错误/其他错误
+
+
+### 35 团队最新动态
+
+- url: http://110.64.69.66:8081/team/all/newest/
+- 响应：
+
+```json
+
+{"res": [
+    {
+        "team": [
+          {
+              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+              "tid": 1, 
+              "name": "wemeet"
+          }
+        ]
+    }, 
+    {
+        "products": [
+           {
+              "p_name": "first_prj", 
+              "tid": 1, 
+              "t_name": "wemeet", 
+              "pid": 1, 
+              "p_img": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png"
+           }
+          ]
+    }, 
+    {
+        "jobs": [
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 7, 
+                "j_name": "sfa"
+            }, 
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 6, 
+                "j_name": "sdaf"
+            }, 
+            {
+                "team_logo": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+                "tid": 1, 
+                "t_name": "wemeet", 
+                "jid": 5, 
+                "j_name": "测试啊"
+            }
+          ]
+    }
+  ], 
+  "err": "0"
+  }
+```
+
+### 36 最新团队
+
+- url: http://110.64.69.66:8081/team/team/newest/
+- 响应：
+
+```json
+{"res": {
+        "team": [
+          {
+              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
+              "tid": 1, 
+              "name": "wemeet"
+          }
+        ]
+  },
+  "err": "0"
+}
+```

@@ -47,6 +47,69 @@
     pwd: <input name="pwd" type="text"/><br/>
     key: <input name="key" type="text"/><br/>
     <input type="submit" value="提交"/></form>
+<p>update_team_info</p>
+<form action="http://110.64.69.66:8081/team/update_team_info/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    name: <input name="name" type="text"/><br/>
+    logo_path: <input name="logo_path" type="text"/><br/>
+    slogan: <input name="slogan" type="text"/><br/>
+    about: <input name="about" type="text"/><br/>
+    history: <input name="history" type="text"/><br/>
+    b_type: <input name="b_type" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>add_team_label</p>
+<form action="http://110.64.69.66:8081/team/add_team_label/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    name: <input name="name" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>rm_team_label</p>
+<form action="http://110.64.69.66:8081/team/rm_team_label/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    lid: <input name="lid" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>add_team_stu</p>
+<form action="http://110.64.69.66:8081/team/add_team_stu/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    sid: <input name="sid" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>rm_team_stu</p>
+<form action="http://110.64.69.66:8081/team/rm_team_stu/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    sid: <input name="sid" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>name2mail</p>
+<form action="http://110.64.69.66:8081/team/rm_team_stu/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    sid: <input name="sid" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>invite_stu</p>
+<form action="http://110.64.69.66:8081/team/invite_stu/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    mail: <input name="mail" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>update_team_contact</p>
+<form action="http://110.64.69.66:8081/team/update_team_contact/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    tel: <input name="tel" type="text"/><br/>
+    mail: <input name="mail" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+<p>add_team_photo</p>
+<form enctype="multipart/form-data" action="http://110.64.69.66:8081/team/add_team_photo/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    img: <input name="photo" type="file"/><br/>
+    <input type="submit" value="提交"/></form>
+
+<p>upload_logo</p>
+<form enctype="multipart/form-data" action="http://110.64.69.66:8081/team/upload_logo/" method="post">
+    img: <input name="photo" type="file"/><br/>
+    <input type="submit" value="提交"/></form>
+
+<p>rm_team_photo</p>
+<form action="http://110.64.69.66:8081/team/rm_team_photo/" method="post">
+    tid: <input name="tid" type="text"/><br/>
+    img_id: <input name="img_id" type="text"/><br/>
+    <input type="submit" value="提交"/></form>
+</body>
 <p>========================================================</p>
 <p>local</p>
 <p>========================================================</p>
@@ -79,5 +142,5 @@
     pwd: <input name="pwd" type="text"/><br/>
     key: <input name="key" type="text"/><br/>
     <input type="submit" value="提交"/></form>
-</body>
+
 </html>
