@@ -68,6 +68,9 @@ from student.util import file_helper
 from student.util.date_helper import curr_year, curr_month
 from student.util.logger import logger
 
+import time
+
+
 WORKS_PATH_ROOT = 'student/works'
 
 
@@ -728,8 +731,8 @@ def upload_works(stu_id, works):
         """return true if works file is valid"""
         return True
 
-    def get_works_path(file_name, file_type):
-        return '%s/%s.%s' % (WORKS_PATH_ROOT, file_name, file_type)
+    def get_works_path(folder, file_name, file_type):
+        return '%s/%s/%s.%s' % (WORKS_PATH_ROOT, folder, file_name, file_type)
 
     # 确认学生是否存在
     select_rlt = stu_info.select(stu_id=stu_id)
@@ -737,8 +740,9 @@ def upload_works(stu_id, works):
     if select_rlt['tag'] == OK_SELECT:
         # 如果作品集文件合法
         if check_resume_file(works):
-            works_path = get_works_path(file_name=stu_id,
-                                        file_type=file_helper.get_file_type(works.name))  # 用学生id作简历文件名称
+            works_path = get_works_path(folder=stu_id,
+                                        file_name=int(time.time()),
+                                        file_type=file_helper.get_file_type(works.name))  # 用time作简历文件名称
             ref_path = '/media/' + works_path
 
             # 如果作品集文件上传成功

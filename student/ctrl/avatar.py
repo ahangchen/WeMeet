@@ -14,6 +14,7 @@ from student.db.tag import ERR_UPDATE_DB
 
 from student.util.logger import logger
 from student.util import file_helper
+import time
 
 
 DEFAULT_AVATAR = 'student/avatar/default.jpg'
@@ -34,9 +35,8 @@ def save(stu_id, avatar):
         """return true if avatar file is valid"""
         return True
 
-    def get_avatar_path(file_name, file_type):
-        return '%s/%s.%s' % (AVATAR_PATH_ROOT, file_name, file_type)
-
+    def get_avatar_path(folder, file_name, file_type):
+        return '%s/%s/%s.%s' % (AVATAR_PATH_ROOT, folder, file_name, file_type)
 
     # 确认学生是否存在
     select_rlt = stu_info.select(stu_id=stu_id)
@@ -53,8 +53,9 @@ def save(stu_id, avatar):
     pre_ref_path = select_rlt['stu'].avatar_path
     if check_avatar_file(avatar):
         # 写入文件的路径
-        avatar_path = get_avatar_path(file_name=stu_id,
-                                      file_type=file_helper.get_file_type(avatar.name))  # use stu_id as avatar file name
+        avatar_path = get_avatar_path(folder=stu_id,
+                                      file_name=int(time.time()),
+                                      file_type=file_helper.get_file_type(avatar.name))  # use time as avatar file name
 
         # 引用头像的路径
         ref_path = '/media/' + avatar_path
