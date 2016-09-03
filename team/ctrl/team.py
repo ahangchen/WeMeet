@@ -26,12 +26,12 @@ def bus_names():
     return team.bus_names()
 
 
-def update_info(tid, name, logo_path, slogan, about, history):
+def update_info(tid, name, logo_path, slogan, about, history, b_type):
     teams = team.get(tid)
     if teams.count() < 1:
         return ACC_NO_FOUND
     else:
-        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history)
+        teams.update(name=name, logo_path=logo_path, slogan=slogan, about=about, history=history, b_type=b_type)
         return TEAM_OK
 
 

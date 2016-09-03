@@ -660,9 +660,10 @@ def update_team_info(request):
     name = request.POST['name']
     logo_path = request.POST['logo_path']
     slogan = request.POST['slogan']
+    btype = request.POST['btype']
     about = request.POST['about']
     history = request.POST['history']
-    ret = team.update_info(tid, name, logo_path, slogan, about, history)
+    ret = team.update_info(tid, name, logo_path, slogan, about, history, btype)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
