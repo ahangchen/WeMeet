@@ -278,6 +278,36 @@
         }
 - 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
 
+### 11.1 删除职位
+* http://110.64.69.66:8081/team/delete_job/
+* POST
+* 参数：
+    * jobId: 职位id
+* 返回：
+    * 成功：* JSON: {'err': err, 'msg': msg}
+        err: 0
+        msg: 操作成功
+    * 失败
+        * JSON: {'err': err, 'msg': msg}
+            * err: -122/-1/-101
+            * msg: 职位不存在/请求方法错误/操作失败
+***
+
+### 20 查找职位类型
+* http://110.64.69.66:8081/team/job_type/
+* POST
+* 返回：
+    * 成功：* JSON: {'err': err, 'msg': msg}
+        err: 0
+        msg:[{
+                id: 职位类型ID,
+                name: 职位类型name,
+            },
+            ...
+        ]
+***
+
+
 ### 12 职位编辑
 - http://110.64.69.66:8081/team/job_update/
 - post
@@ -466,7 +496,7 @@
 
 ***
 
-### 9 职位搜索
+### 9 项目搜索
 - http://110.64.69.66:8081/team/product/search/
 - post
 - 参数：
@@ -492,34 +522,6 @@
         - err: -1
         - message: 请求方法错误
 
-### 19 删除职位
-* http://110.64.69.66:8081/team/delete_job/
-* POST
-* 参数：
-    * jobId: 职位id
-* 返回：
-    * 成功：* JSON: {'err': err, 'msg': msg}
-        err: 0
-        msg: 操作成功
-    * 失败
-        * JSON: {'err': err, 'msg': msg}
-            * err: -122/-1/-101
-            * msg: 职位不存在/请求方法错误/操作失败
-***
-
-### 20 查找职位类型
-* http://110.64.69.66:8081/team/job_type/
-* POST
-* 返回：
-    * 成功：* JSON: {'err': err, 'msg': msg}
-        err: 0
-        msg:[{
-                id: 职位类型ID,
-                name: 职位类型name,
-            },
-            ...
-        ]
-***
 
 
 ## 团队
