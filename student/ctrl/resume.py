@@ -2,10 +2,12 @@ from student.db import stu_info
 from student.db import job_apply
 from team.db import job
 from student.db.tag import OK_SELECT, ERR_SELECT_NOTEXIST, ERR_SELECT_DB, OK_INSERT,\
-                           OK_UPDATE, ERR_UPDATE_NOTEXIST
+                           OK_UPDATE, ERR_UPDATE_NOTEXIST,\
+                           NO_RESUME
 from student.ctrl.tag import OK_SAVE_RESUME, ERR_SAVE_RESUME_FAIL, ERR_RESUME_FILE_INVALID, \
                              OK_APPLY, ERR_APPLY_DB, ERR_APPLY_NO_RESUME, ERR_APPLY_EXIST, \
-                             OK_GET_RESUME, ERR_GET_RESUME_DB, ERR_GET_NO_RESUME
+                             OK_GET_RESUME, ERR_GET_RESUME_DB, ERR_GET_NO_RESUME, \
+                             OK_DEL_RESUME, ERR_DEL_RESUME_DB
 from student.util.logger import logger
 from student.util import file_helper, date_helper
 from student.util.value_update import NO_INPUT
@@ -103,7 +105,7 @@ def apply(stu_id, job_id):
             stu = select_stu_rlt['stu']
 
             # 如果学生无简历
-            if stu.resume_path == NO_INPUT:
+            if stu.resume_path == NO_RESUME:
                 return {'tag': ERR_APPLY_NO_RESUME}
 
             # 如果学生有简历
@@ -161,7 +163,7 @@ def get(stu_id):
     # 如果学生存在
     if select_rlt['tag'] == OK_SELECT:
         # 如果没有简历
-        if select_rlt['stu'].resume_path == NO_INPUT:
+        if select_rlt['stu'].resume_path == NO_RESUME:
             return {'tag': ERR_GET_NO_RESUME}
 
         # 如果成功
@@ -178,5 +180,32 @@ def get(stu_id):
         logger.error('数据库异常导致无法确认学生是否存在，获取简历路径失败')
         return {'tag': ERR_GET_RESUME_DB}
 
+
+def delete(stu_id):
+    """
+    删除简历（只删除学生信息的简历路径）
+    成功：返回{'tag': OK_DEL_RESUME}
+    失败：返回{'tag': ERR_DEL_RESUME_DB}
+    """
+    select_rlt = stu_info.select(stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == OK_SELECT:
+        stu = select_rlt['stu']
+        update_rlt = stu_info.update(stu_id=stu.id, resume_path=NO_RESUME)
+        if update_rlt == OK_UPDATE:
+            return {'tag': OK_DEL_RESUME}
+        else:
+            logger.error('数据库异常导致无法删除学生的简历（路径）')
+            return {'tag': ERR_DEL_RESUME_DB}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
+        logger.warning('尝试删除不存在学生的简历路径')
+        return {'tag': ERR_DEL_RESUME_DB}
+
+    # 如果数据库异常导致无法确认学生是否存在 select_rlt['tag'] == ERR_SELECT_DB
+    else:
+        logger.error('数据库异常导致无法确认学生是否存在，删除简历路径失败')
+        return {'tag': ERR_DEL_RESUME_DB}
 
 

@@ -9,6 +9,7 @@ from student.db.tag import OK_DELETE
 from student.db.tag import OK_INSERT
 from student.db.tag import OK_UPDATE
 from student.db.tag import OK_SELECT
+from student.db.tag import NO_RESUME
 
 from student.models import StuInfo
 
@@ -107,7 +108,7 @@ def insert(name, school, tel, mail, avatar_path, sex, year, month, major, locati
                           month=month,
                           major=major,
                           location=location,
-                          resume_path=NO_INPUT)
+                          resume_path=NO_RESUME)
         new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError
         return new_stu
 #        return GOOD_INSERT

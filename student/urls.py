@@ -16,6 +16,7 @@ urlpatterns = [
     url(r'^resume/upload/$', views.upload_resume),
     url(r'^resume/apply/$', views.job_apply),
     url(r'^resume/get/$', views.get_resume),
+    url(r'^resume/del/$', views.del_resume),
     url(r'^info/edu/add/$', views.add_edu),
     url(r'^info/edu/get/$', views.get_edu),
     url(r'^info/edu/update/$', views.update_edu),

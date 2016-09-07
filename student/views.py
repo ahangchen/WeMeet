@@ -133,6 +133,7 @@ from student.ctrl.tag import ERR_REPLY_DB
 from student.ctrl.tag import OK_HANDLE
 from student.ctrl.tag import ERR_STATE
 from student.ctrl.tag import ERR_HANDLE_DB
+from student.ctrl.tag import OK_DEL_RESUME
 
 
 
@@ -610,6 +611,33 @@ def get_resume(request):
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
                 'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def del_resume(request):
+    """
+    删除简历
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        del_rlt = resume.delete(stu_id)
+
+        if del_rlt['tag'] == OK_DEL_RESUME:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err' : FAIL,
+                'msg' : FAIL_MSG
             }))
 
     # 如果请求的方法是GET
