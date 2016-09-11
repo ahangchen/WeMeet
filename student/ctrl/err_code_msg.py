@@ -1,4 +1,5 @@
 SUCCEED = '0'
+OK_DEL_LAST = '1'  # 用在删除教育经历
 
 ERR_METHOD = '-1'
 ERR_METHOD_MSG = '请求方法错误'

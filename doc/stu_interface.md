@@ -234,7 +234,7 @@
 
 ***
 
-###12.5. 删除简历
+###12.1. 删除简历
 * http://110.64.69.66:8081/student/resume/del/
 * POST
 * 参数：
@@ -392,9 +392,11 @@
     * school: 学校
 * 返回：
     * 成功：
-        * JSON： {"err": err, "edu_id": edu_id}
+        * JSON： {"err": err, "edu_id": edu_id, "grade": grade, "edu_background": edu_background}
             * err: 0
             * edu_id: 增加的教育经历记录的id 
+            * grade: 个人信息中的年级
+            * edu_background: 个人信息中的学历学历（0表示其他，1表示大专，2表示本科，3表示硕士，4表示博士） 
     * 失败：
         * JSON： {"err": err, "msg": msg}
             * err: -123/-1/-10
@@ -617,6 +619,8 @@
             * err: 0
             * grade: 个人信息中的年级
             * edu_background: 个人信息中的学历
+        * JSON: {"err": err}
+            * err: 1 (表示成功删除学生的最后一条教育经历）
     * 失败：
         * JSON： {"err": err, "msg": msg}
             * err: -1/-10

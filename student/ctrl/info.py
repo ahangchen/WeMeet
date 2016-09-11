@@ -39,6 +39,7 @@ from student.ctrl.tag import OK_ADD_PROJ
 from student.ctrl.tag import OK_ADD_SKILL
 from student.ctrl.tag import OK_ADD_WORKS
 from student.ctrl.tag import OK_DEL_EDU
+from student.ctrl.tag import OK_DEL_LAST_EDU
 from student.ctrl.tag import OK_DEL_INTERN
 from student.ctrl.tag import OK_DEL_PROJ
 from student.ctrl.tag import OK_DEL_SKILL
@@ -365,6 +366,10 @@ def del_edu(stu_id, edu_id):
                 return {'tag': OK_DEL_EDU,
                         'grade': get_rlt['grade'],
                         'edu_background': get_rlt['edu_background']}
+
+            # 如果删除后已无教育经历
+            elif get_rlt['tag'] == ERR_GET_NO_EDU:
+                return {'tag' : OK_DEL_LAST_EDU}
 
             # 如果获取教育经历列表失败
             else:

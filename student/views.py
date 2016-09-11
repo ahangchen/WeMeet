@@ -34,6 +34,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       NO_PROJ, NO_PROJ_MSG, \
                                       NO_EDU, NO_EDU_MSG, \
                                       FAIL, FAIL_MSG, \
+                                      OK_DEL_LAST, \
                                       SUCCEED
 
 
@@ -87,6 +88,7 @@ from student.ctrl.tag import ERR_GET_NO_SKILL
 from student.ctrl.tag import ERR_GET_SKILL_DB
 from student.ctrl.tag import OK_UPDATE_EDU
 from student.ctrl.tag import OK_DEL_EDU
+from student.ctrl.tag import OK_DEL_LAST_EDU
 from student.ctrl.tag import OK_ADD_INTERN
 from student.ctrl.tag import ERR_ADD_INTERN_FULL
 from student.ctrl.tag import ERR_ADD_INTERN_DB
@@ -863,6 +865,11 @@ def del_edu(request):
                 'grade': del_rlt['grade'],
                 'edu_background': del_rlt['edu_background']
             }))
+
+        # 如果删除了最后一条教育经历
+        elif del_rlt['tag'] == OK_DEL_LAST_EDU:
+            return HttpResponse(json_helper.dumps({'err': OK_DEL_LAST}))
+
         # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_EDU_DB)
         else:
             return HttpResponse(json_helper.dumps({
