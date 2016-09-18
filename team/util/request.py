@@ -1,7 +1,16 @@
 from django.http import HttpResponse
 from student.util import json_helper
 from team.ctrl.err_code_msg import ERROR_METHOD, MSG_METHOD_ERR, ERR_VALID_CODE, MSG_VALID_CODE_ERR
+from functools import wraps
 
+def check_post(func):
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        if request.method != 'POST':
+            return HttpResponse(json_helper.dump_err_msg(ERROR_METHOD, MSG_METHOD_ERR))
+
+        return func(request, *args, **kwargs)
+    return wrapper
 
 def is_post(request):
     return request.method == 'POST'

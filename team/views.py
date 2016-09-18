@@ -8,6 +8,7 @@ from student.ctrl.tag import OK_REG
 from team.ctrl import acc_mng
 from team.ctrl import team, product
 from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
+from team.ctrl.product import check_param
 from team.ctrl.register import validate
 from team.ctrl import job
 from team.ctrl.job import JOB_NOT_FOUND
@@ -27,10 +28,11 @@ from team.db import product as db_product
 from team.db.tag import PRODUCT_SUCCEED
 from student.ctrl import account
 
+
 import json
 import operator
 
-from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err
+from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err, check_post
 from team.db.form import JobForm, ProductForm
 
 
@@ -44,21 +46,19 @@ def valid_code(request):
 
 
 @csrf_exempt
+@check_post
 def search_product(request):
     """
         根据团队ID搜索项目信息
         成功: 返回项目信息
         失败：返回相应的err和msg的JSON
     """
-    if not is_post(request):
-        return resp_method_err()
-
-    team_id = request.POST.get('teamId')
+    product_id = request.POST.get('productId')
 
     if False:  # ToDo(wang) check param # not job_type[0].isdigit():
         return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'msg': MSG_POST_TYPE}, ensure_ascii=False))
 
-    res_list = Product.objects.filter(team_id=team_id).values('name', 'img_path', 'content', 'reward', 'team_id',
+    res_list = Product.objects.filter(pk=product_id).values('name', 'img_path', 'content', 'reward', 'team_id',
                                                               'last_visit_cnt', 'week_visit_cnt')
 
     res = json.dumps({'err': SUCCEED, 'msg': list(res_list)}, ensure_ascii=False)
@@ -113,6 +113,7 @@ def delete_product(request):
 
 
 @csrf_exempt
+@check_param
 def add_product(request):
     """
         添加项目信息
@@ -122,19 +123,8 @@ def add_product(request):
     if not is_post(request):
         return resp_method_err()
 
-    # 判断POST请求类型
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
-        req_data = json.loads(request.body.decode('utf-8'))
-    else:
-        req_data = request.POST
-
-    # 判断参数类型
-    prod_form = ProductForm(req_data, request.FILES)
-    if not prod_form.is_valid():
-        return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
-
     # 判断是否插入
-    res = db_product.insert(**prod_form.cleaned_data)
+    res = db_product.insert(**request.POST.DATA)
     if res['err'] != PRODUCT_SUCCEED:
         return HttpResponse(json.dumps(res, ensure_ascii=False))
 
@@ -147,6 +137,7 @@ def add_product(request):
 
 
 @csrf_exempt
+@check_param
 def update_product(request):
     """
         编辑项目信息
@@ -156,27 +147,27 @@ def update_product(request):
     if not is_post(request):
         return resp_method_err()
 
-    # 判断POST请求类型
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
-        req_data = json.loads(request.body.decode('utf-8'))
-        id = req_data['id']
-    else:
-        req_data = request.POST
-        id = request.POST['id']
-        if not id.isdigit():
-            return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': MSG_PROD_TYPE}, ensure_ascii=False))
+    # # 判断POST请求类型
+    # if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
+    #     req_data = json.loads(request.body.decode('utf-8'))
+    #     id = req_data['id']
+    # else:
+    #     req_data = request.POST
+    #     id = request.POST['id']
+    #     if not id.isdigit():
+    #         return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': MSG_PROD_TYPE}, ensure_ascii=False))
+    #
+    # # 判断参数类型
+    # prod_form = ProductForm(req_data, request.FILES)
+    # if not prod_form.is_valid():
+    #     return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
 
-    # 判断参数类型
-    prod_form = ProductForm(req_data, request.FILES)
-    if not prod_form.is_valid():
-        return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
-
-    res = db_product.select(prod_id=id)
+    res = db_product.select(prod_id=request.POST.DATA['id'])
     if res['err'] != PRODUCT_SUCCEED:
         return HttpResponse(json.dumps(res, ensure_ascii=False))
 
     # 判断是否插入
-    res = db_product.update(id=id, **prod_form.cleaned_data)
+    res = db_product.update(**request.POST.DATA)
     if res['err'] != PRODUCT_SUCCEED:
         return HttpResponse(json.dumps(res, ensure_ascii=False))
 

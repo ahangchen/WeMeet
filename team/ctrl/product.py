@@ -8,11 +8,43 @@ from django.http import Http404
 from team.models import Product
 from rest_framework import status
 from rest_framework.decorators import api_view
+from functools import wraps
+from team.db.form import ProductForm
+from django.http import HttpResponse
+from team.ctrl.err_code_msg import *
 
 import logging
+import json
 
 DEFAULT_IMG = 'team/product/default.jpg'
 IMG_PATH_ROOT = 'team/product'
+
+def check_param(func):
+    @wraps(func)
+    def wrapper(request, *args, **kwargs):
+        # 判断POST请求类型
+        if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
+            req_data = json.loads(request.body.decode('utf-8'))
+            logging.error(req_data)
+            id = req_data['id'] if 'id' in req_data else None
+        else:
+            req_data = request.POST
+            id = request.POST['id'] if request.POST.__contains__('id') else None
+            if id and not id.isdigit():
+                return HttpResponse(json.dumps({'err': ERR_PROD_TYPE, 'message': MSG_PROD_TYPE}, ensure_ascii=False))
+
+        # 判断参数类型
+        prod_form = ProductForm(req_data, request.FILES)
+        if not prod_form.is_valid():
+            return HttpResponse(
+                json.dumps({'err': ERR_PROD_TYPE, 'message': dict(prod_form._errors)}, ensure_ascii=False))
+        request.POST.DATA = prod_form.cleaned_data
+        if id:
+            request.POST.DATA['id'] = id
+
+        return func(request, *args, **kwargs)
+
+    return wrapper
 
 class ProductList(APIView):
     def get(self, request):

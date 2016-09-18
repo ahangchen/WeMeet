@@ -500,7 +500,7 @@
 - http://110.64.69.101:8081/team/product/search/
 - post
 - 参数：
-    teamId: 团队ID
+    productId: 项目ID
 - 返回：
     - 成功：
         - JSON:
