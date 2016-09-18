@@ -1,9 +1,16 @@
 from team.models import Job, Team
 from team.db.tag import SUCCEED,ERR_JOB_NOT_EXIT,MSG_JOB_NOT_EXIT,ERR_PROD_TABLE,MSG_PROD_TABLE
+from rest_framework import serializers
 
 DB_OK = 0
 DB_ACC_NOT_FOUND = 1
 
+class JobSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Job
+        fields = ('name', 'j_type', 'min_salary', 'max_salary', 'prince',
+                  'city', 'town', 'exp_cmd', 'w_type', 'job_cmd', 'work_cmd',
+                  'pub_state', 'team', 'address')
 
 def id_job(job_id):
     job = Job.objects.filter(id=job_id).first()

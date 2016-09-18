@@ -1,5 +1,12 @@
 from team.models import Product
 from team.db.tag import *
+from rest_framework import serializers
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ('name', 'img_path', 'content', 'reward', 'team',
+                  'last_visit_cnt', 'week_visit_cnt')
 
 
 def update(id, name=None, img_path=None, content=None,
