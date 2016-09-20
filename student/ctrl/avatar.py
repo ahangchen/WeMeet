@@ -58,7 +58,9 @@ def save(stu_id, avatar):
                                       file_type=file_helper.get_file_type(avatar.name))  # use time as avatar file name
 
         # 引用头像的路径
-        ref_path = '/media/' + avatar_path
+        # ref_path = '/media/' + avatar_path
+        ref_path = avatar_path
+
         # 更新学生头像路径
         update_tag = stu_info.update(stu_id=stu_id, avatar_path=ref_path)
         # 如果更新头像路径成功

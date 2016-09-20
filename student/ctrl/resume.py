@@ -43,7 +43,9 @@ def upload(stu_id, resume):
             resume_path = get_resume_path(folder=stu_id,
                                           file_name=int(time.time()),
                                           file_type=file_helper.get_file_type(resume.name))  # 用时间作简历文件名称
-            ref_path = '/media/' + resume_path
+            # 引用的简历路径
+            # ref_path = '/media/' + resume_path
+            ref_path = resume_path
 
             # 更新学生的当前简历路径
             update_stu_tag = stu_info.update(stu_id=stu_id, resume_path=ref_path)
