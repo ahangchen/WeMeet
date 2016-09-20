@@ -407,7 +407,7 @@ def change_pwd(request):
 def get_info(request):
     """
     获取学生信息
-    成功： 返回err: SUCCEED，头像路径，姓名，学校, 性别，出生年份，出生月份，年龄，专业，所在地，联系方式（tel），邮箱, 简历地址
+    成功： 返回err: SUCCEED，头像路径，姓名，学校, 性别，出生年份，出生月份，年龄，专业，所在地，联系方式（tel），邮箱,
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
@@ -428,7 +428,6 @@ def get_info(request):
                 'location': get_rlt['stu'].location,
                 'tel': get_rlt['stu'].tel,
                 'mail': get_rlt['stu'].mail,
-                'resume_path': get_rlt['stu'].resume_path,
                 'age': get_rlt['age']
             }))
 
