@@ -53,12 +53,12 @@ def search_product(request):
         成功: 返回项目信息
         失败：返回相应的err和msg的JSON
     """
-    product_id = request.POST.get('productId')
+    team_id = request.POST.get('teamId')
 
     if False:  # ToDo(wang) check param # not job_type[0].isdigit():
         return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'msg': MSG_POST_TYPE}, ensure_ascii=False))
 
-    res_list = Product.objects.filter(pk=product_id).values('name', 'img_path', 'content', 'reward', 'team_id',
+    res_list = Product.objects.filter(team_id=team_id).values('name', 'img_path', 'content', 'reward', 'id',
                                                               'last_visit_cnt', 'week_visit_cnt')
 
     res = json.dumps({'err': SUCCEED, 'msg': list(res_list)}, ensure_ascii=False)

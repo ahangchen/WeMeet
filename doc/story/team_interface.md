@@ -500,7 +500,7 @@
 - http://110.64.69.101:8081/team/product/search/
 - post
 - 参数：
-    productId: 项目ID
+    teamId: 团队ID
 - 返回：
     - 成功：
         - JSON:
@@ -510,7 +510,7 @@
                 - img_path: 照片路径
                 - content: 团队简介
                 - reward: 获奖情况
-                - team_id: 团队ID
+                - id: 项目ID
                 - last_visit_cnt： 上周访问量
                 - week_visit_cnt: 每周访问量
                 },
