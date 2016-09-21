@@ -20,8 +20,9 @@ def save(file, path):
     default_storage.save(path, ContentFile(file.read()))
     return True
 
+
 def delete(path):
-    if default_storage.exists(path):
+    if default_storage.exists(path) and path != '':
         try:
             default_storage.delete(path)
         # 如果目标文件系统不支持删除文件操作
