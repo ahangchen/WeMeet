@@ -748,7 +748,8 @@ def upload_works(stu_id, works):
             works_path = get_works_path(folder=stu_id,
                                         file_name=int(time.time()),
                                         file_type=file_helper.get_file_type(works.name))  # 用time作简历文件名称
-            ref_path = '/media/' + works_path
+            # ref_path = '/media/' + works_path
+            ref_path = works_path
 
             # 如果作品集文件上传成功
             if file_helper.save(works, works_path):
