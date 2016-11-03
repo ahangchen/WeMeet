@@ -116,3 +116,26 @@ class TeamType(models.Model):
 
 class BusinessType(models.Model):
     name = models.CharField(max_length=NAME_MAX_LENGTH, default='')
+
+
+class Post(models.Model):
+    # 互动社区回帖
+    title = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
+    # 引用其他帖子，-1代表新帖
+    ref = models.IntegerField(default=-1)
+    # 被引用数目，被回帖数目
+    ref_cnt = models.IntegerField(default=0)
+    # 点赞数
+    vote_cnt = models.IntegerField(default=0)
+    # 作者，由于有两种，所以不用外键
+    author_id = models.IntegerField(default=-1)
+    authro_type = models.BooleanField(default=True)
+
+
+class Message(models.Model):
+    sender_id = models.IntegerField()
+    receiver_id = models.IntegerField()
+    content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
+    read = models.BooleanField(default=False)
+    send_time = models.DateTimeField()

@@ -151,3 +151,10 @@ class StuSkill(models.Model):
 
     class Meta:
         db_table = 'stu_skill'
+
+
+class StuItem(models.Model):
+    # 自定义的模块
+    title = models.CharField(max_length=SHORT_TEXT_LENGTH)
+    content = models.CharField(max_length=LONGTEXT_MAX_LENGTH)
+    stu = models.ForeignKey('StuInfo', null=False)
