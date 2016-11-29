@@ -58,16 +58,16 @@ NO_WORKS_MSG = '无作品集'
 NO_SKILL = '-122'  # 用在获取技能评价
 NO_SKILL_MSG = '无技能评价'
 
-ERR_EDU_FULL = '-123' # 用在增加教育经历
+ERR_EDU_FULL = '-123'  # 用在增加教育经历
 ERR_EDU_FULL_MSG = '教育经历已达上限'
 
-ERR_INTERN_FULL = '-124' # 用在增加实习经历
+ERR_INTERN_FULL = '-124'  # 用在增加实习经历
 ERR_INTERN_FULL_MSG = '实习经历已达上限'
 
-ERR_PROJ_FULL = '-125' # 用在增加项目经历
+ERR_PROJ_FULL = '-125'  # 用在增加项目经历
 ERR_PROJ_FULL_MSG = '项目经历已达上限'
 
-ERR_SKILL_FULL = '-127' # 用在增加技能评
+ERR_SKILL_FULL = '-127'  # 用在增加技能评
 ERR_SKILL_FULL_MSG = '技能评价已达上限'
 
 WORKS_INVALID = '-128'  # 用在上传作品集文件

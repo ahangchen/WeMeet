@@ -40,5 +40,6 @@ urlpatterns = [
     url(r'^info/skill/del/$', views.del_skill),
     url(r'^apply/list/$', views.stu_get_apply),
     url(r'^apply/read/$', views.set_apply_read),
+    url(r'^aboutme/get/$', views.get_about_me),
     url(r'^$', views.post),
 ]

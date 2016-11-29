@@ -1,7 +1,7 @@
 from django.db import models
 
 from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
-    SHORT_TEXT_LENGTH, DATE_MAX_LENGTH
+    SHORT_TEXT_LENGTH, DATE_MAX_LENGTH, MEDIUM_TEXT_LENGTH
 
 
 class JobApply(models.Model):
@@ -129,6 +129,8 @@ class StuProj(models.Model):
 
 class StuWorks(models.Model):
     works_id = models.AutoField(primary_key=True)
+    # 作品名称
+    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
     # 作品集路径
     path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
     # 作品集在线地址
@@ -151,6 +153,21 @@ class StuSkill(models.Model):
 
     class Meta:
         db_table = 'stu_skill'
+
+
+class StuAboutMe(models.Model):
+    about_me_id = models.AutoField(primary_key=True)
+    # 个人经历
+    experience = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
+    # 我
+    self_description = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
+    # 实习经历
+    internship = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_about_me'
 
 
 class StuItem(models.Model):

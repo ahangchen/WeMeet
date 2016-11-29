@@ -8,6 +8,7 @@ from student.ctrl import account
 from student.ctrl import avatar
 from student.ctrl import resume
 from student.ctrl import apply
+from student.ctrl import about_me
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                       ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                       ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -1788,5 +1789,37 @@ def team_apply_handle(request):
         }))
 
 
+@csrf_exempt
+def get_about_me(request):
+    """
+    获取学生的“关于我”
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        rlt = about_me.get(stu_id)
 
+        if rlt['tag'] == about_me.OK_GET_ABOUT_ME:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'about_me_id': rlt['about_me_id'],
+                'experience': rlt['experience'],
+                'self_description': rlt['self_description'],
+                'internship': rlt['internship']
+            }))
+
+        # tag == ERR_STATE或tag或tag == ERR_GET_ABOUT_ME_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
