@@ -49,7 +49,6 @@ from student.ctrl.tag import OK_GET_INFO
 from student.ctrl.tag import OK_GET_INTERN
 from student.ctrl.tag import OK_GET_PROJ
 from student.ctrl.tag import OK_GET_SKILL
-from student.ctrl.tag import OK_GET_WORKS
 from student.ctrl.tag import OK_SAVE_WORKS
 from student.ctrl.tag import OK_UPDATE_EDU
 from student.ctrl.tag import OK_UPDATE_INTERN
@@ -369,7 +368,7 @@ def del_edu(stu_id, edu_id):
 
             # 如果删除后已无教育经历
             elif get_rlt['tag'] == ERR_GET_NO_EDU:
-                return {'tag' : OK_DEL_LAST_EDU}
+                return {'tag': OK_DEL_LAST_EDU}
 
             # 如果获取教育经历列表失败
             else:
@@ -683,44 +682,7 @@ def del_proj(stu_id, proj_id):
         return {'tag': ERR_DEL_PROJ_DB}
 
 
-def get_works(stu_id):
-    """
-    获取学生的作品集
-    成功：返回{'tag': OK_GET_WORKS,
-             'works_id': select_works_rlt['works'].works_id,
-             'path': select_works_rlt['works'].path,
-             'site': select_works_rlt['works'].site}
-    失败：返回{'tag': ERR_GET_NO_WORKS} 或 {'tag': ERR_GET_WORKS_DB}
-    """
-    select_rlt = stu_info.select(stu_id=stu_id)
-    # 如果学生存在
-    if select_rlt['tag'] == OK_SELECT:
-        select_works_rlt = works.stu_select(stu=select_rlt['stu'])
 
-        # 如果获取成功
-        if select_works_rlt['tag'] == OK_SELECT:
-            return {'tag': OK_GET_WORKS,
-                    'works_id': select_works_rlt['works'].works_id,
-                    'path': select_works_rlt['works'].path,
-                    'site': select_works_rlt['works'].site}
-
-        # 如果该学生无作品集
-        elif select_works_rlt['tag'] == ERR_SELECT_NOTEXIST:
-            return {'tag': ERR_GET_NO_WORKS}
-
-        # 如果数据库异常导致无法查询作品集(select_works_rlt['tag'] == ERR_SELECT_DB)
-        else:
-            return {'tag': ERR_GET_WORKS_DB}
-
-
-    # 如果学生不存在
-    elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
-        logger.warning('尝试获取不存在的学生的作品集')
-        return {'tag': ERR_GET_WORKS_DB}
-    # 如果数据库异常导致无法确认学生是否存在(select_rlt['tag'] == ERR_SELECT_DB)
-    else:
-        logger.error('数据库异常导致无法确认学生是否存在，查询作品集失败')
-        return {'tag': ERR_GET_WORKS_DB}
 
 
 def upload_works(stu_id, works):

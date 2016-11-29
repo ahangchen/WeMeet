@@ -9,6 +9,7 @@ from student.ctrl import avatar
 from student.ctrl import resume
 from student.ctrl import apply
 from student.ctrl import about_me
+from student.ctrl import works
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                       ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                       ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -1245,51 +1246,7 @@ def add_works(request):
         }))
 
 
-@csrf_exempt
-def get_works(request):
-    """
-    获取学生作品集
-    成功：返回{
-                'err': SUCCEED,
-                'works_id': get_rlt['works_id'],
-                'path': get_rlt['path'],
-                'site': get_rlt['site']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_works(stu_id)
 
-        # 如果获取成功
-        if get_rlt['tag'] == OK_GET_WORKS:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'works_id': get_rlt['works_id'],
-                'path': get_rlt['path'],
-                'site': get_rlt['site']
-            }))
-
-        # 如果该学生没有作品集
-        elif get_rlt['tag'] == ERR_GET_NO_WORKS:
-            return HttpResponse(json_helper.dumps({
-                'err': NO_WORKS,
-                'msg': NO_WORKS_MSG
-            }))
-
-        # get_rlt['tag'] == ERR_GET_WORKS_DB
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
 
 
 @csrf_exempt
@@ -1810,6 +1767,51 @@ def get_about_me(request):
             }))
 
         # tag == ERR_STATE或tag或tag == ERR_GET_ABOUT_ME_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def get_works(request):
+    """
+    获取学生作品集
+    成功：返回{
+                'err': SUCCEED,
+                'works_id': get_rlt['works_id'],
+                'path': get_rlt['path'],
+                'site': get_rlt['site']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        get_rlt = works.get_works(stu_id)
+
+        # 如果获取成功
+        if get_rlt['tag'] == OK_GET_WORKS:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'works_list': get_rlt['works_list']
+            }))
+
+        # 如果该学生没有作品
+        elif get_rlt['tag'] == ERR_GET_NO_WORKS:
+            return HttpResponse(json_helper.dumps({
+                'err': NO_WORKS,
+                'msg': NO_WORKS_MSG
+            }))
+
+        # get_rlt['tag'] == ERR_GET_WORKS_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
