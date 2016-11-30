@@ -1,7 +1,7 @@
 from django.db import models
 
 from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
-    SHORT_TEXT_LENGTH, DATE_MAX_LENGTH, MEDIUM_TEXT_LENGTH, EXTRA_LONG_TEXT_LENGTH
+    SHORT_TEXT_LENGTH, DATE_MAX_LENGTH, MEDIUM_TEXT_LENGTH, EXTRA_LONG_TEXT_LENGTH, SIMPLE_TEXT_LENGTH
 
 
 class JobApply(models.Model):
@@ -31,29 +31,38 @@ class StuInfo(models.Model):
     id = models.AutoField(primary_key=True)
     # 姓名
     name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 头衔
+    title = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    # 个性签名
+    personal_signature = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
     # 性别，0表示未填，1表示男，2表示女
     sex = models.IntegerField(default=0)
-    # 出生年份
-    year = models.IntegerField(default=-1)
-    # 出生月份
-    month = models.IntegerField(default=-1)
     # 学校
     school = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
-    # 专业
-    major = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
-    # 所在地
-    location = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
-    # 邮箱
-    mail = models.CharField(max_length=MAIL_MAX_LENGTH, blank=True, null=True, default='')
-    # 电话
-    tel = models.CharField(max_length=TEL_MAX_LENGTH, blank=True, null=True, default='')
+    # 年级 枚举(值未定） -1 未选
+    grade = models.IntegerField(default=0)
     # 头像路径
     avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
     # 简历文件路径
     resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
+    # 一级标签，0表示工程，1表示经管，2表示文艺，3表示人文 -1 未选
+    label1 = models.IntegerField(default=0)
+    # 人气数
+    likes = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'stu_info'
+
+
+class StuLabel(models.Model):
+    label2_id = models.AutoField(primary_key=True)
+    # 二级标签
+    text = models.CharField(max_length=SIMPLE_TEXT_LENGTH, blank=True, null=True, default='')
+    # 学生，on_delete默认为CASCADE，当学生被删除的时候，账号级联删除
+    stu = models.ForeignKey('StuInfo', null=False)
+
+    class Meta:
+        db_table = 'stu_label_2'
 
 
 class StuAccount(models.Model):

@@ -17,34 +17,34 @@ from student.util.value_update import value, NO_INPUT
 from student.util.logger import logger
 
 
-def delete(stu_id):
-    """
-    删除
-    成功返回OK_DELETE
-    失败返回ERR_DELETE_DB
-    """
-    try:
-        delete_stu = StuInfo.objects.all().get(id=stu_id)  # 抛出MultipleObjectsReturned或DoesNotExist
-        delete_stu.delete()  # 不抛出异常
-        return OK_DELETE
-
-    except StuInfo.DoesNotExist:
-        logger.error('尝试删除不存在的学生')
-        return ERR_DELETE_DB
-
-    except StuInfo.MultipleObjectsReturned:
-        logger.info('数据库异常（存在重复记录）')
-        StuInfo.objects.all().filter(id=stu_id).delete()  # 不抛异常
-        return OK_DELETE
-
-    # 数据库异常
-    except Exception as e:
-        logger.error(e.__str__() + '数据库异常导致删除学生失败')
-        return ERR_DELETE_DB
-
-
-def update(stu_id, name=NO_INPUT, sex=NO_INPUT, year=NO_INPUT, month=NO_INPUT, school=NO_INPUT, tel=NO_INPUT,
-           mail=NO_INPUT, avatar_path=NO_INPUT, major=NO_INPUT, location=NO_INPUT, resume_path=NO_INPUT):
+# def delete(stu_id):
+#     """
+#     删除
+#     成功返回OK_DELETE
+#     失败返回ERR_DELETE_DB
+#     """
+#     try:
+#         delete_stu = StuInfo.objects.all().get(id=stu_id)  # 抛出MultipleObjectsReturned或DoesNotExist
+#         delete_stu.delete()  # 不抛出异常
+#         return OK_DELETE
+#
+#     except StuInfo.DoesNotExist:
+#         logger.error('尝试删除不存在的学生')
+#         return ERR_DELETE_DB
+#
+#     except StuInfo.MultipleObjectsReturned:
+#         logger.info('数据库异常（存在重复记录）')
+#         StuInfo.objects.all().filter(id=stu_id).delete()  # 不抛异常
+#         return OK_DELETE
+#
+#     # 数据库异常
+#     except Exception as e:
+#         logger.error(e.__str__() + '数据库异常导致删除学生失败')
+#         return ERR_DELETE_DB
+#
+#
+def update(stu_id, name=NO_INPUT, title=NO_INPUT, personal_signature=NO_INPUT, sex=NO_INPUT, school=NO_INPUT, grade=NO_INPUT, avatar_path=NO_INPUT,
+           resume_path=NO_INPUT, label1=NO_INPUT, likes=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST
@@ -55,14 +55,13 @@ def update(stu_id, name=NO_INPUT, sex=NO_INPUT, year=NO_INPUT, month=NO_INPUT, s
 
         update_stu.name = value(update_stu.name, name)
         update_stu.sex = value(update_stu.sex, sex)
-        update_stu.year = value(update_stu.year, year)
-        update_stu.month = value(update_stu.month, month)
+        update_stu.title = value(update_stu.title, title)
+        update_stu.personal_signature = value(update_stu.personal_signature, personal_signature)
+        update_stu.grade = value(update_stu.grade, grade)
         update_stu.school = value(update_stu.school, school)
-        update_stu.tel = value(update_stu.tel, tel)
-        update_stu.mail = value(update_stu.mail, mail)
+        update_stu.label1 = value(update_stu.label1, label1)
+        update_stu.likes = value(update_stu.likes, likes)
         update_stu.avatar_path = value(update_stu.avatar_path, avatar_path)
-        update_stu.major = value(update_stu.major, major)
-        update_stu.location = value(update_stu.location, location)
         update_stu.resume_path = value(update_stu.resume_path, resume_path)
 
         update_stu.save()
@@ -92,24 +91,23 @@ def select(stu_id):
         return {'tag': ERR_SELECT_DB}
 
 
-def insert(name, school, tel, mail, avatar_path, sex, year, month, major, location):
+def insert(name, title, personal_signature, sex, school, grade, avatar_path, label1):
     """
     成功：返回插入的学生
     失败：返回ERROR_INSERT
     """
     try:
         new_stu = StuInfo(name=name,
-                          school=school,
-                          tel=tel,
-                          mail=mail,
-                          avatar_path=avatar_path,
+                          title=title,
+                          personal_signature=personal_signature,
                           sex=sex,
-                          year=year,
-                          month=month,
-                          major=major,
-                          location=location,
+                          school=school,
+                          grade=grade,
+                          avatar_path=avatar_path,
+                          label1=label1,
+                          likes=0,
                           resume_path=NO_RESUME)
-        new_stu.save()  #  如果是手工设置的主键，会抛出 IntegrityError
+        new_stu.save()  # 如果是手工设置的主键，会抛出 IntegrityError
         return new_stu
 #        return GOOD_INSERT
     except Exception as e:

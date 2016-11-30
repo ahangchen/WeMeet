@@ -409,7 +409,7 @@ def change_pwd(request):
 def get_info(request):
     """
     获取学生信息
-    成功： 返回err: SUCCEED，头像路径，姓名，学校, 性别，出生年份，出生月份，年龄，专业，所在地，联系方式（tel），邮箱,
+    成功： 返回err: SUCCEED，头像路径，姓名，头衔, 学校, 性别, 年级，一级标签，人气值
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
@@ -422,15 +422,14 @@ def get_info(request):
                 'err': SUCCEED,
                 'avatar_path': get_rlt['stu'].avatar_path,
                 'name': get_rlt['stu'].name,
-                'school': get_rlt['stu'].school,
+                'title': get_rlt['stu'].title,
+                'personal_signature': get_rlt['stu'].personal_signature,
                 'sex': get_rlt['stu'].sex,
-                'year': get_rlt['stu'].year,
-                'month': get_rlt['stu'].month,
-                'major': get_rlt['stu'].major,
-                'location': get_rlt['stu'].location,
-                'tel': get_rlt['stu'].tel,
-                'mail': get_rlt['stu'].mail,
-                'age': get_rlt['age']
+                'school': get_rlt['stu'].school,
+                'grade': get_rlt['stu'].grade,
+                'label1': get_rlt['stu'].label1,
+                'likes': get_rlt['stu'].likes,
+                'label2_list': get_rlt['label2_list']
             }))
 
         # 如果学生不存在
@@ -496,47 +495,47 @@ def save_avatar(request):
             }))
 
 
-@csrf_exempt
-def update_info(request):
-    """
-    修改学生信息
-    成功：返回{'err': SUCCEED}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('id')
-        avatar_path = request.POST.get('path')
-        name = request.POST.get('name')
-        school = request.POST.get('school')
-        major = request.POST.get('major')
-        location = request.POST.get('location')
-        sex = request.POST.get('sex')
-        year = request.POST.get('year')
-        month = request.POST.get('month')
-        mail = request.POST.get('mail')
-        tel = request.POST.get('tel')
-
-        tag = info.update(stu_id=stu_id, avatar_path=avatar_path, name=name, school=school,
-                          major=major, location=location, sex=sex, year=year,
-                          month=month, mail=mail, tel=tel)
-
-        # 如果更新成功
-        if tag == OK_UPDATE_STU_INFO:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库原因（丢失记录或异常）导致更新失败 tag == ERR_UPDATE_STU_INFO_DB
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
+# @csrf_exempt
+# def update_info(request):
+#     """
+#     修改学生信息
+#     成功：返回{'err': SUCCEED}
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('id')
+#         avatar_path = request.POST.get('path')
+#         name = request.POST.get('name')
+#         school = request.POST.get('school')
+#         major = request.POST.get('major')
+#         location = request.POST.get('location')
+#         sex = request.POST.get('sex')
+#         year = request.POST.get('year')
+#         month = request.POST.get('month')
+#         mail = request.POST.get('mail')
+#         tel = request.POST.get('tel')
+#
+#         tag = info.update(stu_id=stu_id, avatar_path=avatar_path, name=name, school=school,
+#                           major=major, location=location, sex=sex, year=year,
+#                           month=month, mail=mail, tel=tel)
+#
+#         # 如果更新成功
+#         if tag == OK_UPDATE_STU_INFO:
+#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+#
+#         # 如果数据库原因（丢失记录或异常）导致更新失败 tag == ERR_UPDATE_STU_INFO_DB
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
 
 
 @csrf_exempt
