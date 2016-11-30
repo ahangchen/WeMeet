@@ -119,6 +119,11 @@ def query(stu_id):
     return StuInfo.objects.filter(id=stu_id)
 
 
+def like_sorts():
+    return StuInfo.objects.order_by("-likes")
+
+
+
 
 
 

@@ -10,6 +10,7 @@ from student.ctrl import resume
 from student.ctrl import apply
 from student.ctrl import about_me
 from student.ctrl import works
+from student.ctrl import square
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                       ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                       ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -1818,6 +1819,40 @@ def get_works(request):
             }))
 
     # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def top6(request):
+    """
+    获取人气最高的6个学生
+    成功：返回{
+                'err': SUCCEED,
+                'top_list': get_rlt['top_list'],
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'GET':
+        rlt = square.top6()
+
+        # 如果获取成功
+        if rlt['tag'] == square.OK_GET_TOP6:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'top_list': rlt['top_list']
+            }))
+
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是POST
     else:
         return HttpResponse(json_helper.dumps({
             'err': ERR_METHOD,

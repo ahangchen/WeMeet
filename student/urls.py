@@ -43,5 +43,6 @@ urlpatterns = [
     url(r'^apply/list/$', views.stu_get_apply),
     url(r'^apply/read/$', views.set_apply_read),
     url(r'^aboutme/get/$', views.get_about_me),
+    url(r'^top6/$', views.top6),
     url(r'^$', views.post),
 ]
