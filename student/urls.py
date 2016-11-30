@@ -44,5 +44,6 @@ urlpatterns = [
     url(r'^apply/read/$', views.set_apply_read),
     url(r'^aboutme/get/$', views.get_about_me),
     url(r'^top6/$', views.top6),
+    url(r'^top6/label/$', views.top6_in_label),
     url(r'^$', views.post),
 ]
