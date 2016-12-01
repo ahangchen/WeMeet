@@ -11,6 +11,7 @@ from student.ctrl import apply
 from student.ctrl import about_me
 from student.ctrl import works
 from student.ctrl import square
+from student.ctrl import skill
 from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_NONACTIVATED_MSG, \
                                       ERR_LOGIN_STU_WRONG_PWD, ERR_LOGIN_STU_WRONG_PWD_MSG, \
                                       ERR_ACCOUNT_NOTEXIST, ERR_ACCOUNT_NOTEXIST_MSG, \
@@ -696,509 +697,509 @@ def job_apply(request):
         }))
 
 
-@csrf_exempt
-def add_edu(request):
-    """
-    增加教育经历
-    成功：返回：{
-                'err': SUCCEED,
-                'edu_id': add_rlt['edu_id'],
-                'grade': add_rlt['grade'],
-                'edu_background': add_rlt['edu_background']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        major = request.POST.get('major')
-        graduation_year = request.POST.get('graduation_year')
-        background = request.POST.get('edu_background')
-        school = request.POST.get('school')
-
-        add_rlt = info.add_edu(stu_id, major, graduation_year, background, school)
-        # 如果增加教育经历成功
-        if add_rlt['tag'] == OK_ADD_EDU:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'edu_id': add_rlt['edu_id'],
-                'grade': add_rlt['grade'],
-                'edu_background': add_rlt['edu_background']
-            }))
-
-        # 如果教育经历已达上限
-        elif add_rlt['tag'] == ERR_ADD_EDU_FULL:
-            return HttpResponse(json_helper.dumps({
-                'err': ERR_EDU_FULL,
-                'msg': ERR_EDU_FULL_MSG
-            }))
-
-        # 如果数据库异常导致增加教育经历失败(add_rlt['tag'] == ERR_ADD_EDU_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def get_edu(request):
-    """
-    获取学生的教育经历
-    成功：返回{
-                'err': SUCCEED,
-                'grade': get_rlt['grade'],
-                'major': get_rlt['major'],
-                'edu_list': get_rlt['edu_list']
-            }
-            get_rlt['edu_list']: [{'edu_id': edu_rcd.id,
-                                  'major': edu_rcd.major,
-                                  'graduation_year': edu_rcd.graduation_year,
-                                  'edu_background': edu_rcd.background,
-                                  'school': edu_rcd.school}]
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_edu(stu_id)
-
-        # 如果获取成功
-        if get_rlt['tag'] == OK_GET_EDU:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'grade': get_rlt['grade'],
-                'edu_background': get_rlt['edu_background'],
-                'edu_list': get_rlt['edu_list']
-            }))
-
-        # 如果该学生没有教育经历
-        elif get_rlt['tag'] == ERR_GET_NO_EDU:
-            return HttpResponse(json_helper.dumps({
-                'err': NO_EDU,
-                'msg': NO_EDU_MSG
-            }))
-
-        # get_rlt['tag'] == ERR_GET_EDU_DB
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def update_edu(request):
-    """
-    更新教育经历
-    成功：返回{
-                'err': SUCCEED,
-                'edu_id': update_rlt['edu_id'],
-                'grade': update_rlt['grade'],
-                'edu_background': update_rlt['edu_background']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        edu_id = request.POST.get('edu_id')
-        major = request.POST.get('major')
-        graduation_year = request.POST.get('graduation_year')
-        background = request.POST.get('edu_background')
-        school = request.POST.get('school')
-
-        update_rlt = info.update_edu(stu_id, edu_id, major, graduation_year, background, school)
-        # 如果更新教育经历成功
-        if update_rlt['tag'] == OK_UPDATE_EDU:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'grade': update_rlt['grade'],
-                'edu_background': update_rlt['edu_background']
-            }))
-
-        # 如果数据库异常导致更新教育经历失败(add_rlt['tag'] == ERR_UPDATE_EDU_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def del_edu(request):
-    """
-    删除教育经历
-    成功:返回{
-                'err': SUCCEED,
-                'grade': del_rlt['grade'],
-                'edu_background': del_rlt['edu_background']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        edu_id = request.POST.get('edu_id')
-
-        del_rlt = info.del_edu(stu_id=stu_id, edu_id=edu_id)
-        # 如果删除成功
-        if del_rlt['tag'] == OK_DEL_EDU:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'grade': del_rlt['grade'],
-                'edu_background': del_rlt['edu_background']
-            }))
-
-        # 如果删除了最后一条教育经历
-        elif del_rlt['tag'] == OK_DEL_LAST_EDU:
-            return HttpResponse(json_helper.dumps({'err': OK_DEL_LAST}))
-
-        # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_EDU_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def add_intern(request):
-    """
-    增加实习经历
-    成功：返回{
-                'err': SUCCEED,
-                'intern_id': add_rlt['intern_id']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        company = request.POST.get('company')
-        position = request.POST.get('position')
-        begin_time = request.POST.get('begin_time')
-        end_time = request.POST.get('end_time')
-        description = request.POST.get('description')
-
-        add_rlt = info.add_intern(stu_id, company, position, begin_time, end_time, description)
-        # 如果增加实习经历成功
-        if add_rlt['tag'] == OK_ADD_INTERN:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'intern_id': add_rlt['intern_id']
-            }))
-
-        # 如果实习经历已达上限
-        elif add_rlt['tag'] == ERR_ADD_INTERN_FULL:
-            return HttpResponse(json_helper.dumps({
-                'err': ERR_INTERN_FULL,
-                'msg': ERR_INTERN_FULL_MSG
-            }))
-
-        # 如果数据库异常导致增加实习经历失败(add_rlt['tag'] == ERR_ADD_INTERN_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def get_intern(request):
-    """
-    获取实习经历
-    成功：返回{'err': SUCCEED, 'intern_list': get_rlt['intern_list']}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_intern(stu_id)
-
-        # 如果获取成功
-        if get_rlt['tag'] == OK_GET_INTERN:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'intern_list': get_rlt['intern_list']
-            }))
-
-        # 如果该学生没有实习经历
-        elif get_rlt['tag'] == ERR_GET_NO_INTERN:
-            return HttpResponse(json_helper.dumps({
-                'err': NO_INTERN,
-                'msg': NO_INTERN_MSG
-            }))
-
-        # get_rlt['tag'] == ERR_GET_INTERN_DB
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def update_intern(request):
-    """
-    更新实习经历
-    成功：返回
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        intern_id = request.POST.get('intern_id')
-        company = request.POST.get('company')
-        position = request.POST.get('position')
-        begin_time = request.POST.get('begin_time')
-        end_time = request.POST.get('end_time')
-        description = request.POST.get('description')
-
-        update_rlt = info.update_intern(intern_id, stu_id, company, position, begin_time, end_time, description)
-        # 如果更新实习经历成功
-        if update_rlt['tag'] == OK_UPDATE_INTERN:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致更新实习经历失败(add_rlt['tag'] == ERR_UPDATE_INTERN_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def del_intern(request):
-    """
-    删除实习经历
-    成功：返回
-
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        intern_id = request.POST.get('intern_id')
-
-        del_rlt = info.del_intern(stu_id=stu_id, intern_id=intern_id)
-        # 如果删除成功
-        if del_rlt['tag'] == OK_DEL_INTERN:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致删除实习经历失败(add_rlt['tag'] == ERR_DEL_INTERN_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def add_proj(request):
-    """
-    增加项目经历
-    成功：返回{
-                'err': SUCCEED,
-                'proj_id': add_rlt['proj_id']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        name = request.POST.get('name')
-        duty = request.POST.get('duty')
-        year = request.POST.get('year')
-        description = request.POST.get('description')
-
-        add_rlt = info.add_proj(stu_id, name, duty, year, description)
-        # 如果增加项目经历成功
-        if add_rlt['tag'] == OK_ADD_PROJ:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'proj_id': add_rlt['proj_id']
-            }))
-
-        # 如果项目经历已达上限
-        elif add_rlt['tag'] == ERR_ADD_PROJ_FULL:
-            return HttpResponse(json_helper.dumps({
-                'err': ERR_PROJ_FULL,
-                'msg': ERR_PROJ_FULL_MSG
-            }))
-
-        # 如果数据库异常导致增加项目经历失败(add_rlt['tag'] == ERR_ADD_PROJ_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def get_proj(request):
-    """
-    获取项目经历
-    成功：返回{'err': SUCCEED, 'proj_list': get_rlt['proj_list']}
-                            "proj_list": [{
-            　　　　　　                      "proj_id": proj_id,
-            　　　　　　                      "name": name,
-            　　　　　　                      "duty": duty,
-            　　　　　　                      "year": year,
-            　　　　　　                      "description": description},
-            　　　                         ...]}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_proj(stu_id)
-
-        # 如果获取成功
-        if get_rlt['tag'] == OK_GET_PROJ:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'proj_list': get_rlt['proj_list']
-            }))
-
-        # 如果该学生没有项目经历
-        elif get_rlt['tag'] == ERR_GET_NO_PROJ:
-            return HttpResponse(json_helper.dumps({
-                'err': NO_PROJ,
-                'msg': NO_PROJ_MSG
-            }))
-
-        # get_rlt['tag'] == ERR_GET_PROJ_DB
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def update_proj(request):
-    """
-    更新项目经历
-    成功：返回
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        proj_id = request.POST.get('proj_id')
-        name = request.POST.get('name')
-        duty = request.POST.get('duty')
-        year = request.POST.get('year')
-        description = request.POST.get('description')
-
-        update_rlt = info.update_proj(proj_id, stu_id, name, duty, year, description)
-        # 如果更新项目经历成功
-        if update_rlt['tag'] == OK_UPDATE_PROJ:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致更新项目经历失败(add_rlt['tag'] == ERR_UPDATE_PROJ_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def del_proj(request):
-    """
-    删除项目经历
-    成功：返回{'err': SUCCEED}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        proj_id = request.POST.get('proj_id')
-
-        del_rlt = info.del_proj(stu_id=stu_id, proj_id=proj_id)
-        # 如果删除成功
-        if del_rlt['tag'] == OK_DEL_PROJ:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致删除项目经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
+# @csrf_exempt
+# def add_edu(request):
+#     """
+#     增加教育经历
+#     成功：返回：{
+#                 'err': SUCCEED,
+#                 'edu_id': add_rlt['edu_id'],
+#                 'grade': add_rlt['grade'],
+#                 'edu_background': add_rlt['edu_background']
+#             }
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         major = request.POST.get('major')
+#         graduation_year = request.POST.get('graduation_year')
+#         background = request.POST.get('edu_background')
+#         school = request.POST.get('school')
+#
+#         add_rlt = info.add_edu(stu_id, major, graduation_year, background, school)
+#         # 如果增加教育经历成功
+#         if add_rlt['tag'] == OK_ADD_EDU:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'edu_id': add_rlt['edu_id'],
+#                 'grade': add_rlt['grade'],
+#                 'edu_background': add_rlt['edu_background']
+#             }))
+#
+#         # 如果教育经历已达上限
+#         elif add_rlt['tag'] == ERR_ADD_EDU_FULL:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': ERR_EDU_FULL,
+#                 'msg': ERR_EDU_FULL_MSG
+#             }))
+#
+#         # 如果数据库异常导致增加教育经历失败(add_rlt['tag'] == ERR_ADD_EDU_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def get_edu(request):
+#     """
+#     获取学生的教育经历
+#     成功：返回{
+#                 'err': SUCCEED,
+#                 'grade': get_rlt['grade'],
+#                 'major': get_rlt['major'],
+#                 'edu_list': get_rlt['edu_list']
+#             }
+#             get_rlt['edu_list']: [{'edu_id': edu_rcd.id,
+#                                   'major': edu_rcd.major,
+#                                   'graduation_year': edu_rcd.graduation_year,
+#                                   'edu_background': edu_rcd.background,
+#                                   'school': edu_rcd.school}]
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         get_rlt = info.get_edu(stu_id)
+#
+#         # 如果获取成功
+#         if get_rlt['tag'] == OK_GET_EDU:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'grade': get_rlt['grade'],
+#                 'edu_background': get_rlt['edu_background'],
+#                 'edu_list': get_rlt['edu_list']
+#             }))
+#
+#         # 如果该学生没有教育经历
+#         elif get_rlt['tag'] == ERR_GET_NO_EDU:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': NO_EDU,
+#                 'msg': NO_EDU_MSG
+#             }))
+#
+#         # get_rlt['tag'] == ERR_GET_EDU_DB
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def update_edu(request):
+#     """
+#     更新教育经历
+#     成功：返回{
+#                 'err': SUCCEED,
+#                 'edu_id': update_rlt['edu_id'],
+#                 'grade': update_rlt['grade'],
+#                 'edu_background': update_rlt['edu_background']
+#             }
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         edu_id = request.POST.get('edu_id')
+#         major = request.POST.get('major')
+#         graduation_year = request.POST.get('graduation_year')
+#         background = request.POST.get('edu_background')
+#         school = request.POST.get('school')
+#
+#         update_rlt = info.update_edu(stu_id, edu_id, major, graduation_year, background, school)
+#         # 如果更新教育经历成功
+#         if update_rlt['tag'] == OK_UPDATE_EDU:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'grade': update_rlt['grade'],
+#                 'edu_background': update_rlt['edu_background']
+#             }))
+#
+#         # 如果数据库异常导致更新教育经历失败(add_rlt['tag'] == ERR_UPDATE_EDU_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def del_edu(request):
+#     """
+#     删除教育经历
+#     成功:返回{
+#                 'err': SUCCEED,
+#                 'grade': del_rlt['grade'],
+#                 'edu_background': del_rlt['edu_background']
+#             }
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         edu_id = request.POST.get('edu_id')
+#
+#         del_rlt = info.del_edu(stu_id=stu_id, edu_id=edu_id)
+#         # 如果删除成功
+#         if del_rlt['tag'] == OK_DEL_EDU:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'grade': del_rlt['grade'],
+#                 'edu_background': del_rlt['edu_background']
+#             }))
+#
+#         # 如果删除了最后一条教育经历
+#         elif del_rlt['tag'] == OK_DEL_LAST_EDU:
+#             return HttpResponse(json_helper.dumps({'err': OK_DEL_LAST}))
+#
+#         # 如果数据库异常导致删除教育经历失败(add_rlt['tag'] == ERR_DEL_EDU_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def add_intern(request):
+#     """
+#     增加实习经历
+#     成功：返回{
+#                 'err': SUCCEED,
+#                 'intern_id': add_rlt['intern_id']
+#             }
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         company = request.POST.get('company')
+#         position = request.POST.get('position')
+#         begin_time = request.POST.get('begin_time')
+#         end_time = request.POST.get('end_time')
+#         description = request.POST.get('description')
+#
+#         add_rlt = info.add_intern(stu_id, company, position, begin_time, end_time, description)
+#         # 如果增加实习经历成功
+#         if add_rlt['tag'] == OK_ADD_INTERN:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'intern_id': add_rlt['intern_id']
+#             }))
+#
+#         # 如果实习经历已达上限
+#         elif add_rlt['tag'] == ERR_ADD_INTERN_FULL:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': ERR_INTERN_FULL,
+#                 'msg': ERR_INTERN_FULL_MSG
+#             }))
+#
+#         # 如果数据库异常导致增加实习经历失败(add_rlt['tag'] == ERR_ADD_INTERN_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def get_intern(request):
+#     """
+#     获取实习经历
+#     成功：返回{'err': SUCCEED, 'intern_list': get_rlt['intern_list']}
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         get_rlt = info.get_intern(stu_id)
+#
+#         # 如果获取成功
+#         if get_rlt['tag'] == OK_GET_INTERN:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'intern_list': get_rlt['intern_list']
+#             }))
+#
+#         # 如果该学生没有实习经历
+#         elif get_rlt['tag'] == ERR_GET_NO_INTERN:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': NO_INTERN,
+#                 'msg': NO_INTERN_MSG
+#             }))
+#
+#         # get_rlt['tag'] == ERR_GET_INTERN_DB
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def update_intern(request):
+#     """
+#     更新实习经历
+#     成功：返回
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         intern_id = request.POST.get('intern_id')
+#         company = request.POST.get('company')
+#         position = request.POST.get('position')
+#         begin_time = request.POST.get('begin_time')
+#         end_time = request.POST.get('end_time')
+#         description = request.POST.get('description')
+#
+#         update_rlt = info.update_intern(intern_id, stu_id, company, position, begin_time, end_time, description)
+#         # 如果更新实习经历成功
+#         if update_rlt['tag'] == OK_UPDATE_INTERN:
+#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+#
+#         # 如果数据库异常导致更新实习经历失败(add_rlt['tag'] == ERR_UPDATE_INTERN_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def del_intern(request):
+#     """
+#     删除实习经历
+#     成功：返回
+#
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         intern_id = request.POST.get('intern_id')
+#
+#         del_rlt = info.del_intern(stu_id=stu_id, intern_id=intern_id)
+#         # 如果删除成功
+#         if del_rlt['tag'] == OK_DEL_INTERN:
+#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+#
+#         # 如果数据库异常导致删除实习经历失败(add_rlt['tag'] == ERR_DEL_INTERN_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def add_proj(request):
+#     """
+#     增加项目经历
+#     成功：返回{
+#                 'err': SUCCEED,
+#                 'proj_id': add_rlt['proj_id']
+#             }
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         name = request.POST.get('name')
+#         duty = request.POST.get('duty')
+#         year = request.POST.get('year')
+#         description = request.POST.get('description')
+#
+#         add_rlt = info.add_proj(stu_id, name, duty, year, description)
+#         # 如果增加项目经历成功
+#         if add_rlt['tag'] == OK_ADD_PROJ:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'proj_id': add_rlt['proj_id']
+#             }))
+#
+#         # 如果项目经历已达上限
+#         elif add_rlt['tag'] == ERR_ADD_PROJ_FULL:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': ERR_PROJ_FULL,
+#                 'msg': ERR_PROJ_FULL_MSG
+#             }))
+#
+#         # 如果数据库异常导致增加项目经历失败(add_rlt['tag'] == ERR_ADD_PROJ_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def get_proj(request):
+#     """
+#     获取项目经历
+#     成功：返回{'err': SUCCEED, 'proj_list': get_rlt['proj_list']}
+#                             "proj_list": [{
+#             　　　　　　                      "proj_id": proj_id,
+#             　　　　　　                      "name": name,
+#             　　　　　　                      "duty": duty,
+#             　　　　　　                      "year": year,
+#             　　　　　　                      "description": description},
+#             　　　                         ...]}
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         get_rlt = info.get_proj(stu_id)
+#
+#         # 如果获取成功
+#         if get_rlt['tag'] == OK_GET_PROJ:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': SUCCEED,
+#                 'proj_list': get_rlt['proj_list']
+#             }))
+#
+#         # 如果该学生没有项目经历
+#         elif get_rlt['tag'] == ERR_GET_NO_PROJ:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': NO_PROJ,
+#                 'msg': NO_PROJ_MSG
+#             }))
+#
+#         # get_rlt['tag'] == ERR_GET_PROJ_DB
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def update_proj(request):
+#     """
+#     更新项目经历
+#     成功：返回
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         proj_id = request.POST.get('proj_id')
+#         name = request.POST.get('name')
+#         duty = request.POST.get('duty')
+#         year = request.POST.get('year')
+#         description = request.POST.get('description')
+#
+#         update_rlt = info.update_proj(proj_id, stu_id, name, duty, year, description)
+#         # 如果更新项目经历成功
+#         if update_rlt['tag'] == OK_UPDATE_PROJ:
+#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+#
+#         # 如果数据库异常导致更新项目经历失败(add_rlt['tag'] == ERR_UPDATE_PROJ_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
+#
+#
+# @csrf_exempt
+# def del_proj(request):
+#     """
+#     删除项目经历
+#     成功：返回{'err': SUCCEED}
+#     失败：返回相应的err和msg的JSON
+#     """
+#     if request.method == 'POST':
+#         stu_id = request.POST.get('stu_id')
+#         proj_id = request.POST.get('proj_id')
+#
+#         del_rlt = info.del_proj(stu_id=stu_id, proj_id=proj_id)
+#         # 如果删除成功
+#         if del_rlt['tag'] == OK_DEL_PROJ:
+#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+#
+#         # 如果数据库异常导致删除项目经历失败(add_rlt['tag'] == ERR_DEL_PROJ_DB)
+#         else:
+#             return HttpResponse(json_helper.dumps({
+#                 'err': FAIL,
+#                 'msg': FAIL_MSG
+#             }))
+#
+#     # 如果请求的方法是GET
+#     else:
+#         return HttpResponse(json_helper.dumps({
+#             'err': ERR_METHOD,
+#             'msg': ERR_METHOD_MSG
+#         }))
 
 
 @csrf_exempt
@@ -1244,9 +1245,6 @@ def add_works(request):
             'err': ERR_METHOD,
             'msg': ERR_METHOD_MSG
         }))
-
-
-
 
 
 @csrf_exempt
@@ -1369,19 +1367,12 @@ def add_skill(request):
         name = request.POST.get('name')
         value = request.POST.get('value')
 
-        add_rlt = info.add_skill(stu_id, name, value)
+        add_rlt = skill.add(stu_id, name, value)
         # 如果增加技能评价成功
         if add_rlt['tag'] == OK_ADD_SKILL:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
                 'skill_id': add_rlt['skill_id']
-            }))
-
-        # 如果技能评价已达上限
-        elif add_rlt['tag'] == ERR_ADD_SKILL_FULL:
-            return HttpResponse(json_helper.dumps({
-                'err': ERR_SKILL_FULL,
-                'msg': ERR_SKILL_FULL_MSG
             }))
 
         # 如果数据库异常导致增加技能评价失败(add_rlt['tag'] == ERR_ADD_SKILL_DB)
@@ -1413,7 +1404,7 @@ def get_skill(request):
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
-        get_rlt = info.get_skill(stu_id)
+        get_rlt = skill.get(stu_id)
 
         # 如果获取成功
         if get_rlt['tag'] == OK_GET_SKILL:
@@ -1457,7 +1448,7 @@ def update_skill(request):
         name = request.POST.get('name')
         value = request.POST.get('value')
 
-        update_rlt = info.update_skill(skill_id, stu_id, name, value)
+        update_rlt = skill.update(skill_id, stu_id, name, value)
         # 如果更新技能评价成功
         if update_rlt['tag'] == OK_UPDATE_SKILL:
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
@@ -1488,7 +1479,7 @@ def del_skill(request):
         stu_id = request.POST.get('stu_id')
         skill_id = request.POST.get('skill_id')
 
-        del_rlt = info.del_skill(stu_id=stu_id, skill_id=skill_id)
+        del_rlt = skill.delete(stu_id=stu_id, skill_id=skill_id)
         # 如果删除成功
         if del_rlt['tag'] == OK_DEL_SKILL:
             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
