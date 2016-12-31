@@ -151,12 +151,10 @@ class StuSkill(models.Model):
 
 class StuAboutMe(models.Model):
     about_me_id = models.AutoField(primary_key=True)
-    # 个人经历
-    experience = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
-    # 我
-    self_description = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
-    # 实习经历
-    internship = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
+    # 标题
+    title = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=False, null=True, default='')
+    # 内容
+    text = models.CharField(max_length=MEDIUM_TEXT_LENGTH, blank=False, null=True, default='')
     # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
     stu = models.ForeignKey('StuInfo', null=False)
 

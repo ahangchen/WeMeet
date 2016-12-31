@@ -1751,13 +1751,10 @@ def get_about_me(request):
         if rlt['tag'] == about_me.OK_GET_ABOUT_ME:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
-                'about_me_id': rlt['about_me_id'],
-                'experience': rlt['experience'],
-                'self_description': rlt['self_description'],
-                'internship': rlt['internship']
+                'about_me_list': rlt['about_me_list']
             }))
 
-        # tag == ERR_STATE或tag或tag == ERR_GET_ABOUT_ME_DB
+        # tag == ERR_GET_ABOUT_ME_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

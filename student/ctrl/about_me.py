@@ -8,19 +8,11 @@ def get(stu_id):
     @param stu_id:
     @return:
     """
-    rlt = about_me.select(stu_id)
+    rlt = about_me.stu_select(stu_id)
     if rlt['tag'] == about_me.OK_SELECT:
-        return {'tag': OK_GET_ABOUT_ME,
-                'about_me_id': rlt['about_me'].about_me_id,
-                'experience': rlt['about_me'].experience,
-                'self_description': rlt['about_me'].self_description,
-                'internship': rlt['about_me'].internship}
+        return {'tag': OK_GET_ABOUT_ME, 'about_me_list': list(rlt['about_me'].values())}
 
-    elif rlt['tag'] == about_me.ERR_SELECT_NOTEXIST:
-        logger.error('学生不存在，获取学生"关于我"失败')
-        return {'tag': ERR_GET_ABOUT_ME_NOTEXIST}
-
-    # 如果数据库异常导致获取学生"关于我"失败(select_rlt['tag'] == ERR_SELECT_DB)
+    # 如果异常导致获取学生"关于我"失败
     else:
         logger.error('数据库异常导致获取学生信息失败')
         return {'tag': ERR_GET_ABOUT_ME_DB}

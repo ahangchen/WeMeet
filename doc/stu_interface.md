@@ -112,23 +112,29 @@
     * id： 学生id（由登陆获得）
 * 返回：
     * 成功：
-        * JSON: 　　{"err": err,   
-            　　　　　"avatar_pah": avatar_path,   
-            　　　　　"name": name,   
-            　　　　　"school": school,  
-            　　　　　"major": major,  
-            　　　　　"sex": sex,  
-            　　　　　"age": age,  
-            　　　　　"year": year,  
-            　　　　　"month": month,     
-            　　　　　"location": location,  
-            　　　　　"tel": tel,  
-            　　　　　"mail": mail}  
+        * JSON: 　　{  
+        　　　　　"err": err,  
+        　　　　　"avatar_pah": avatar_path,   
+        　　　　　"name": name,     
+        　　　　　"title": title,  
+        　　　　　"personal_signature": personal_signature,  
+        　　　　　"sex": sex,  
+        　　　　　"school": school,  
+        　　　　　"grade": grade,  
+        　　　　　"label1": label1,     
+        　　　　　"likes": likes,  
+        　　　　　"label2_list":  
+        　　　　　[{  
+         　　　　　　　"label2_id": label2_id  
+        　　　　　　　"text": text  
+        　　　　　},...]  
+        　　　　}  
 
             * err: 0
             * sex: 性别 0表示未填，1表示男，2表示女  
-            * year: 出生年份  -1表示空
-            * month：出生月份  -1表示空
+            * title: 头衔 
+            * personal_signature：个性签名
+            * likes： 人气
             
     * 失败：
         * JSON: {"err": err, "msg": msg}
@@ -345,11 +351,25 @@
     * stu_id: 学生id
 * 返回：
     * 成功：
-        * JSON： {"err": err, "work_id": work_id, "path": path, "site": site}
+        * JSON：  
+        {  
+        　　"err": err,  
+        　　"works_list":  
+        　　[{  
+        　　　　"works_id": works_id,  
+        　　　　"name": name,  
+        　　　　"url": url,  
+        　　　　"description": description,  
+        　　　　"file1": file1,  
+        　　　　"file2": file2,  
+        　　　　"file3": file3,    
+        　　},...]  
+        }
             * err: 0
             * works_id: 作品集记录的id 
-            * path: 作品集的路径
-            * site: 作品集的在线网址
+            * file1: 作品文件的路径，可能为空
+            * file2: 作品文件的路径，可能为空
+            * file3: 作品文件的路径，可能为空
     * 失败：
         * JSON： {"err": err, "msg": msg}
             * err: -121/-1/-10
@@ -816,7 +836,7 @@
         
 ***
 
-###38. 发送邮件通知(团队）
+### 38. 发送邮件通知(团队）
 * http://110.64.69.66:8081/team/apply/mail/
 * POST
 * 参数：
@@ -833,7 +853,7 @@
 
 ***
 
-###39. 处理投递(团队）
+### 39. 处理投递(团队）
 * http://110.64.69.66:8081/team/apply/handle/
 * POST
 * 参数：
@@ -850,5 +870,104 @@
             * msg: 请求方法错误/操作失败  
 
 ***
+
+### 40. 广场获取人气最高的6个学生
+* http://110.64.69.66:8081/stu/top6/
+* GET
+* 参数：无
+ * 返回：
+    * 成功：
+        * JSON  
+        {  
+        　　"err": err,  
+        　　"top_list":  
+        　　[{  
+        　　　　"stu_id": stu_id,   
+        　　　　"name": name,  
+        　　　　"title": title,   
+        　　　　"personal_signature": personal_signature,  
+        　　　　"avatar_path": avatar_pah,  
+        　　　　"label2_list":  
+        　　　　[{  
+            　　　　　"label2_id": label2_id,  
+            　　　　　"text": text  
+        　　　　},...]  
+        　　},...]}
+            * err: 0
+            * top_list：学生列表
+            * title: 头衔
+            * personal_signature: 个性签名
+            * label2_list: 二级标签的列表
+            * text: 二级标签的内容
+
+   * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败  
+
+***
+
+### 41. 广场获取标签内人气最高的6个学生
+* http://110.64.69.66:8081/stu/top6/label/
+* GET
+* 参数：
+     label: 0表示工程，1表示经管，2表示文艺，3表示人文
+ * 返回：
+    * 成功：
+        * JSON：   
+        {  
+        　　"err": err,  
+        　　"top_list":  
+        　　[{  
+        　　　　"stu_id": stu_id,   
+        　　　　"name": name,  
+        　　　　"title": title,   
+        　　　　"personal_signature": personal_signature,  
+        　　　　"avatar_path": avatar_pah,  
+        　　　　"label2_list":  
+        　　　　[{  
+            　　　　　"label2_id": label2_id,  
+            　　　　　"text": text  
+        　　　　},...]  
+        　　},...]}
+            * err: 0
+            * top_list：学生列表
+            * title: 头衔
+            * personal_signature: 个性签名
+            * label2_list: 二级标签的列表
+            * text: 二级标签的内容
+
+   * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败  
+
+***
+
+### 42. 获取关于我
+* http://110.64.69.66:8081/stu/aboutme/get/
+* POST
+* 参数：
+     stu_id:
+ * 返回：
+    * 成功：
+        * JSON：   
+        {  
+        　　"err": err,  
+        　　"about_me_list":  
+        　　[{  
+        　　　　"about_me_id": about_me_id,  
+        　　　　"title": title,  
+        　　　　"text": text  
+        　　},...]  
+        }
+            * err: 0
+            * title: 自我描述的标题
+            * text: 自我描述的内容
+
+   * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败  
 
 
