@@ -15,3 +15,4 @@ sudo pip install pillow
 - 支持跨域访问，依赖corsheaders
 
 sudo pip3 install django-cors-headers
+sudo pip3 install djangorestframework
