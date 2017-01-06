@@ -360,16 +360,17 @@
         　　　　"name": name,  
         　　　　"url": url,  
         　　　　"description": description,  
-        　　　　"file1": file1,  
-        　　　　"file2": file2,  
-        　　　　"file3": file3,    
+        　　　　"img": img,  
+        　　　　"audio": audio,  
+        　　　　"video": video,    
         　　},...]  
         }
             * err: 0
             * works_id: 作品集记录的id 
-            * file1: 作品文件的路径，可能为空
-            * file2: 作品文件的路径，可能为空
-            * file3: 作品文件的路径，可能为空
+            * img: 作品文件的路径，可能为空
+            * audio: 作品文件的路径，可能为空
+            * video: 作品文件的路径，可能为空
+                * 仅有一个不为空
     * 失败：
         * JSON： {"err": err, "msg": msg}
             * err: -121/-1/-10

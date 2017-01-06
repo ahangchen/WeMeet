@@ -22,7 +22,7 @@ def stu_filter(stu):
     return StuWorks.objects.filter(stu=stu)
 
 
-def insert(name, url, description, file1, file2, file3, stu):
+def insert(name, duty, url, description, stu, img='', audio='', video=''):
     """
     插入作品集信息
     成功：返回{'tag': OK_INSERT, 'works': new_works}
@@ -30,11 +30,12 @@ def insert(name, url, description, file1, file2, file3, stu):
     """
     try:
         new_works = StuWorks(name=name,
+                             duty=duty,
                              url=url,
                              description=description,
-                             file1=file1,
-                             file2=file2,
-                             file3=file3,
+                             img=img,
+                             audio=audio,
+                             video=video,
                              stu=stu)
 
         new_works.save()
@@ -46,7 +47,7 @@ def insert(name, url, description, file1, file2, file3, stu):
 
 
 def id_stu_update(works_id, stu, name=NO_INPUT, url=NO_INPUT, description=NO_INPUT,
-                  file1=NO_INPUT, file2=NO_INPUT, file3=NO_INPUT):
+                  img=NO_INPUT, audio=NO_INPUT, video=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST
@@ -58,9 +59,9 @@ def id_stu_update(works_id, stu, name=NO_INPUT, url=NO_INPUT, description=NO_INP
         update_works.name = value(update_works.name, name)
         update_works.url = value(update_works.url, url)
         update_works.description = value(update_works.description, description)
-        update_works.file1 = value(update_works.file1, file1)
-        update_works.file2 = value(update_works.file2, file2)
-        update_works.file3 = value(update_works.file3, file3)
+        update_works.file1 = value(update_works.img, img)
+        update_works.file2 = value(update_works.audio, audio)
+        update_works.file3 = value(update_works.video, video)
 
         update_works.save()
         return OK_UPDATE

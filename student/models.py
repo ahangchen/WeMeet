@@ -166,16 +166,18 @@ class StuWorks(models.Model):
     works_id = models.AutoField(primary_key=True)
     # 作品名称
     name = models.CharField(max_length=NAME_MAX_LENGTH, blank=False, null=False, default='')
+    # 职责
+    duty = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=False, null=False, default='')
     # 作品链接
     url = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
     # 描述
     description = models.CharField(max_length=EXTRA_LONG_TEXT_LENGTH, blank=True, null=False, default='')
-    # 文件1
-    file1 = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
-    # 文件2
-    file2 = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
-    # 文件3
-    file3 = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
+    # 图片
+    img = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
+    # 音频
+    audio = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
+    # 视频
+    video = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
     # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
     stu = models.ForeignKey('StuInfo', null=False)
 
