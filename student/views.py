@@ -429,9 +429,8 @@ def get_info(request):
                 'sex': get_rlt['stu'].sex,
                 'school': get_rlt['stu'].school,
                 'grade': get_rlt['stu'].grade,
-                'label1': get_rlt['stu'].label1,
-                'likes': get_rlt['stu'].likes,
-                'label2_list': get_rlt['label2_list']
+                'label': get_rlt['stu'].label,
+                'likes': get_rlt['stu'].likes
             }))
 
         # 如果学生不存在

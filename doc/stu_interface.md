@@ -121,19 +121,16 @@
         　　　　　"sex": sex,  
         　　　　　"school": school,  
         　　　　　"grade": grade,  
-        　　　　　"label1": label1,     
-        　　　　　"likes": likes,  
-        　　　　　"label2_list":  
-        　　　　　[{  
-         　　　　　　　"label2_id": label2_id  
-        　　　　　　　"text": text  
-        　　　　　},...]  
+        　　　　　"label": label,     
+        　　　　　"likes": likes  
         　　　　}  
 
             * err: 0
-            * sex: 性别 0表示未填，1表示男，2表示女  
+            * sex: 性别 -1(未填) 0(男) 1(女)  
             * title: 头衔 
             * personal_signature：个性签名
+            * grade: 年级 -1(未填)，0(大一) 1(大二) 2(大三) 3(大四) 4(研一) 5(研二) 6(研三) 7(博士)
+            * label：标签 -1(未填), 0(工程) 1(文艺) 2(经管) 3(人文)
             * likes： 人气
             
     * 失败：
@@ -888,18 +885,21 @@
         　　　　"title": title,   
         　　　　"personal_signature": personal_signature,  
         　　　　"avatar_path": avatar_pah,  
-        　　　　"label2_list":  
+        　　　　"skill_list":  
         　　　　[{  
-            　　　　　"label2_id": label2_id,  
-            　　　　　"text": text  
+            　　　　　"skill_id": skill_id,  
+            　　　　　"name": name,  
+            　　　　　"value": value  
         　　　　},...]  
         　　},...]}
             * err: 0
             * top_list：学生列表
             * title: 头衔
+            * name: 学生姓名
             * personal_signature: 个性签名
-            * label2_list: 二级标签的列表
-            * text: 二级标签的内容
+            * skill_list: 二级标签的列表
+                * skill_list.name: 技能的名字
+                * skill_list.value: 技能的评价值（0-10）
 
    * 失败：
         * JSON： {"err": err, "msg": msg}
@@ -910,7 +910,7 @@
 
 ### 41. 广场获取标签内人气最高的6个学生
 * http://110.64.69.66:8081/stu/top6/label/
-* GET
+* POST
 * 参数：
      label: 0表示工程，1表示经管，2表示文艺，3表示人文
  * 返回：
@@ -925,18 +925,21 @@
         　　　　"title": title,   
         　　　　"personal_signature": personal_signature,  
         　　　　"avatar_path": avatar_pah,  
-        　　　　"label2_list":  
+        　　　　"skill_list":  
         　　　　[{  
-            　　　　　"label2_id": label2_id,  
-            　　　　　"text": text  
+            　　　　　"skill_id": skill_id,  
+            　　　　　"name": name,  
+            　　　　　"value": value  
         　　　　},...]  
         　　},...]}
             * err: 0
             * top_list：学生列表
             * title: 头衔
+            * name: 学生姓名
             * personal_signature: 个性签名
-            * label2_list: 二级标签的列表
-            * text: 二级标签的内容
+            * skill_list: 二级标签的列表
+                * skill_list.name: 技能的名字
+                * skill_list.value: 技能的评价值（0-10）
 
    * 失败：
         * JSON： {"err": err, "msg": msg}

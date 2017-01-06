@@ -44,7 +44,7 @@ from student.util.logger import logger
 #
 #
 def update(stu_id, name=NO_INPUT, title=NO_INPUT, personal_signature=NO_INPUT, sex=NO_INPUT, school=NO_INPUT, grade=NO_INPUT, avatar_path=NO_INPUT,
-           resume_path=NO_INPUT, label1=NO_INPUT, likes=NO_INPUT):
+           resume_path=NO_INPUT, label=NO_INPUT, likes=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST
@@ -59,7 +59,7 @@ def update(stu_id, name=NO_INPUT, title=NO_INPUT, personal_signature=NO_INPUT, s
         update_stu.personal_signature = value(update_stu.personal_signature, personal_signature)
         update_stu.grade = value(update_stu.grade, grade)
         update_stu.school = value(update_stu.school, school)
-        update_stu.label1 = value(update_stu.label1, label1)
+        update_stu.label = value(update_stu.label, label)
         update_stu.likes = value(update_stu.likes, likes)
         update_stu.avatar_path = value(update_stu.avatar_path, avatar_path)
         update_stu.resume_path = value(update_stu.resume_path, resume_path)
@@ -91,7 +91,7 @@ def select(stu_id):
         return {'tag': ERR_SELECT_DB}
 
 
-def insert(name, title, personal_signature, sex, school, grade, avatar_path, label1):
+def insert(name, title, personal_signature, sex, school, grade, avatar_path, label):
     """
     成功：返回插入的学生
     失败：返回ERROR_INSERT
@@ -104,7 +104,7 @@ def insert(name, title, personal_signature, sex, school, grade, avatar_path, lab
                           school=school,
                           grade=grade,
                           avatar_path=avatar_path,
-                          label1=label1,
+                          label=label,
                           likes=0,
                           resume_path=NO_RESUME)
         new_stu.save()  # 如果是手工设置的主键，会抛出 IntegrityError
@@ -123,8 +123,8 @@ def likes_sort():
     return StuInfo.objects.order_by('-likes')
 
 
-def label_filter_sort(label1):
-    return StuInfo.objects.filter(label1=label1).order_by('-likes')
+def label_filter_sort(label):
+    return StuInfo.objects.filter(label=label).order_by('-likes')
 
 
 

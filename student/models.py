@@ -35,7 +35,7 @@ class StuInfo(models.Model):
     title = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
     # 个性签名
     personal_signature = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=True, null=True, default='')
-    # 性别，0表示未填，1表示男，2表示女
+    # 性别，-1表示未填，0表示男，1表示女
     sex = models.IntegerField(default=0)
     # 学校
     school = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
@@ -45,8 +45,8 @@ class StuInfo(models.Model):
     avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
     # 简历文件路径
     resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
-    # 一级标签，0表示工程，1表示经管，2表示文艺，3表示人文 -1 未选
-    label1 = models.IntegerField(default=0)
+    # 一级标签，0表示工程，1表示文艺，2表示经管，3表示人文 -1 未选
+    label = models.IntegerField(default=0)
     # 人气数
     likes = models.IntegerField(default=0)
 
@@ -54,15 +54,15 @@ class StuInfo(models.Model):
         db_table = 'stu_info'
 
 
-class StuLabel(models.Model):
-    label2_id = models.AutoField(primary_key=True)
-    # 二级标签
-    text = models.CharField(max_length=SIMPLE_TEXT_LENGTH, blank=True, null=True, default='')
-    # 学生，on_delete默认为CASCADE，当学生被删除的时候，账号级联删除
-    stu = models.ForeignKey('StuInfo', null=False)
-
-    class Meta:
-        db_table = 'stu_label_2'
+# class StuLabel(models.Model):
+#     label2_id = models.AutoField(primary_key=True)
+#     # 二级标签
+#     text = models.CharField(max_length=SIMPLE_TEXT_LENGTH, blank=True, null=True, default='')
+#     # 学生，on_delete默认为CASCADE，当学生被删除的时候，账号级联删除
+#     stu = models.ForeignKey('StuInfo', null=False)
+#
+#     class Meta:
+#         db_table = 'stu_label_2'
 
 
 class StuAccount(models.Model):

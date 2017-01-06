@@ -133,8 +133,8 @@ def register(acnt, pwd):
 
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', title='', personal_signature='',
-                              sex=0, school='',
-                              grade=-1, avatar_path=DEFAULT_AVATAR, label1=-1)
+                              sex=-1, school='',
+                              grade=-1, avatar_path=DEFAULT_AVATAR, label=-1)
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:
