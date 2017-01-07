@@ -162,17 +162,15 @@
 * http://110.64.69.66:8081/student/info/update/
 * POST
 * 参数： 
-    * id: 学生id（由登陆获得）
-    * path： 头像路径（由上传头像获得） 
+    * stu_id:
     * name 
-    * school  
-    * major: 专业 
+    * title 
+    * personal_signature  
     * sex: 性别 0表示未填，1表示男，2表示女 
-    * year: 出生年份 
-    * month： 出生月份 
-    * location：所在城市 
-    * mail 
-    * tel： 联系方式
+    * school:  
+    * grade: 年级 -1(未填)，0(大一) 1(大二) 2(大三) 3(大四) 4(研一) 5(研二) 6(研三) 7(博士) 
+    * avatar_path  
+    * label: 标签 -1(未填), 0(工程) 1(文艺) 2(经管) 3(人文)
 * 返回： 
     * 成功：
         * JSON: {"err": err}

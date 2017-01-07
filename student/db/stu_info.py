@@ -43,8 +43,8 @@ from student.util.logger import logger
 #         return ERR_DELETE_DB
 #
 #
-def update(stu_id, name=NO_INPUT, title=NO_INPUT, personal_signature=NO_INPUT, sex=NO_INPUT, school=NO_INPUT, grade=NO_INPUT, avatar_path=NO_INPUT,
-           resume_path=NO_INPUT, label=NO_INPUT, likes=NO_INPUT):
+def update(stu_id, name=NO_INPUT, title=NO_INPUT, personal_signature=NO_INPUT, sex=NO_INPUT, school=NO_INPUT,
+           grade=NO_INPUT, avatar_path=NO_INPUT, resume_path=NO_INPUT, label=NO_INPUT, likes=NO_INPUT):
     """
     成功：返回OK_UPDATE
     失败：返回ERR_UPDATE_NOTEXIST

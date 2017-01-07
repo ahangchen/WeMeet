@@ -496,47 +496,44 @@ def save_avatar(request):
             }))
 
 
-# @csrf_exempt
-# def update_info(request):
-#     """
-#     修改学生信息
-#     成功：返回{'err': SUCCEED}
-#     失败：返回相应的err和msg的JSON
-#     """
-#     if request.method == 'POST':
-#         stu_id = request.POST.get('id')
-#         avatar_path = request.POST.get('path')
-#         name = request.POST.get('name')
-#         school = request.POST.get('school')
-#         major = request.POST.get('major')
-#         location = request.POST.get('location')
-#         sex = request.POST.get('sex')
-#         year = request.POST.get('year')
-#         month = request.POST.get('month')
-#         mail = request.POST.get('mail')
-#         tel = request.POST.get('tel')
-#
-#         tag = info.update(stu_id=stu_id, avatar_path=avatar_path, name=name, school=school,
-#                           major=major, location=location, sex=sex, year=year,
-#                           month=month, mail=mail, tel=tel)
-#
-#         # 如果更新成功
-#         if tag == OK_UPDATE_STU_INFO:
-#             return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-#
-#         # 如果数据库原因（丢失记录或异常）导致更新失败 tag == ERR_UPDATE_STU_INFO_DB
-#         else:
-#             return HttpResponse(json_helper.dumps({
-#                 'err': FAIL,
-#                 'msg': FAIL_MSG
-#             }))
-#
-#     # 如果请求的方法是GET
-#     else:
-#         return HttpResponse(json_helper.dumps({
-#             'err': ERR_METHOD,
-#             'msg': ERR_METHOD_MSG
-#         }))
+@csrf_exempt
+def update_info(request):
+    """
+    修改学生信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        name = request.POST.get('name')
+        title = request.POST.get('title')
+        personal_signature = request.POST.get('personal_signature')
+        sex = request.POST.get('sex')
+        school = request.POST.get('school')
+        grade = request.POST.get('grade')
+        avatar_path = request.POST.get('avatar_path')
+        label = request.POST.get('label')
+
+        tag = info.update(stu_id=stu_id, name=name, title=title, personal_signature=personal_signature,
+                          sex=sex, school=school, grade=grade, avatar_path=avatar_path, label=label)
+
+        # 如果更新成功
+        if tag == OK_UPDATE_STU_INFO:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库原因（丢失记录或异常）导致更新失败 tag == ERR_UPDATE_STU_INFO_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
 
 
 @csrf_exempt

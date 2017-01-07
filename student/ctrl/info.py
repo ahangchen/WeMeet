@@ -96,57 +96,33 @@ def get(stu_id):
         return {'tag': ERR_GET_INFO_DB}
 
 
-# def update(stu_id, avatar_path, name, school, major, location, sex, year, month, mail, tel):
-#     """
-#     更新学生信息
-#     成功：返回OK_UPDATE_INFO
-#     失败：返回ERR_UPDATE_DB
-#     @stu_id: 学生id
-#     @avatar_path: 头像路径
-#     @name: 姓名
-#     @school: 学校
-#     @major: 专业
-#     @location: 所在地
-#     @sex: 性别
-#     @year: 出生年份
-#     @month: 出生月份
-#     @tel: 联系方式
-#     """
-#
-#     stu_update_tag = stu_info.update(stu_id=stu_id,
-#                                      avatar_path=avatar_path,
-#                                      name=name,
-#                                      school=school,
-#                                      major=major,
-#                                      location=location,
-#                                      sex=int(sex),
-#                                      year=int(year),
-#                                      month=int(month),
-#                                      mail=mail,
-#                                      tel=tel)
-#
-#     # 如果学生信息更新成功
-#     if stu_update_tag == OK_UPDATE:
-#
-#         # *******************************************************************************
-#         # 更改邮箱会更改账号 # TODO(hjf):完善更改邮箱会更改账号
-#         # acnt_update_tag = account.stu_update(stu_id=stu_id, account=mail)
-#         # if acnt_update_tag == ERR_UPDATE_NOTEXIST:
-#         #     logger.error('学生存在，但账号不存在，已更新学生信息，但账号信息无法更新，不做回滚')
-#         #     return ERR_UPDATE_DB
-#         # elif acnt_update_tag == ERR_UPDATE_DB:
-#         #     logger.error('更新学生邮箱时，数据库异常导致无法更新账号信息')
-#         #     return ERR_UPDATE_DB
-#         # *******************************************************************************
-#
-#         return OK_UPDATE_STU_INFO
-#     elif stu_update_tag == ERR_UPDATE_NOTEXIST:
-#         logger.error('学生不存在，无法更新学生信息')
-#         return ERR_UPDATE_STU_INFO_DB
-#     # 如果stu_update_tag == ERR_UPDATE_DB
-#     else:
-#         logger.error('数据库异常导致更新学生信息失败')
-#         return ERR_UPDATE_DB
+def update(stu_id, name, title, personal_signature, sex, school, grade, avatar_path, label):
+    """
+    更新学生信息
+    成功：返回OK_UPDATE_INFO
+    失败：返回ERR_UPDATE_DB
+    """
+
+    stu_update_tag = stu_info.update(stu_id=stu_id,
+                                     name=name,
+                                     title=title,
+                                     personal_signature=personal_signature,
+                                     sex=int(sex),
+                                     school=school,
+                                     grade=int(grade),
+                                     avatar_path=avatar_path,
+                                     label=int(label))
+
+    # 如果学生信息更新成功
+    if stu_update_tag == OK_UPDATE:
+        return OK_UPDATE_STU_INFO
+    elif stu_update_tag == ERR_UPDATE_NOTEXIST:
+        logger.error('学生不存在，无法更新学生信息')
+        return ERR_UPDATE_STU_INFO_DB
+    # 如果stu_update_tag == ERR_UPDATE_DB
+    else:
+        logger.error('数据库异常导致更新学生信息失败')
+        return ERR_UPDATE_DB
 
 
 # def add_edu(stu_id, major, graduation_year, background, school):
