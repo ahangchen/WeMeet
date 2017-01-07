@@ -1,6 +1,7 @@
 from student.db import about_me
 from student.util.logger import logger
-from student.ctrl.tag import OK_GET_ABOUT_ME, ERR_GET_ABOUT_ME_NOTEXIST, ERR_GET_ABOUT_ME_DB
+from student.ctrl.tag import OK_GET_ABOUT_ME, ERR_GET_ABOUT_ME_DB,\
+                             OK_UPDATE_ABOUT_ME, ERR_UPDATE_ABOUT_ME
 
 
 def get(stu_id):
@@ -17,3 +18,8 @@ def get(stu_id):
         logger.error('数据库异常导致获取学生信息失败')
         return {'tag': ERR_GET_ABOUT_ME_DB}
 
+
+def update(about_me_id, title, text, stu_id):
+    return {'tag': OK_UPDATE_ABOUT_ME} \
+        if about_me.update(about_me_id, title, text, stu_id) == about_me.OK_UPDATE \
+        else {'tag': ERR_UPDATE_ABOUT_ME}

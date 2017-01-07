@@ -1737,7 +1737,7 @@ def team_apply_handle(request):
 def get_about_me(request):
     """
     获取学生的“关于我”
-    成功：返回{'err': SUCCEED}
+    成功：返回{'err': SUCCEED, 'about_me_list': rlt['about_me_list']}
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
@@ -1751,6 +1751,38 @@ def get_about_me(request):
             }))
 
         # tag == ERR_GET_ABOUT_ME_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_about_me(request):
+    """
+    更新学生的“关于我”
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        about_me_id = request.POST.get('about_me_id')
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+        rlt = about_me.update(about_me_id, title, text, stu_id)
+
+        if rlt['tag'] == about_me.OK_UPDATE_ABOUT_ME:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # tag == ERR_UPDATE_ABOUT_ME_DB
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
