@@ -20,7 +20,7 @@ def stu_filter(stu):
     用学生查询技能评价
     返回QuerySet
     """
-    return StuSkill.objects.filter(stu=stu)
+    return StuSkill.objects.filter(stu=stu, is_deleted=False)
 
 
 def insert(name, value, stu):
@@ -32,7 +32,8 @@ def insert(name, value, stu):
     try:
         new_skill = StuSkill(name=name,
                              value=value,
-                             stu=stu)
+                             stu=stu,
+                             is_deleted=False)
 
         new_skill.save()
         return {'tag': OK_INSERT,
@@ -53,7 +54,7 @@ def id_stu_update(skill_id, stu, name=NO_INPUT, value=NO_INPUT):
     @value: 评价值
     """
     try:
-        update_skill = StuSkill.objects.all().get(skill_id=skill_id, stu=stu)
+        update_skill = StuSkill.objects.all().get(skill_id=skill_id, stu=stu, is_deleted=False)
 
         update_skill.name = value_update.value(update_skill.name, name)
         update_skill.value = value_update.value(update_skill.value, value)
@@ -62,7 +63,7 @@ def id_stu_update(skill_id, stu, name=NO_INPUT, value=NO_INPUT):
         return OK_UPDATE
 
     except StuSkill.DoesNotExist:
-        logger.warning("尝试更新学生id和技能评价id不匹配的技能评价")
+        logger.warning("尝试更新学生id和技能评价id不匹配或已删除的技能评价")
         return ERR_UPDATE_DB
     except Exception as e:
         logger.error(e.__str__() + '数据库异常导致更新技能评价失败')
@@ -76,20 +77,18 @@ def id_stu_delete(skill_id, stu):
     失败：返回ERR_DELETE_DB
     """
     try:
-        delete_skill = StuSkill.objects.all().get(skill_id=skill_id, stu=stu)  # 抛出MultipleObjectsReturned或DoesNotExist
-        delete_skill.delete()  # 不抛出异常
+        delete_skill = StuSkill.objects.all().get(skill_id=skill_id, stu=stu, is_deleted=False)
+
+        delete_skill.is_deleted = True
+
+        delete_skill.save()
         return OK_DELETE
 
     except StuSkill.DoesNotExist:
-        logger.error('尝试删除学生id和技能评价id不匹配的技能评价')
+        logger.warning("尝试删除学生id和技能评价id不匹配或已删除的技能评价")
         return ERR_DELETE_DB
-
-    except StuSkill.MultipleObjectsReturned:
-        logger.info('数据库异常（存在重复记录）')
-        StuSkill.objects.all().filter(skill_id=skill_id, stu=stu).delete()  # 不抛异常
-        return OK_DELETE
-
-    # 数据库异常
     except Exception as e:
-        logger.error(e.__str__() + '数据库异常导致删除项目技能评价失败')
+        logger.error(e.__str__() + '数据库异常导致删除技能评价失败')
         return ERR_DELETE_DB
+
+

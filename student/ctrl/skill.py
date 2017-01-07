@@ -1,5 +1,5 @@
 from student.ctrl.tag import OK_GET_SKILL, ERR_GET_NO_SKILL, ERR_GET_SKILL_DB, \
-                             OK_ADD_SKILL, ERR_ADD_SKILL_DB, \
+                             OK_ADD_SKILL, ERR_ADD_SKILL_DB, ERR_ADD_SKILL_FULL, \
                              OK_UPDATE_SKILL, ERR_UPDATE_SKILL_DB, \
                              OK_DEL_SKILL, ERR_DEL_SKILL_DB
 
@@ -46,14 +46,19 @@ def add(stu_id, name, value):
     """
     增加技能评价
     成功：返回{'tag': OK_ADD_SKILL, 'skill_id': insert_rlt['skill'].skill_id}
-    失败：返回{'tag': ERR_ADD_SKILL_DB}
+    失败：返回{'tag': ERR_ADD_SKILL_DB}或{'tag': ERR_ADD_SKILL_FULL}
     @stu_id:关联的学生id
     @name: 技能名称
-    @duty: 技能值
+    @value: 技能值
     """
     select_rlt = stu_info.select(stu_id=stu_id)
     # 如果学生存在
     if select_rlt['tag'] == stu_info.OK_SELECT:
+        # 如果评价数量已满
+        if skill.stu_filter(select_rlt['stu']).count() >= 8:
+            logger.error('技能评价数量已满')
+            return {'tag': ERR_ADD_SKILL_FULL}
+
         insert_rlt = \
             skill.insert(name=name, value=value, stu=select_rlt['stu'])
         # 如果插入成功：

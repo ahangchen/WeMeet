@@ -144,6 +144,8 @@ class StuSkill(models.Model):
     value = models.IntegerField(default=0)
     # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
     stu = models.ForeignKey('StuInfo', null=False)
+    # 0表示未删除 1表示删除
+    is_deleted = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'stu_skill'

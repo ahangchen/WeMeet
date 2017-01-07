@@ -1371,7 +1371,8 @@ def add_skill(request):
                 'skill_id': add_rlt['skill_id']
             }))
 
-        # 如果数据库异常导致增加技能评价失败(add_rlt['tag'] == ERR_ADD_SKILL_DB)
+        # 如果数据库异常或数量已满导致增加技能评价失败
+        # (add_rlt['tag'] == ERR_ADD_SKILL_DB 或add_rlt['tag'] == ERR_ADD_SKILL_FULL)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

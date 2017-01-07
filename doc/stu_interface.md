@@ -374,7 +374,7 @@
 ***
 
 ###17. 查询技能评价
-* http://110.64.69.66:8081/student/info/skill/get/
+* http://110.64.69.66:8081/student/skill/get/
 * POST
 * 参数：
     * stu_id: 学生id
@@ -568,7 +568,7 @@
 ***
 
 ###26. 增加技能评价
-* http://110.64.69.66:8081/student/info/skill/add/
+* http://110.64.69.66:8081/student/skill/add/
 * POST
 * 参数：
     * stu_id: 学生id
@@ -587,7 +587,7 @@
 ***
 
 ###27. 更新技能评价
-* http://110.64.69.66:8081/student/info/skill/update/
+* http://110.64.69.66:8081/student/skill/update/
 * POST
 * 参数：
     * stu_id
@@ -696,7 +696,7 @@
 ***
 
 ###33. 删除技能评价
-* http://110.64.69.66:8081/student/info/skill/del/
+* http://110.64.69.66:8081/student/skill/del/
 * POST
 * 参数：
     * stu_id
