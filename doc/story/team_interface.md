@@ -860,7 +860,7 @@
 ```json 
   {
     "err": "0",
-    "msg": "timg_id"
+    "msg": {'img_id': ret, 'path': path}
   }
 ``` 
   - 会返回团队图片id
