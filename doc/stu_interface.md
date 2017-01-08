@@ -986,7 +986,7 @@
 
 
 
-###43. 更新关于我
+### 43. 更新关于我
 * http://110.64.69.66:8081/student/aboutme/update/
 * POST
 * 参数：
@@ -1004,3 +1004,37 @@
             * msg: 请求方法错误/操作失败
 
 ***
+
+### 44. 添加关于我
+* http://110.64.69.66:8081/student/aboutme/add/
+* POST
+* 参数：
+    * stu_id: 
+    * title: 
+    * text: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err, "about_me_id": about_me_id}
+            * err: 0 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+
+***
+
+### 45. 删除关于我
+* http://110.64.69.66:8081/student/aboutme/del/
+* POST
+* 参数：
+    * about_me_id: 
+    * stu_id: 
+* 返回：
+    * 成功：
+        * JSON： {"err": err}
+            * err: 0 
+    * 失败：
+        * JSON： {"err": err, "msg": msg}
+            * err: -1/-10
+            * msg: 请求方法错误/操作失败
+            

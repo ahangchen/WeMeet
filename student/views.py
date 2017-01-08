@@ -1690,6 +1690,75 @@ def update_about_me(request):
 
 
 @csrf_exempt
+def add_about_me(request):
+    """
+    添加关于我
+    成功：返回{
+                'err': SUCCEED,
+                'about_me_id': add_rlt['about_me_id']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+
+        add_rlt = about_me.add(title, text, stu_id)
+        # 如果增加成功
+        if add_rlt['tag'] == about_me.OK_ADD_ABOUT_ME:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'about_me_id': add_rlt['about_me_id']
+            }))
+
+        # 如果数据库异常导致增加作品集信息失败(add_rlt['tag'] == ERR_ADD_ABOUT_ME_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def del_about_me(request):
+    """
+    删除关于我
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        about_me_id = request.POST.get('about_me_id')
+        stu_id = request.POST.get('stu_id')
+
+        del_rlt = about_me.delete(about_me_id, stu_id)
+        # 如果增加成功
+        if del_rlt['tag'] == about_me.OK_DEL_ABOUT_ME:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致删除关于我失败(del_rlt['tag'] == ERR_DEL_ABOUT_ME_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
 def get_works(request):
     """
     获取学生作品集
