@@ -73,8 +73,8 @@ ERR_SKILL_FULL_MSG = '技能评价已达上限'
 WORKS_INVALID = '-128'  # 用在上传作品集文件
 WORKS_INVALID_MSG = '作品集不合法'
 
-WORKS_EXIST = '-126'  # 用在增加作品集信息
-WORKS_EXIST_MSG = '已有作品集'
+WORKS_FULL = '-126'  # 用在增加作品集信息
+WORKS_FULL_MSG = '作品数量已满'
 
 NO_APPLY = '-129'  # 用在获取实习经历
 NO_APPLY_MSG = '无投递记录'

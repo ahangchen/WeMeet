@@ -1,7 +1,7 @@
 from student.ctrl.tag import OK_GET_WORKS, ERR_GET_NO_WORKS, ERR_GET_WORKS_DB, \
                              OK_UPDATE_WORKS, ERR_UPDATE_WORKS_DB, \
                              OK_ADD_WORKS, ERR_ADD_WORKS_DB, \
-                             OK_DEL_works, ERR_DEL_works_DB
+                             OK_DEL_works, ERR_DEL_works_DB, ERR_ADD_WORKS_FULL
 
 from student.util.logger import logger
 from student.db import stu_info, works
@@ -68,7 +68,7 @@ def add(stu_id, name, duty, url, description, img, audio, video):
     """
     增加作品集信息
     成功：返回{'tag': OK_ADD_WORKS, 'works_id': insert_rlt['works'].works_id}
-    失败：返回{'tag': ERR_ADD_WORKS_DB}或{'tag': ERR_ADD_WORKS_EXIST}
+    失败：返回{'tag': ERR_ADD_WORKS_DB}或{'tag': ERR_ADD_WORKS_FULL}
     """
     select_rlt = stu_info.select(stu_id=stu_id)
     # 如果学生存在
@@ -81,7 +81,7 @@ def add(stu_id, name, duty, url, description, img, audio, video):
             if insert_rlt['tag'] == works.OK_INSERT:
                 return {'tag': OK_ADD_WORKS, 'works_id': insert_rlt['works'].works_id}
             else:
-                return {'tag': ERR_ADD_WORKS_DB}
+                return {'tag': ERR_ADD_WORKS_FULL}
 
     # 如果学生记录不存在
     elif select_rlt['tag'] == stu_info.ERR_SELECT_NOTEXIST:

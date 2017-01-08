@@ -1,74 +1,14 @@
-from student.ctrl.tag import ERR_ADD_EDU_DB
-from student.ctrl.tag import ERR_ADD_EDU_FULL
-from student.ctrl.tag import ERR_ADD_INTERN_DB
-from student.ctrl.tag import ERR_ADD_INTERN_FULL
-from student.ctrl.tag import ERR_ADD_PROJ_DB
-from student.ctrl.tag import ERR_ADD_PROJ_FULL
-from student.ctrl.tag import ERR_ADD_SKILL_DB
-from student.ctrl.tag import ERR_ADD_SKILL_FULL
-from student.ctrl.tag import ERR_ADD_WORKS_DB
-from student.ctrl.tag import ERR_ADD_WORKS_EXIST
-from student.ctrl.tag import ERR_DEL_EDU_DB
-from student.ctrl.tag import ERR_DEL_INTERN_DB
-from student.ctrl.tag import ERR_DEL_PROJ_DB
-from student.ctrl.tag import ERR_DEL_SKILL_DB
-from student.ctrl.tag import ERR_DEL_WORKS_DB
-from student.ctrl.tag import ERR_GET_EDU_DB
 from student.ctrl.tag import ERR_GET_INFO_DB
 from student.ctrl.tag import ERR_GET_INFO_NOTEXIST
-from student.ctrl.tag import ERR_GET_INTERN_DB
-from student.ctrl.tag import ERR_GET_NO_EDU
-from student.ctrl.tag import ERR_GET_NO_INTERN
-from student.ctrl.tag import ERR_GET_NO_PROJ
-from student.ctrl.tag import ERR_GET_NO_SKILL
-from student.ctrl.tag import ERR_GET_NO_WORKS
-from student.ctrl.tag import ERR_GET_PROJ_DB
-from student.ctrl.tag import ERR_GET_SKILL_DB
-from student.ctrl.tag import ERR_GET_WORKS_DB
-from student.ctrl.tag import ERR_SAVE_WORKS_FAIL
-from student.ctrl.tag import ERR_UPDATE_EDU_DB
-from student.ctrl.tag import ERR_UPDATE_INTERN_DB
-from student.ctrl.tag import ERR_UPDATE_PROJ_DB
-from student.ctrl.tag import ERR_UPDATE_SKILL_DB
 from student.ctrl.tag import ERR_UPDATE_STU_INFO_DB
-from student.ctrl.tag import ERR_UPDATE_WORKS_DB
-from student.ctrl.tag import ERR_WORKS_FILE_INVALID
-from student.ctrl.tag import OK_ADD_EDU
-from student.ctrl.tag import OK_ADD_INTERN
-from student.ctrl.tag import OK_ADD_PROJ
-from student.ctrl.tag import OK_ADD_SKILL
-from student.ctrl.tag import OK_ADD_WORKS
-from student.ctrl.tag import OK_DEL_EDU
-from student.ctrl.tag import OK_DEL_LAST_EDU
-from student.ctrl.tag import OK_DEL_INTERN
-from student.ctrl.tag import OK_DEL_PROJ
-from student.ctrl.tag import OK_DEL_SKILL
-from student.ctrl.tag import OK_DEL_WORKS
-from student.ctrl.tag import OK_GET_EDU
 from student.ctrl.tag import OK_GET_INFO
-from student.ctrl.tag import OK_GET_INTERN
-from student.ctrl.tag import OK_GET_PROJ
-from student.ctrl.tag import OK_GET_SKILL
-from student.ctrl.tag import OK_SAVE_WORKS
-from student.ctrl.tag import OK_UPDATE_EDU
-from student.ctrl.tag import OK_UPDATE_INTERN
-from student.ctrl.tag import OK_UPDATE_PROJ
-from student.ctrl.tag import OK_UPDATE_SKILL
 from student.ctrl.tag import OK_UPDATE_STU_INFO
-from student.ctrl.tag import OK_UPDATE_WORKS
-from student.db import stu_info, edu, intern, proj, works, skill
 from student.db.tag import ERR_SELECT_NOTEXIST
 from student.db.tag import ERR_UPDATE_DB
 from student.db.tag import ERR_UPDATE_NOTEXIST
-from student.db.tag import OK_DELETE
-from student.db.tag import OK_INSERT
 from student.db.tag import OK_SELECT
 from student.db.tag import OK_UPDATE
-from student.util import file_helper
-from student.util.date_helper import curr_year, curr_month
 from student.util.logger import logger
-
-import time
 
 
 WORKS_PATH_ROOT = 'student/works'

@@ -28,7 +28,7 @@ from student.ctrl.err_code_msg import ERR_LOGIN_STU_NONACTIVATED, ERR_LOGIN_STU_
                                       WORKS_INVALID, WORKS_INVALID_MSG, \
                                       ERR_EDU_FULL, ERR_EDU_FULL_MSG, \
                                       ERR_OUT_DATE, ERR_OUT_DATE_MSG, \
-                                      WORKS_EXIST, WORKS_EXIST_MSG, \
+                                      WORKS_FULL, WORKS_FULL_MSG, \
                                       ERR_METHOD, ERR_METHOD_MSG, \
                                       NO_INTERN, NO_INTERN_MSG, \
                                       NO_RESUME, NO_RESUME_MSG, \
@@ -117,9 +117,6 @@ from student.ctrl.tag import ERR_DEL_SKILL_DB
 from student.ctrl.tag import OK_SAVE_WORKS
 from student.ctrl.tag import ERR_SAVE_WORKS_FAIL
 from student.ctrl.tag import ERR_WORKS_FILE_INVALID
-from student.ctrl.tag import OK_ADD_WORKS
-from student.ctrl.tag import ERR_ADD_WORKS_EXIST
-from student.ctrl.tag import ERR_ADD_WORKS_DB
 from student.ctrl.tag import OK_UPDATE_WORKS
 from student.ctrl.tag import ERR_UPDATE_WORKS_DB
 from student.ctrl.tag import OK_DEL_WORKS
@@ -1864,17 +1861,17 @@ def add_works(request):
 
         add_rlt = works.add(stu_id, name, duty, url, description, img, audio, video)
         # 如果增加作品集信息成功
-        if add_rlt['tag'] == OK_ADD_WORKS:
+        if add_rlt['tag'] == works.OK_ADD_WORKS:
             return HttpResponse(json_helper.dumps({
                 'err': SUCCEED,
                 'works_id': add_rlt['works_id']
             }))
 
         # 如果已有作品集信息
-        elif add_rlt['tag'] == ERR_ADD_WORKS_EXIST:
+        elif add_rlt['tag'] == works.ERR_ADD_WORKS_FULL:
             return HttpResponse(json_helper.dumps({
-                'err': WORKS_EXIST,
-                'msg': WORKS_EXIST_MSG
+                'err': WORKS_FULL,
+                'msg': WORKS_FULL_MSG
             }))
 
         # 如果数据库异常导致增加作品集信息失败(add_rlt['tag'] == ERR_ADD_WORKS_DB)
