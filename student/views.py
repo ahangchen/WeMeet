@@ -1206,7 +1206,7 @@ def upload_works(request):
         stu_id = request.POST.get('stu_id')
         works_file = request.FILES.get('works')
 
-        upload_rlt = info.upload_works(stu_id=stu_id, works=works_file)
+        upload_rlt = works.upload(stu_id=stu_id, works_file=works_file)
         # 如果保存上传的作品集文件成功
         if upload_rlt['tag'] == OK_SAVE_WORKS:
             return HttpResponse(json_helper.dumps({

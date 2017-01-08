@@ -1,10 +1,16 @@
 from student.ctrl.tag import OK_GET_WORKS, ERR_GET_NO_WORKS, ERR_GET_WORKS_DB, \
                              OK_UPDATE_WORKS, ERR_UPDATE_WORKS_DB, \
                              OK_ADD_WORKS, ERR_ADD_WORKS_DB, \
-                             OK_DEL_works, ERR_DEL_works_DB, ERR_ADD_WORKS_FULL
+                             OK_DEL_works, ERR_DEL_works_DB, ERR_ADD_WORKS_FULL, \
+                             OK_SAVE_WORKS, ERR_SAVE_WORKS_FAIL, ERR_WORKS_FILE_INVALID
 
 from student.util.logger import logger
+from student.util import file_helper
 from student.db import stu_info, works
+import time
+
+
+WORKS_PATH_ROOT = 'student/works'
 
 
 def get(stu_id):
@@ -119,3 +125,53 @@ def delete(stu_id, works_id):
     else:
         logger.error('数据库异常导致无法确认学生是否存在，删除技能评价失败')
         return {'tag': ERR_DEL_works_DB}
+
+
+def upload(stu_id, works_file):
+    """
+    上传作品集文件
+    @stu_id 学生id
+    @works: 作品集文件
+    成功：返回{'tag': OK_SAVE_WORKS, 'path': ref_path}
+    失败：返回{'tag': ERR_SAVE_WORKS_FAIL}
+    """
+
+    def check_resume_file(file):  # TODO(hjf): Check works file
+        """return true if works file is valid"""
+        return True
+
+    def get_works_path(folder, file_name, file_type):
+        return '%s/%s/%s.%s' % (WORKS_PATH_ROOT, folder, file_name, file_type)
+
+    # 确认学生是否存在
+    select_rlt = stu_info.select(stu_id=stu_id)
+    # 如果学生存在
+    if select_rlt['tag'] == stu_info.OK_SELECT:
+        # 如果作品集文件合法
+        if check_resume_file(works_file):
+            works_path = get_works_path(folder=stu_id,
+                                        file_name=int(time.time()),
+                                        file_type=file_helper.get_file_type(works_file.name))  # 用time作简历文件名称
+            # ref_path = '/media/' + works_path
+            ref_path = works_path
+
+            # 如果作品集文件上传成功
+            if file_helper.save(works_file, works_path):
+                return {'tag': OK_SAVE_WORKS,
+                        'path': ref_path}
+            # 如果作品集文件上传失败，
+            else:
+                return {'tag': ERR_SAVE_WORKS_FAIL}
+
+        # 如果作品集文件不合法
+        else:
+            return {'tag': ERR_WORKS_FILE_INVALID}
+
+    # 如果学生不存在
+    elif select_rlt['tag'] == stu_info.ERR_SELECT_NOTEXIST:
+        logger.warning('尝试为不存在的学生上传作品集')
+        return {'tag': ERR_SAVE_WORKS_FAIL}
+    # 如果数据库异常导致查询学生是否存在失败(select_rlt['tag'] == ERR_SELECT_DB)
+    else:
+        logger.error('数据库异常导致无法确定学生是否存在，上传作品集失败')
+        return {'tag': ERR_SAVE_WORKS_FAIL}

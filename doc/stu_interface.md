@@ -618,7 +618,7 @@
 ***
 
 ###28. 上传作品集
-* http://110.64.69.66:8081/student/info/works/upload/
+* http://110.64.69.66:8081/student/works/upload/
 * POST
 * 参数：
     * stu_id: 学生id
