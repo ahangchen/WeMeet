@@ -115,7 +115,7 @@ def save_photo(tid, name, img):
     path = name2path(name)
     save(img, path)
     img_id = team.add_img(teams.first(), path)
-    return img_id
+    return img_id, path
 
 
 def save_logo(name, img):

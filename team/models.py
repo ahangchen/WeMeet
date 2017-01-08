@@ -139,3 +139,12 @@ class Message(models.Model):
     content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
     read = models.BooleanField(default=False)
     send_time = models.DateTimeField()
+
+
+class Focus(models.Model):
+    # 关注者
+    focuser_id = models.IntegerField()
+    # 被关注事物类型
+    focus_type = models.IntegerField()
+    # 被关注id
+    focus_id = models.IntegerField()

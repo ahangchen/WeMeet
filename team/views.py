@@ -580,11 +580,12 @@ def add_team_photo(request):
     tid = request.POST['tid']
     img = request.FILES['photo']
     name = str(img)
-    ret = team.save_photo(tid, name, img)
+    ret, path = team.save_photo(tid, name, img)
     if ret == team.ACC_NO_FOUND:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_NOT_FOUND))
     else:
-        return HttpResponse(json_helper.dump_err_msg(SUCCEED, ret))
+        photo_ret = {'img_id': ret, 'path': path}
+        return HttpResponse(json_helper.dump_err_msg(SUCCEED, photo_ret))
 
 
 @csrf_exempt
