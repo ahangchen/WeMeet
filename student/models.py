@@ -139,13 +139,13 @@ class StuAccount(models.Model):
 class StuSkill(models.Model):
     skill_id = models.AutoField(primary_key=True)
     # 技能名称
-    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=True, default='')
+    name = models.CharField(max_length=NAME_MAX_LENGTH, blank=True, null=False, default='')
     # 技能值0-10
-    value = models.IntegerField(default=0)
+    value = models.IntegerField(blank=False, null=False, default=0)
     # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
     stu = models.ForeignKey('StuInfo', null=False)
     # 0表示未删除 1表示删除
-    is_deleted = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(blank=False, null=False, default=False)
 
     class Meta:
         db_table = 'stu_skill'
@@ -182,6 +182,8 @@ class StuWorks(models.Model):
     video = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=False, default='')
     # 学生，on_delete默认为CASCADE，当学生被删除的时候，技能评价级联删除
     stu = models.ForeignKey('StuInfo', null=False)
+    # 0表示未删除 1表示删除
+    is_deleted = models.BooleanField(blank=False, null=False, default=False)
 
     class Meta:
         db_table = 'stu_works'

@@ -1199,51 +1199,6 @@ def job_apply(request):
 
 
 @csrf_exempt
-def add_works(request):
-    """
-    增加作品集信息
-    成功：返回{
-                'err': SUCCEED,
-                'works_id': add_rlt['works_id']
-            }
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        path = request.POST.get('path')
-        site = request.POST.get('site')
-
-        add_rlt = info.add_works(stu_id, path, site)
-        # 如果增加作品集信息成功
-        if add_rlt['tag'] == OK_ADD_WORKS:
-            return HttpResponse(json_helper.dumps({
-                'err': SUCCEED,
-                'works_id': add_rlt['works_id']
-            }))
-
-        # 如果已有作品集信息
-        elif add_rlt['tag'] == ERR_ADD_WORKS_EXIST:
-            return HttpResponse(json_helper.dumps({
-                'err': WORKS_EXIST,
-                'msg': WORKS_EXIST_MSG
-            }))
-
-        # 如果数据库异常导致增加作品集信息失败(add_rlt['tag'] == ERR_ADD_WORKS_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
 def upload_works(request):
     """
     保存上传的作品集文件
@@ -1270,70 +1225,6 @@ def upload_works(request):
             }))
 
         # 如果保存失败 tag == ERR_SAVE_WORKS_FAIL
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def update_works(request):
-    """
-    更新作品集信息
-    成功：返回{'err': SUCCEED}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        works_id = request.POST.get('works_id')
-        path = request.POST.get('path')
-        site = request.POST.get('site')
-
-        update_rlt = info.update_works(works_id, stu_id, path, site)
-        # 如果更新作品集信息成功
-        if update_rlt['tag'] == OK_UPDATE_WORKS:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致更新作品集信息失败(add_rlt['tag'] == ERR_UPDATE_WORKS_DB)
-        else:
-            return HttpResponse(json_helper.dumps({
-                'err': FAIL,
-                'msg': FAIL_MSG
-            }))
-
-    # 如果请求的方法是GET
-    else:
-        return HttpResponse(json_helper.dumps({
-            'err': ERR_METHOD,
-            'msg': ERR_METHOD_MSG
-        }))
-
-
-@csrf_exempt
-def del_works(request):
-    """
-    删除作品集信息
-    成功：返回{'err': SUCCEED}
-    失败：返回相应的err和msg的JSON
-    """
-    if request.method == 'POST':
-        stu_id = request.POST.get('stu_id')
-        works_id = request.POST.get('works_id')
-
-        del_rlt = info.del_works(stu_id=stu_id, works_id=works_id)
-        # 如果删除成功
-        if del_rlt['tag'] == OK_DEL_WORKS:
-            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
-
-        # 如果数据库异常导致删除作品集信息失败(add_rlt['tag'] == ERR_DEL_WORKS_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,
@@ -1812,7 +1703,7 @@ def get_works(request):
     """
     if request.method == 'POST':
         stu_id = request.POST.get('stu_id')
-        get_rlt = works.get_works(stu_id)
+        get_rlt = works.get(stu_id)
 
         # 如果获取成功
         if get_rlt['tag'] == OK_GET_WORKS:
@@ -1829,6 +1720,126 @@ def get_works(request):
             }))
 
         # get_rlt['tag'] == ERR_GET_WORKS_DB
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def update_works(request):
+    """
+    更新作品集信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        works_id = request.POST.get('works_id')
+        name = request.POST.get('name')
+        duty = request.POST.get('duty')
+        url = request.POST.get('url')
+        description = request.POST.get('description')
+        img = request.POST.get('img')
+        audio = request.POST.get('audio')
+        video = request.POST.get('video')
+
+        update_rlt = works.update(works_id, stu_id, name, duty, url, description, img, audio, video)
+        # 如果更新作品集信息成功
+        if update_rlt['tag'] == OK_UPDATE_WORKS:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果不存在或数据库异常导致更新作品集信息失败
+        # (add_rlt['tag'] == ERR_UPDATE_WORKS_DB)或(add_rlt['tag'] == ERR_UPDATE_NOTEXIST)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def add_works(request):
+    """
+    增加作品集信息
+    成功：返回{
+                'err': SUCCEED,
+                'works_id': add_rlt['works_id']
+            }
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        name = request.POST.get('name')
+        duty = request.POST.get('duty')
+        url = request.POST.get('url')
+        description = request.POST.get('description')
+        img = request.POST.get('img')
+        audio = request.POST.get('audio')
+        video = request.POST.get('video')
+
+        add_rlt = works.add(stu_id, name, duty, url, description, img, audio, video)
+        # 如果增加作品集信息成功
+        if add_rlt['tag'] == OK_ADD_WORKS:
+            return HttpResponse(json_helper.dumps({
+                'err': SUCCEED,
+                'works_id': add_rlt['works_id']
+            }))
+
+        # 如果已有作品集信息
+        elif add_rlt['tag'] == ERR_ADD_WORKS_EXIST:
+            return HttpResponse(json_helper.dumps({
+                'err': WORKS_EXIST,
+                'msg': WORKS_EXIST_MSG
+            }))
+
+        # 如果数据库异常导致增加作品集信息失败(add_rlt['tag'] == ERR_ADD_WORKS_DB)
+        else:
+            return HttpResponse(json_helper.dumps({
+                'err': FAIL,
+                'msg': FAIL_MSG
+            }))
+
+    # 如果请求的方法是GET
+    else:
+        return HttpResponse(json_helper.dumps({
+            'err': ERR_METHOD,
+            'msg': ERR_METHOD_MSG
+        }))
+
+
+@csrf_exempt
+def del_works(request):
+    """
+    删除作品集信息
+    成功：返回{'err': SUCCEED}
+    失败：返回相应的err和msg的JSON
+    """
+    if request.method == 'POST':
+        stu_id = request.POST.get('stu_id')
+        works_id = request.POST.get('works_id')
+
+        del_rlt = works.delete(stu_id=stu_id, works_id=works_id)
+        # 如果删除成功
+        if del_rlt['tag'] == works.OK_DEL_works:
+            return HttpResponse(json_helper.dumps({'err': SUCCEED}))
+
+        # 如果数据库异常导致删除作品集信息失败(add_rlt['tag'] == ERR_DEL_WORKS_DB)
         else:
             return HttpResponse(json_helper.dumps({
                 'err': FAIL,

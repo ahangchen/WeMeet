@@ -534,8 +534,14 @@
 * POST
 * 参数：
     * stu_id: 学生id
-    * path: 作品集的路径
-    * site: 作品集的在线网址
+    * name: 作品名
+    * duty: 职责
+    * url: 作品的url
+    * description: 描述
+    * img: 图片，无则为空
+    * audio: 音频，无则为空
+    * video: 视频，无则为空 
+        * 三个仅有一个不为空
 * 返回：
     * 成功：
         * JSON： {"err": err, "works_id": works_id}
@@ -549,13 +555,19 @@
 ***
 
 ###25. 更新作品集
-* http://110.64.69.66:8081/student/info/works/update/
+* http://110.64.69.66:8081/student/works/update/
 * POST
 * 参数：
     * stu_id
     * works_id: 
-    * path: 作品集的路径
-    * site: 作品集的在线网址
+    * name: 作品名
+    * duty: 职责
+    * url: 作品的url
+    * description: 描述
+    * img: 图片，无则为空
+    * audio: 音频，无则为空
+    * video: 视频，无则为空
+        * 三个仅有一个不为空
 * 返回：
     * 成功：
         * JSON： {"err": err}
@@ -679,7 +691,7 @@
 ***
 
 ###32. 删除作品集
-* http://110.64.69.66:8081/student/info/works/del/
+* http://110.64.69.66:8081/student/works/del/
 * POST
 * 参数：
     * stu_id
