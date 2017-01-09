@@ -67,7 +67,7 @@ def invite(acnt):
 
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', title='', personal_signature='', sex=0, school='',  grade=-1,
-                              avatar_path=DEFAULT_AVATAR, label1=-1)
+                              avatar_path=DEFAULT_AVATAR, label=-1)
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:
@@ -109,8 +109,10 @@ def invite(acnt):
 
             # 记录账号密文成功
             else:
-                send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext) + "\npwd: " + pwd,  # TODO(cwh): 修改邮件内容、收发邮箱
-                          'm18826076291@sina.com', [acnt])
+                send_163_mail('13660106752', 'xuegongban118', '13660106752@163.com', acnt, 'WeMeet注册验证邮件',
+                              verify_mail.get_content(ciphertext) + "\npwd: " + pwd)
+                # send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext) + "\npwd: " + pwd,
+                #           'm18826076291@sina.com', [acnt])
                 return OK_REG, acnt_tag.stu_id
 
 
@@ -286,8 +288,8 @@ def send_reset_mail(acnt):
         return ERR_RESET_MAIL_DB
 
     # 如果日期记录成功，发送邮件
-    send_mail('WeMeet重置密码邮件', reset_mail.get_content(ciphertext, acnt),  # TODO(hjf): 修改邮件内容、收发邮箱
-              'm18826076291@sina.com', [acnt])
+    send_163_mail('13660106752', 'xuegongban118', '13660106752@163.com', acnt, 'WeMeet重置密码邮件',
+                  reset_mail.get_content(ciphertext, acnt))
     return OK_RESET_MAIL
 
 
