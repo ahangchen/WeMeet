@@ -9,6 +9,7 @@ from student.db.tag import ERR_UPDATE_NOTEXIST
 from student.db.tag import OK_SELECT
 from student.db.tag import OK_UPDATE
 from student.util.logger import logger
+from student.db import stu_info
 
 
 def get(stu_id):
