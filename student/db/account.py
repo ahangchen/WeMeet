@@ -143,7 +143,7 @@ def delete(account):
 
 def name2mail(name):
     stus = StuInfo.objects.filter(name=name)
-    return [{'sid': stu.id, 'mail': stu.mail} for stu in stus]
+    return [{'sid': stu.id, 'mail': stu.stuaccount_set.first().account} for stu in stus]
 
 
 
