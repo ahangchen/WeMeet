@@ -41,6 +41,7 @@ from student.db import account
 from student.db import stu_info
 
 from student.util.encrypt_decrypt import decrypt, encrypt
+from student.util.mail_helper import send_163_mail
 from student.util.random_hashcode import get_hashcode
 from student.util.logger import logger
 from student.util import date_helper
@@ -176,8 +177,8 @@ def register(acnt, pwd):
 
             # 记录账号密文成功
             else:
-                send_mail('WeMeet注册验证邮件', verify_mail.get_content(ciphertext),  # TODO(hjf): 修改邮件内容、收发邮箱
-                          'm18826076291@sina.com', [acnt])
+                send_163_mail('13660106752', 'xuegongban118', '13660106752@163.com', acnt, 'WeMeet注册验证邮件',
+                              verify_mail.get_content(ciphertext))
                 return OK_REG
 
 
