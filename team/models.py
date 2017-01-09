@@ -20,7 +20,7 @@ class Team(models.Model):
     leader = models.CharField(max_length=NAME_MAX_LENGTH, default='')
     logo_path = models.CharField(max_length=PATH_MAX_LENGTH, default='')
     # 团队联系方式
-    contact_tel = models.CharField(max_length=TEL_MAX_LENGTH, default='')
+    contact_tel = models.CharField(max_length=PATH_MAX_LENGTH, default='')
     pwd = models.ForeignKey(Pwd, related_name='t2p')
     # 口号
     slogan = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
