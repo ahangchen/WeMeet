@@ -8,7 +8,7 @@ from student.ctrl.tag import OK_GET_APPLY, ERR_GET_NO_APPLY, ERR_GET_APPLY_DB, \
                              OK_REPLY, ERR_REPLY_DB, \
                              OK_DUMP, ERR_DUMP_DB
 
-from student.db import stu_info, job_apply
+from student.db import stu_info, job_apply, account
 from team.db import job, team
 from student.util.logger import logger
 from student.util.date_helper import curr_year, curr_month
@@ -254,23 +254,28 @@ def team_get_info(apply_id):
         # 如果获取关联的学生成功
         if stu_select_rlt['tag'] == OK_SELECT:
             stu = stu_select_rlt['stu']
-            age = curr_year() - stu.year
-            if curr_month() < stu.month:
-                age -= 1
-            return {'tag': OK_APPLY_INFO,
-                    'stu_id': apply.stu_id,
-                    'name': stu.name,
-                    'avatar_path': stu.avatar_path,
-                    'sex': stu.sex,
-                    'age': age,
-                    'mail': stu.mail,
-                    'tel': stu.tel,
-                    'school': stu.school,
-                    'major': stu.major,
-                    'location': stu.location,
-                    'resume_path': apply.resume_path,
-                    'state': apply.state
-                    }
+            account_select_rlt = account.stu_select(stu.id)
+
+            # 如果获取关联的账号成功
+            if account_select_rlt['tag'] == OK_SELECT:
+                return {'tag': OK_APPLY_INFO,
+                        'stu_id': apply.stu_id,
+                        'name': stu.name,
+                        'avatar_path': stu.avatar_path,
+                        'sex': stu.sex,
+                        'age': '',
+                        'mail': account_select_rlt['acnt'].account,
+                        'tel': '',
+                        'school': stu.school,
+                        'major': '',
+                        'location': '',
+                        'resume_path': apply.resume_path,
+                        'state': apply.state
+                        }
+            # 如果获取关联的账号失败
+            else:
+                logger.error('数据库异常或学生不存在，无法获取与投递记录关联的学生信息(账号)')
+                return {'tag': ERR_APPLY_INFO_DB}
 
         # 如果无法获取关联的学生
         else:
