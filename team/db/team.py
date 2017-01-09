@@ -72,7 +72,7 @@ def info(tid):
     for stu in stu_s:
         if len(stu.stu.name) == 0:
             stu_dict.append({
-                'id': stu.stu.id, 'name': stu.stu.mail, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
+                'id': stu.stu.id, 'name': stu.stu.stuaccount_set.first().account, 'school': stu.stu.school, 'logo_path': stu.stu.avatar_path
             })
         else:
             stu_dict.append({
