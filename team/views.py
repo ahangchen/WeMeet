@@ -77,8 +77,10 @@ def info_product(request):
 
     if not is_post(request):
         return resp_method_err()
-
     prod_id = request.POST.get('productId')
+    if prod_id is None:
+        prod_id = request.GET.get('productId')
+    print(prod_id)
     res = db_product.select(prod_id)
 
     if res['err'] == PRODUCT_SUCCEED:
