@@ -418,7 +418,12 @@
     - name: 项目名称
     - img_path: 照片路径(file)
     - content: 团队简介
-    - reward: 获奖情况
+    - reward: 综合字段，内容格式为json形式，包含标签，slogan，url，例如：
+
+```
+{'slogan': '为人民服务', url: 'www.baidu.com', 'tag':['萌', '炫', '酷']}
+```
+
     - team_id: 团队ID
 - 返回：
     - 成功：
@@ -443,7 +448,12 @@
     - name: 项目名称
     - img_path: 照片路径(file)
     - content: 团队简介
-    - reward: 获奖情况
+    - reward: 综合字段，内容格式为json形式，包含标签，slogan，url，例如：
+
+```
+{'slogan': '为人民服务', url: 'www.baidu.com', 'tag':['萌', '炫', '酷']}
+```
+
     - team_id: 团队ID
 - 返回：
     - 成功：
