@@ -1,3 +1,5 @@
+import time
+
 from team.db import product
 from team.db.tag import *
 from student.util import file_helper
@@ -143,7 +145,7 @@ def save_img(prod_id, prod_img):
         return True
 
     def get_img_path(file_name, file_type):
-        return '%s/%s.%s' % (IMG_PATH_ROOT, file_name, file_type)
+        return '%s%s/%s.%s' % (str(time.time()).replace('.', '').replace(' ', ''), IMG_PATH_ROOT, file_name, file_type)
 
     # 确认项目是否存在
     prod_msg = product.select(prod_id)
