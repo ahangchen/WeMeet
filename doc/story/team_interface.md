@@ -1,7 +1,7 @@
 #接口(团队部分)
 ## 账号逻辑
 ### 1 团队注册  
-* http://110.64.69.101:8081/team/register/
+* http://wemeet.tech:8081/team/register/
 * POST  
 * 参数：
     * mail: 用于注册的邮箱
@@ -23,7 +23,7 @@
 ### 团队账号不需要发邮件激活 
 
 ### 2 团队登陆：
-* http://110.64.69.101:8081/team/login/
+* http://wemeet.tech:8081/team/login/
 * POST
 * 参数：
     * mail：用户邮箱
@@ -41,7 +41,7 @@
 ***
 
 ### 3 请求发送密码重置邮件
-* http://110.64.69.101:8081/team/reset/
+* http://wemeet.tech:8081/team/reset/
 * POST
 * 参数：
     * mail：被重置的账号的邮箱 
@@ -58,7 +58,7 @@
 ***
 
 ### 4 获取找回密码的凭证（这是一个邮件里的链接，点击进入重置密码页面，这个页面由后端生成）
-* http://110.64.69.101:8081/team/fetch?reset_key=xxxxxxx&mail=xxxxx
+* http://wemeet.tech:8081/team/fetch?reset_key=xxxxxxx&mail=xxxxx
 * POST
 * 参数：
     * reset_key： 加密的账号（由后端加密，只能通过邮件链接传递给前端）
@@ -69,7 +69,7 @@
 ***
 
 ### 5 修改密码
-* http://110.64.69.101:8081/team/update_pwd/
+* http://wemeet.tech:8081/team/update_pwd/
 * POST
 * 参数：
     * mail:账号id
@@ -97,7 +97,7 @@
 
 ***
 ### 6 搜索模块：
-* http://110.64.69.101:8081/team/search/
+* http://wemeet.tech:8081/team/search/
 * POST
 * 参数：
     * model: job（职位）、team（团队）、项目（product）
@@ -145,7 +145,7 @@
 
 ***
 ### 7 热门团队模块：
-* http://110.64.69.101:8081/team/hot_team/
+* http://wemeet.tech:8081/team/hot_team/
 * GET
 * 返回：
     * 成功:
@@ -161,7 +161,7 @@
 
 ***
 ### 8 热门项目模块：
-* http://110.64.69.101:8081/team/hot_product/
+* http://wemeet.tech:8081/team/hot_product/
 * GET
 * 返回：
     * 成功:
@@ -177,7 +177,7 @@
 
 ##  职位
 ### 9 职位搜索
-- http://110.64.69.101:8081/team/search_job/
+- http://wemeet.tech:8081/team/search_job/
 - post
 - 参数：
     jobTags: 职位标签
@@ -208,7 +208,7 @@
         - message: 职位类型错误/请求方法错误
 
 ### 10 添加职位
-- http://110.64.69.101:8081/team/add_job/
+- http://wemeet.tech:8081/team/add_job/
 - post
 - 参数：
   - name：职位名称
@@ -244,7 +244,7 @@
 - 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
 
 ### 11 修改职位
-- http://110.64.69.101:8081/team/update_job/
+- http://wemeet.tech:8081/team/update_job/
 - post
 - 参数：
   - id: 职位ID
@@ -279,7 +279,7 @@
 - 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
 
 ### 11.1 删除职位
-* http://110.64.69.101:8081/team/delete_job/
+* http://wemeet.tech:8081/team/delete_job/
 * POST
 * 参数：
     * jobId: 职位id
@@ -294,7 +294,7 @@
 ***
 
 ### 11.2 查找职位类型
-* http://110.64.69.101:8081/team/job_type/
+* http://wemeet.tech:8081/team/job_type/
 * POST
 * 返回：
     * 成功：* JSON: {'err': err, 'msg': msg}
@@ -309,7 +309,7 @@
 
 
 ### 12 职位编辑
-- http://110.64.69.101:8081/team/job_update/
+- http://wemeet.tech:8081/team/job_update/
 - post
 - 参数：
   - job_id:职位id
@@ -346,7 +346,7 @@
   ***
 
 ### 13 获取职位信息
-- http://110.64.69.101:8081/team/job_info/
+- http://wemeet.tech:8081/team/job_info/
 - POST
 - 参数：
     - id： 职位的id
@@ -389,7 +389,7 @@
 
 ##  项目
 ### 14 项目查找
-- http://110.64.69.101:8081/team/product/info/
+- http://wemeet.tech:8081/team/product/info/
 - post
 - 参数：
     productId: 项目ID
@@ -412,7 +412,7 @@
         - msg: 项目不存在/请求方法错误/操作失败
 
 ### 15 添加项目
-- http://110.64.69.101:8081/product/insert/
+- http://wemeet.tech:8081/product/insert/
 - post
 - 参数：
     - name: 项目名称
@@ -441,7 +441,7 @@
 - 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
 
 ### 16 修改项目
-- http://110.64.69.101:8081/team/product/update/
+- http://wemeet.tech:8081/team/product/update/
 - post
 - 参数：
     - id: 项目ID
@@ -473,7 +473,7 @@
 - 说明：可以使用Json或form-data格式传输数据，但注意在是使用Json时，POST请求中CONTENT-TYPE要使用“application/json”
 
 ### 17 删除项目
-- http://110.64.69.101:8081/team/product/delete/
+- http://wemeet.tech:8081/team/product/delete/
 - post
 - 参数：
     productId: 项目ID
@@ -489,7 +489,7 @@
         - msg: 项目不存在/请求方法错误/操作失败
 
 ### 18 上传项目照片
-* http://110.64.69.101:8081/team/product/save_img/
+* http://wemeet.tech:8081/team/product/save_img/
 * POST
 * 参数：
     * id: 项目id
@@ -507,7 +507,7 @@
 ***
 
 ### 19 项目搜索
-- http://110.64.69.101:8081/team/product/search/
+- http://wemeet.tech:8081/team/product/search/
 - post
 - 参数：
     teamId: 团队ID
@@ -537,7 +537,7 @@
 ## 团队
 
 ### 21 团队邀请
-- http://110.64.69.101:8081/team/invite/
+- http://wemeet.tech:8081/team/invite/
 - POST
 - 参数
   - mail
@@ -561,7 +561,7 @@
  ``` 
    
 ### 22 团队信息
-- http://110.64.69.101:8081/team/info?tid=xxxx
+- http://wemeet.tech:8081/team/info?tid=xxxx
 - 参数：
   - tid: 团队id
 - 返回：
@@ -622,7 +622,7 @@
  ``` 
 ### 23 更新团队信息
 - url
-  -  http://110.64.69.101:8081/team/update_team_info/
+  -  http://wemeet.tech:8081/team/update_team_info/
   - post
 - 参数
   - tid: 团队id
@@ -656,7 +656,7 @@
 
 ### 24 增加团队标签
 - url
-  -  http://110.64.69.101:8081/team/add_team_label/
+  -  http://wemeet.tech:8081/team/add_team_label/
   - post
 - 参数
   - tid: 团队id
@@ -685,7 +685,7 @@
 
 ### 25 删除团队标签
 - url
-  -  http://110.64.69.101:8081/team/rm_team_label/
+  -  http://wemeet.tech:8081/team/rm_team_label/
   - post
 - 参数
   - tid: 团队id
@@ -713,7 +713,7 @@
   - msg: 标签不存在/账号错误/请求方法错误/其他错误
 
 ### 26 获取行业类型
-* http://110.64.69.101:8081/team/business/
+* http://wemeet.tech:8081/team/business/
 * POST
 * 参数：
     - 无
@@ -731,7 +731,7 @@
 
 ### 27 新增团队学生
 - url
-  -  http://110.64.69.101:8081/team/add_team_stu/
+  -  http://wemeet.tech:8081/team/add_team_stu/
   - post
 - 参数
   - tid: 团队id
@@ -760,7 +760,7 @@
   
 ### 28 删除团队学生
 - url
-  -  http://110.64.69.101:8081/team/rm_team_stu/
+  -  http://wemeet.tech:8081/team/rm_team_stu/
   - post
 - 参数
   - tid: 团队id
@@ -791,7 +791,7 @@
 ### 29 查询学生邮箱
 
 - url
-  -  http://110.64.69.101:8081/team/name2mail?name=cwh
+  -  http://wemeet.tech:8081/team/name2mail?name=cwh
   - get
 - 参数
   - name: 学生名字
@@ -831,7 +831,7 @@
 ### 30 邀请团队成员注册
 
 - url
-  -  http://110.64.69.101:8081/team/invite_stu/
+  -  http://wemeet.tech:8081/team/invite_stu/
   - post
 - 参数
   - tid: 团队id 
@@ -858,7 +858,7 @@
 
 ### 31 新增团队照片
 - url
-  -  http://110.64.69.101:8081/team/add_team_photo/
+  -  http://wemeet.tech:8081/team/add_team_photo/
   - post
 - 参数
   - tid: 团队id
@@ -891,7 +891,7 @@
 
 ### 32 删除团队照片
 - url
-  -  http://110.64.69.101:8081/team/rm_team_photo/
+  -  http://wemeet.tech:8081/team/rm_team_photo/
   - post
 - 参数
   - tid: 团队id
@@ -921,7 +921,7 @@
 
 ### 33 更新团队联系方式
 - url
-  -  http://110.64.69.101:8081/team/update_team_contact/
+  -  http://wemeet.tech:8081/team/update_team_contact/
   - post
 - 参数
   - tid: 团队id
@@ -951,7 +951,7 @@
   
 ### 34 上传团队logo
 - url
-  -  http://110.64.69.101:8081/team/upload_logo/
+  -  http://wemeet.tech:8081/team/upload_logo/
   - post
 - 参数
   - name: 本地图片名字
@@ -983,7 +983,7 @@
 
 ### 35 团队最新动态
 
-- url: http://110.64.69.101:8081/team/all/newest/
+- url: http://wemeet.tech:8081/team/all/newest/
 - 响应：
 
 ```json
@@ -1041,7 +1041,7 @@
 
 ### 36 最新团队
 
-- url: http://110.64.69.101:8081/team/team/newest/
+- url: http://wemeet.tech:8081/team/team/newest/
 - 响应：
 
 ```json
@@ -1057,3 +1057,78 @@
   "err": "0"
 }
 ```
+
+## 互动社区
+
+### 37 话题查找
+- http://wemeet.tech:8081/team/topic/info/
+- post
+- 参数：
+    topic: 话题ID
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg":{
+                - id: 话题id
+                - title: 标题
+                - content: 内容
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -102/-1/-101
+        - msg: 不存在/请求方法错误/操作失败
+
+### 38 添加话题
+- http://wemeet.tech:8081/team/topic/new/
+- post
+- 参数：
+    - tid: 团队id
+    - title: 标题
+    - content: 内容
+
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,"msg": 话题id}
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -1
+        - message: 操作失败/参数错误信息列表/请求方法错误
+
+### 39 修改话题
+- http://wemeet.tech:8081/team/topic/update/
+- post
+- 参数：
+    - topic: 话题ID
+    - title: 标题
+    - content: 内容 
+
+
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg": "请求成功"
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -22/-1
+        - message: 话题不存在/操作失败/参数错误信息列表/请求方法错误
+
+### 40 删除话题 
+- http://wemeet.tech:8081/team/topic/remove/
+- post
+- 参数：
+    - topic: 话题ID
+
+- 返回：
+    - 成功：
+        - JSON:
+        {"err": 0,
+         "msg": "请求成功"
+        }
+    - 失败：
+        - JSON: {"err": err, "msg": msg}
+        - err: -22/-1
+        - message: 话题不存在/操作失败/参数错误信息列表/请求方法错误
