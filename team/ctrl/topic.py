@@ -4,6 +4,7 @@ from team.models import Topic, Team
 def new(tid, title, content):
     team = Team.objects.filter(id=tid).first()
     topic = Topic(team=team, title=title, content=content)
+    topic.save()
     return topic.id
 
 
