@@ -148,3 +148,9 @@ class Focus(models.Model):
     focus_type = models.IntegerField()
     # 被关注id
     focus_id = models.IntegerField()
+
+
+class Topic(models.Model):
+    team = models.ForeignKey(Team)
+    title = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
+    content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')

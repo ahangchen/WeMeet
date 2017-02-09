@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from team import views
 from team import ctrl
+from team.views import topic
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -52,4 +53,8 @@ urlpatterns = [
     url(r'^V1.0/job/(?P<pk>[0-9]+)/$', ctrl.job.JobDetail.as_view()),
     url(r'^V1.0/job/$', ctrl.job.JobList.as_view()),
     url(r'^V1.0/job/type/$', views.job_type),
+    url(r'^topic/new/$', topic.new),
+    url(r'^topic/update/$', topic.update),
+    url(r'^topic/remove/$', topic.remove),
+    url(r'^topic/info/$', topic.info),
 ]
