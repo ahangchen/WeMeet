@@ -32,5 +32,5 @@ def remove(request):
 
 @csrf_exempt
 def info(request):
-    tpid = request.POST['topic']
+    tpid = request.GET['topic']
     return HttpResponse(json_helper.dumps_err(SUCCEED, topic.get(tpid)))
