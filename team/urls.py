@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from team import views
 from team import ctrl
-from team.views import topic
+from team.api import topic
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
