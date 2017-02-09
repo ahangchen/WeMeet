@@ -10,3 +10,4 @@ media/team/product/*
 student/migrations/*
 !student/migrations/__init__.py
 whoosh_index/*
+media
