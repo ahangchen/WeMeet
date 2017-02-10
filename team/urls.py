@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from team import views
 from team import ctrl
-from team.api import topic, job, product, account
+from team.api import topic, job, product, account, apply
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -42,10 +42,10 @@ urlpatterns = [
     url(r'^business/$', views.business),
     url(r'^name2mail/$', views.name2mail),
     url(r'^invite_stu/$', views.invite_stu),
-    url(r'^apply/list/$', views.get_apply_list),
-    url(r'^apply/info/$', views.get_apply_info),
-    url(r'^apply/mail/$', views.apply_mail),
-    url(r'^apply/handle/$', views.apply_handle),
+    url(r'^apply/list/$', apply.get_apply_list),
+    url(r'^apply/info/$', apply.get_apply_info),
+    url(r'^apply/mail/$', apply.apply_mail),
+    url(r'^apply/handle/$', apply.apply_handle),
     url(r'^all/newest$', views.newest),
     url(r'^team/newest$', views.newest_teams),
     url(r'^V1.0/product/(?P<pk>[0-9]+)/$', ctrl.product.ProductDetail.as_view()),
