@@ -3,13 +3,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
 from student.ctrl.tag import OK_REG
+from student.util import json_helper
 from team.api import account
 from team.ctrl import team
 from team.ctrl.err_code_msg import SUCCEED, MSG_ACC_NOT_FOUND, ERR_STH_NO_MATCH, ERR_UNKNOWN, MSG_FAIL, MSG_SUCC, \
     ERR_STU_NOT_FOUND, MSG_STU_NOT_FOUND
 from team.ctrl.team import bus_names
 from team.util.request import is_post, resp_method_err
-from student.util import json_helper
 
 
 @csrf_exempt

@@ -4,9 +4,10 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from team.ctrl import product
-from team.ctrl.err_code_msg import SUCCEED
+from team.ctrl.err_code_msg import SUCCEED, ERR_POST_TYPE, MSG_POST_TYPE
 from team.ctrl.product import check_param
 from team.db.tag import PRODUCT_SUCCEED
+from team.models import Product
 from team.util.request import is_post, resp_method_err, check_post
 from team.db import product as db_product
 
