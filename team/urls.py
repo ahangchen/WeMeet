@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from team import views
 from team import ctrl
-from team.api import topic, job, product, account, apply
+from team.api import topic, job, product, account, apply, team
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -28,20 +28,20 @@ urlpatterns = [
     url(r'^fetch/$', account.fetch),
     url(r'^update_pwd/$', account.update_pwd),
     url(r'^job_info/$', job.job_info),
-    url(r'^info/$', views.info),
+    url(r'^info/$', team.info),
     url(r'^invite/$', account.invite),
-    url(r'^update_team_info/$', views.update_team_info),
-    url(r'^upload_logo/$', views.upload_logo),
-    url(r'^add_team_label/$', views.add_team_label),
-    url(r'^rm_team_label/$', views.rm_team_label),
-    url(r'^rm_team_stu/$', views.rm_team_stu),
-    url(r'^add_team_stu/$', views.add_team_stu),
-    url(r'^add_team_photo/$', views.add_team_photo),
-    url(r'^rm_team_photo/$', views.rm_team_photo),
-    url(r'^update_team_contact/$', views.update_team_contact),
-    url(r'^business/$', views.business),
-    url(r'^name2mail/$', views.name2mail),
-    url(r'^invite_stu/$', views.invite_stu),
+    url(r'^update_team_info/$', team.update_team_info),
+    url(r'^upload_logo/$', team.upload_logo),
+    url(r'^add_team_label/$', team.add_team_label),
+    url(r'^rm_team_label/$', team.rm_team_label),
+    url(r'^rm_team_stu/$', team.rm_team_stu),
+    url(r'^add_team_stu/$', team.add_team_stu),
+    url(r'^add_team_photo/$', team.add_team_photo),
+    url(r'^rm_team_photo/$', team.rm_team_photo),
+    url(r'^update_team_contact/$', team.update_team_contact),
+    url(r'^business/$', team.business),
+    url(r'^name2mail/$', team.name2mail),
+    url(r'^invite_stu/$', team.invite_stu),
     url(r'^apply/list/$', apply.get_apply_list),
     url(r'^apply/info/$', apply.get_apply_info),
     url(r'^apply/mail/$', apply.apply_mail),
