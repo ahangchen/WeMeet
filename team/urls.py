@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from team import views
 from team import ctrl
-from team.api import topic, job, product
+from team.api import topic, job, product, account
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -22,14 +22,14 @@ urlpatterns = [
     url(r'^product/delete/$', product.delete_product),
     url(r'^product/info/$', product.info_product),
     url(r'^product/search/$', product.search_product),
-    url(r'^register/$', views.register),
-    url(r'^login/$', views.login),
-    url(r'^reset/$', views.reset),
-    url(r'^fetch/$', views.fetch),
-    url(r'^update_pwd/$', views.update_pwd),
+    url(r'^register/$', account.register),
+    url(r'^login/$', account.login),
+    url(r'^reset/$', account.reset),
+    url(r'^fetch/$', account.fetch),
+    url(r'^update_pwd/$', account.update_pwd),
     url(r'^job_info/$', job.job_info),
     url(r'^info/$', views.info),
-    url(r'^invite/$', views.invite),
+    url(r'^invite/$', account.invite),
     url(r'^update_team_info/$', views.update_team_info),
     url(r'^upload_logo/$', views.upload_logo),
     url(r'^add_team_label/$', views.add_team_label),
@@ -53,7 +53,7 @@ urlpatterns = [
     url(r'^V1.0/product/img/$', views.save_prod_img),
     url(r'^V1.0/job/(?P<pk>[0-9]+)/$', ctrl.job.JobDetail.as_view()),
     url(r'^V1.0/job/$', ctrl.job.JobList.as_view()),
-    url(r'^V1.0/job/type/$', views.job_type),
+    url(r'^V1.0/job/type/$', job.job_type),
     url(r'^topic/new/$', topic.new),
     url(r'^topic/update/$', topic.update),
     url(r'^topic/remove/$', topic.remove),
