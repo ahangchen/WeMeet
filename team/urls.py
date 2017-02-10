@@ -2,15 +2,15 @@ from django.conf.urls import url
 
 from team import views
 from team import ctrl
-from team.api import topic, job, product, account, apply, team
+from team.api import topic, job, product, account, apply, team, search
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
     url(r'^valid_code/$', views.valid_code),
     url(r'^test/$', views.test),
-    url(r'^search/$', views.search),
-    url(r'^hot_product/$', views.hot_product),
-    url(r'^hot_team/$', views.hot_team),
+    url(r'^search/$', search.search),
+    url(r'^hot_product/$', search.hot_product),
+    url(r'^hot_team/$', search.hot_team),
     url(r'^search_job/$', job.search_job),
     url(r'^add_job/$', job.add_job),
     url(r'^update_job/$', job.update_job),
@@ -46,8 +46,8 @@ urlpatterns = [
     url(r'^apply/info/$', apply.get_apply_info),
     url(r'^apply/mail/$', apply.apply_mail),
     url(r'^apply/handle/$', apply.apply_handle),
-    url(r'^all/newest$', views.newest),
-    url(r'^team/newest$', views.newest_teams),
+    url(r'^all/newest$', search.newest),
+    url(r'^team/newest$', search.newest_teams),
     url(r'^V1.0/product/(?P<pk>[0-9]+)/$', ctrl.product.ProductDetail.as_view()),
     url(r'^V1.0/product/$', ctrl.product.ProductList.as_view()),
     url(r'^V1.0/product/img/$', views.save_prod_img),
