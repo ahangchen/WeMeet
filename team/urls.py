@@ -1,9 +1,8 @@
 from django.conf.urls import url
 
-from team.api import product
 from team import views
 from team import ctrl
-from team.api import topic
+from team.api import topic, job, product
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -12,11 +11,11 @@ urlpatterns = [
     url(r'^search/$', views.search),
     url(r'^hot_product/$', views.hot_product),
     url(r'^hot_team/$', views.hot_team),
-    url(r'^search_job/$', views.search_job),
-    url(r'^add_job/$', views.add_job),
-    url(r'^update_job/$', views.update_job),
-    url(r'^delete_job/$', views.delete_job),
-    url(r'^job_type/$', views.job_type),
+    url(r'^search_job/$', job.search_job),
+    url(r'^add_job/$', job.add_job),
+    url(r'^update_job/$', job.update_job),
+    url(r'^delete_job/$', job.delete_job),
+    url(r'^job_type/$', job.job_type),
     url(r'^product/save_img/$', product.save_prod_img),
     url(r'^product/insert/$', product.add_product),
     url(r'^product/update/$', product.update_product),
@@ -28,7 +27,7 @@ urlpatterns = [
     url(r'^reset/$', views.reset),
     url(r'^fetch/$', views.fetch),
     url(r'^update_pwd/$', views.update_pwd),
-    url(r'^job_info/$', views.job_info),
+    url(r'^job_info/$', job.job_info),
     url(r'^info/$', views.info),
     url(r'^invite/$', views.invite),
     url(r'^update_team_info/$', views.update_team_info),

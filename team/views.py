@@ -1,39 +1,30 @@
 # coding=utf8
-from django.shortcuts import render
-
-# Create your views here.
-from student.views import team_get_apply, apply_info, apply_reply, team_apply_handle
-from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
-from student.ctrl.tag import OK_REG
-from team.ctrl import acc_mng
-from team.ctrl import team, product
-from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
-from team.ctrl.product import check_param
-from team.ctrl.register import validate
-from team.ctrl import job
-from team.ctrl.job import JOB_NOT_FOUND
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
-from team.models import Team, Product, Job, JobType
-
-from team.ctrl.team import bus_names
-from django.db.models import Sum
-from haystack.query import SearchQuerySet
-from django.db.models import Q
-from functools import reduce
-from team.ctrl.err_code_msg import *
-from student.util import json_helper
-from team.db import job as db_job
-from team.db import product as db_product
-from team.db.tag import PRODUCT_SUCCEED
-from student.ctrl import account
-
-
 import json
 import operator
+from functools import reduce
 
-from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err, check_post
-from team.db.form import JobForm, ProductForm
+from django.db.models import Q
+from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+from haystack.query import SearchQuerySet
+
+from student.ctrl import account
+from student.ctrl.err_code_msg import ERR_REG_IDEXIST, ERR_REG_IDEXIST_MSG
+from student.ctrl.tag import OK_REG
+from student.util import json_helper
+from student.views import team_get_apply, apply_info, apply_reply, team_apply_handle
+from team.ctrl import acc_mng
+from team.ctrl import job
+from team.ctrl import team
+from team.ctrl.acc_mng import ACC_MNG_OK, LOGIN_FAIL_NO_MATCH, ACC_UNABLE, ACC_NO_FOUND
+from team.ctrl.err_code_msg import *
+from team.ctrl.job import JOB_NOT_FOUND
+from team.ctrl.register import validate
+from team.ctrl.team import bus_names
+from team.models import Team, Product, Job
+from team.util.request import is_post, resp_method_err, is_valid_ok, resp_valid_err
 
 
 def test(request):
@@ -44,124 +35,6 @@ def test(request):
 def valid_code(request):
     return validate(request)
 
-
-
-@csrf_exempt
-def update_job(request):
-    """
-        修改职位信息
-        成功: 返回相应的err和message的JSON
-        失败：返回相应的err和message的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
-        req_data = json.loads(request.body.decode('utf-8'))
-        id = req_data['id']
-    else:
-        id = request.POST['id']
-        req_data = request.POST
-        if not id.isdigit():
-            return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': MSG_JOB_TYPE}, ensure_ascii=False))
-
-    if not Job.objects.filter(id=id):
-        return HttpResponse(json.dumps({'err': ERR_JOB_NONE, 'message': MSG_JOB_NONE}, ensure_ascii=False))
-
-    job = Job.objects.get(id=id)
-    job_form = JobForm(req_data, request.FILES)
-    if job_form.is_valid():
-        for (key, value) in job_form.cleaned_data.items():
-            if value:
-                job.__dict__[key] = value
-            job.save()
-        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC}, ensure_ascii=False))
-    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
-
-
-@csrf_exempt
-def add_job(request):
-    """
-        添加职位信息
-        成功: 返回职位ID
-        失败：返回相应的err和message的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-
-    if request.META.get('CONTENT_TYPE', request.META.get('CONTENT_TYPE', 'application/json')) == 'application/json':
-        req_data = json.loads(request.body.decode('utf-8'))
-    else:
-        req_data = request.POST
-    print(req_data)
-    job_form = JobForm(req_data, request.FILES)
-    if job_form.is_valid():
-        job = Job(**job_form.cleaned_data)
-        job.save()
-        return HttpResponse(json.dumps({'err': SUCCEED, 'message': MSG_SUCC, 'msg': job.id}, ensure_ascii=False))
-    return HttpResponse(json.dumps({'err': ERR_JOB_TYPE, 'message': dict(job_form._errors)}, ensure_ascii=False))
-
-
-@csrf_exempt
-def delete_job(request):
-    """
-        删除职位信息
-        成功: 返回相应的err和msg的JSON
-        失败：返回相应的err和msg的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-
-    job_id = request.POST.get('jobId')
-    res = db_job.select(job_id)
-
-    if res['err'] != PRODUCT_SUCCEED:
-        return HttpResponse(json.dumps(res, ensure_ascii=False))
-
-    job = res['msg']
-    job.delete()
-
-    return HttpResponse(json.dumps({'err': SUCCEED, 'msg': MSG_SUCC}, ensure_ascii=False))
-
-
-@csrf_exempt
-def job_type(request):
-    """
-        查找职位类型
-        成功: 职位类型ID和name
-    """
-
-    jobType = JobType.objects.values()
-    return HttpResponse(json.dumps({'err': SUCCEED, 'msg': list(jobType)}, ensure_ascii=False))
-
-
-@csrf_exempt
-def search_job(request):
-    """
-        根据职位信息搜索职位信息
-        成功: 返回职位信息
-        失败：返回相应的err和message的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-
-    team_id = job_type = request.POST.get('teamId')
-    job_tags = request.POST.getlist('jobTags[]')
-    job_type = list()
-    for job_tag in job_tags:
-        if job_tag != '':
-            job_type.append(job_tag)
-    print(job_type)
-
-    if False:  # ToDo(wang) check param # not job_type[0].isdigit():
-        return HttpResponse(json.dumps({'err': ERR_POST_TYPE, 'message': MSG_POST_TYPE}, ensure_ascii=False))
-
-    res_list = Job.objects.filter(j_type__in=job_type,team_id = team_id).extra(select={'jobId': 'id', 'minSaraly': 'min_salary', 'maxSaraly': 'max_salary', 'exp': 'exp_cmd',
-                          'job_state': 'pub_state'}).values('jobId', 'name', 'address', 'minSaraly', 'maxSaraly', 'city', 'town',
-                                                            'exp', 'job_state')
-
-    res = json.dumps({'err': SUCCEED, 'message': list(res_list)}, ensure_ascii=False)
-    return HttpResponse(res)
 
 
 @csrf_exempt
@@ -357,41 +230,6 @@ def invite(request):
     else:
         return HttpResponse(json_helper.dump_err_msg(ERR_UNKNOWN, MSG_FAIL))
 
-
-@csrf_exempt
-def job_info(request):
-    """
-    获取职位信息
-    成功: 返回职位信息
-    失败：返回相应的err和msg的JSON
-    """
-    if not is_post(request):
-        return resp_method_err()
-    job_id = request.POST.get('id')
-    rlt = job.info(job_id)
-    if rlt != JOB_NOT_FOUND:
-        return HttpResponse(json_helper.dumps({
-            'err': SUCCEED,
-            'team_id': rlt.team.id,
-            'job_name': rlt.name,
-            'min_salary': rlt.min_salary,
-            'max_salary': rlt.max_salary,
-            'prince': rlt.prince,
-            'city': rlt.city,
-            'town': rlt.town,
-            'address': rlt.address,
-            'edu_cmd': rlt.edu_cmd,
-            'exp_cmd': rlt.exp_cmd,
-            'job_type': rlt.j_type,
-            'work_type': rlt.w_type,
-            'summary': rlt.summary,
-            'pub_date': rlt.pub_date,
-            'pub_state': rlt.pub_state,
-            'job_cmd': rlt.job_cmd,
-            'work_cmd': rlt.work_cmd,
-        }))
-    else:
-        return HttpResponse(json_helper.dump_err_msg(ERR_JOB_NOT_FOUND, MSG_JOB_NOT_FOUND))
 
 
 @csrf_exempt
