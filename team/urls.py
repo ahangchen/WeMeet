@@ -1,4 +1,6 @@
 from django.conf.urls import url
+
+from team.api import product
 from team import views
 from team import ctrl
 from team.api import topic
@@ -15,12 +17,12 @@ urlpatterns = [
     url(r'^update_job/$', views.update_job),
     url(r'^delete_job/$', views.delete_job),
     url(r'^job_type/$', views.job_type),
-    url(r'^product/save_img/$', views.save_prod_img),
-    url(r'^product/insert/$', views.add_product),
-    url(r'^product/update/$', views.update_product),
-    url(r'^product/delete/$', views.delete_product),
-    url(r'^product/info/$', views.info_product),
-    url(r'^product/search/$', views.search_product),
+    url(r'^product/save_img/$', product.save_prod_img),
+    url(r'^product/insert/$', product.add_product),
+    url(r'^product/update/$', product.update_product),
+    url(r'^product/delete/$', product.delete_product),
+    url(r'^product/info/$', product.info_product),
+    url(r'^product/search/$', product.search_product),
     url(r'^register/$', views.register),
     url(r'^login/$', views.login),
     url(r'^reset/$', views.reset),
