@@ -33,6 +33,7 @@ ALTER TABLE team_teamimg CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_teamstu CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_teamtype CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE team_worktype CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
+ALTER TABLE team_topic CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 insert into team_jobtype (name) values ('行政');
 insert into team_jobtype (name) values ('产品');
