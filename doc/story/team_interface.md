@@ -118,6 +118,7 @@
             team_about
             team_id
             team_logo_path
+            model='job'
 
         当model = team时：
             pk:对应的ID
@@ -125,6 +126,7 @@
             team_logo
             team_about
             team_type
+            model='team'
 
         当model = product时：
             pk:对应的ID
@@ -136,6 +138,10 @@
             team_about
             team_id
             team_logo_path
+            model='team'
+
+        当model为空时：
+            搜索job/team/project并返回结果
     * 失败：
         * JSON: {"err": err, "msg": msg}
             * err: -1

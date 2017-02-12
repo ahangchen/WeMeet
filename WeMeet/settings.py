@@ -160,7 +160,7 @@ MEDIA_URL = '/media/'
 
 HAYSTACK_CONNECTIONS = {
     'default':{
-        'ENGINE': 'whoosh_cn_backend.WhooshEngine',
+        'ENGINE': 'team.whoosh_cn_backend.WhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
 }

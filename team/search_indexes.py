@@ -3,7 +3,7 @@ from haystack import indexes
 from team.models import Team, Product, Job
 
 class TeamIndex(indexes.SearchIndex, indexes.Indexable):
-    text = indexes.CharField(document=True, use_template=True)
+    text = indexes.NgramField(document=True, use_template=True)
 
     team_name = indexes.CharField(model_attr='name')
     team_logo = indexes.CharField(model_attr='logo_path')
@@ -12,6 +12,9 @@ class TeamIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Team
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
 
 class JobIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
