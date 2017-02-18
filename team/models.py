@@ -1,6 +1,8 @@
 from django.db import models
 
 # Create your models here.
+from django.utils import timezone
+
 from team.ctrl.defines import LONGTEXT_MAX_LENGTH, PATH_MAX_LENGTH, TEL_MAX_LENGTH, MAIL_MAX_LENGTH, NAME_MAX_LENGTH, \
     SHORT_TEXT_LENGTH, SIMPLE_TEXT_LENGTH, DATE_MAX_LENGTH
 
@@ -154,4 +156,4 @@ class Topic(models.Model):
     team = models.ForeignKey(Team)
     title = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
     content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
-    time = models.DateTimeField(default=models.DateTimeField.auto_now)
+    time = models.DateTimeField(auto_now=True, default=timezone.now)
