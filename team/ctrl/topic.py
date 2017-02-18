@@ -21,9 +21,11 @@ def update(topic_id, title, content):
 
 def get(id):
     topic = Topic.objects.filter(id=id).first()
-    return {'id': topic.id, 'title': topic.title, 'content': topic.content}
+    return {'id': topic.id, 'title': topic.title, 'content': topic.content, 'time': topic.time}
 
 
-def list(tid):
+def team_topics(tid):
     topics = Topic.objects.filter(team_id=tid)
-    return [{'topic_id': topic.id, 'title': topic.title, 'content': topic.content} for topic in topics]
+    return [
+        {'topic_id': topic.id, 'title': topic.title, 'content': topic.content, 'time': topic.time}
+        for topic in topics]

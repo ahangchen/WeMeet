@@ -1079,6 +1079,7 @@
                 - id: 话题id
                 - title: 标题
                 - content: 内容
+                - time: 发布时间/最后一次修改时间
         }
     - 失败：
         - JSON: {"err": err, "msg": msg}
@@ -1148,11 +1149,11 @@
 {
 "err": "0", 
 "msg": [
-{"topic_id": 1, "title": "233", "content": "qwert"}, 
-{"topic_id": 2, "title": "233", "content": "??"}, 
-{"topic_id": 3, "title": "233", "content": "??"}, 
-{"topic_id": 4, "title": "233", "content": "??"}, 
-{"topic_id": 5, "title": "233", "content": "测试"}
+{"topic_id": 1, "title": "233", "content": "qwert", "time": "2016-02-19-19:00:00"}, 
+{"topic_id": 2, "title": "233", "content": "??", "time": "2016-02-19-19:00:00"}, 
+{"topic_id": 3, "title": "233", "content": "??", "time": "2016-02-19-19:00:00"}, 
+{"topic_id": 4, "title": "233", "content": "??", "time": "2016-02-19-19:00:00"}, 
+{"topic_id": 5, "title": "233", "content": "测试", "time": "2016-02-19-19:00:00"}
 ]
 }
 ```

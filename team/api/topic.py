@@ -39,4 +39,4 @@ def info(request):
 @csrf_exempt
 def list(request):
     tid = request.GET['tid']
-    return HttpResponse(json_helper.dump_err_msg(SUCCEED, topic.list(tid)))
+    return HttpResponse(json_helper.dump_err_msg(SUCCEED, topic.team_topics(tid)))
