@@ -1138,3 +1138,21 @@
         - JSON: {"err": err, "msg": msg}
         - err: -22/-1
         - message: 话题不存在/操作失败/参数错误信息列表/请求方法错误
+### 41 话题列表
+- http://wemeet.tech:8081/team/topic/list/?tid=1
+- get
+- 参数：
+  - tid:团队id
+- 返回：
+```json
+{
+"err": "0", 
+"msg": [
+{"topic_id": 1, "title": "233", "content": "qwert"}, 
+{"topic_id": 2, "title": "233", "content": "??"}, 
+{"topic_id": 3, "title": "233", "content": "??"}, 
+{"topic_id": 4, "title": "233", "content": "??"}, 
+{"topic_id": 5, "title": "233", "content": "测试"}
+]
+}
+```
