@@ -58,4 +58,5 @@ urlpatterns = [
     url(r'^topic/update/$', topic.update),
     url(r'^topic/remove/$', topic.remove),
     url(r'^topic/info/$', topic.info),
+    url(r'^topic/list/$', topic.list),
 ]

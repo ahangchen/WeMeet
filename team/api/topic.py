@@ -34,3 +34,9 @@ def remove(request):
 def info(request):
     tpid = request.GET['topic']
     return HttpResponse(json_helper.dumps_err(SUCCEED, topic.get(tpid)))
+
+
+@csrf_exempt
+def list(request):
+    tid = request.GET['tid']
+    return HttpResponse(json_helper.dump_err_msg(SUCCEED, topic.list(tid)))
