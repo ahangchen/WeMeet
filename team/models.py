@@ -156,4 +156,4 @@ class Topic(models.Model):
     team = models.ForeignKey(Team)
     title = models.CharField(max_length=SHORT_TEXT_LENGTH, default='')
     content = models.CharField(max_length=LONGTEXT_MAX_LENGTH, default='')
-    time = models.DateTimeField(auto_now=True, default=timezone.now)
+    time = models.DateTimeField(auto_now=True)
