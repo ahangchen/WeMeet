@@ -27,5 +27,12 @@ def get(id):
 def team_topics(tid):
     topics = Topic.objects.filter(team_id=tid)
     return [
-        {'topic_id': topic.id, 'title': topic.title, 'content': topic.content, 'time': topic.time}
+        {
+            'topic_id': topic.id,
+            'title': topic.title,
+            'content': topic.content,
+            'time': '%04d-%02d-%02d-%02d-%02d-%02d' % (
+                topic.time.year, topic.time.month, topic.time.day, topic.time.hour, topic.time.minute, topic.time.second
+            )
+        }
         for topic in topics]
