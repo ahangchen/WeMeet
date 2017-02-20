@@ -101,7 +101,6 @@
 * POST
 * 参数：
     * model: job（职位）、team（团队）、项目（product）
-    * type：对应每种model的不同type类型
     * keys:
 * 返回：
     * 成功:
