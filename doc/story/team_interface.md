@@ -1157,3 +1157,35 @@
 ]
 }
 ```
+
+### 42 互动社区最新话题
+- http://wemeet.tech:8081/team/topic/newest/
+- get
+- 参数：无
+  
+- 返回：
+```json
+{
+  "res": [
+    {
+      "topic_time": "2017-02-20-11-38-00",
+      "topic_title": "测试一下",
+      "team_id": 1,
+      "team_name": "WeMeet",
+      "topic_id": 11,
+      "team_logo": "team/info/14833526044794004WechatIMG592.jpeg",
+      "topic_content": "就是测试一下"
+    },
+    {
+      "topic_time": "2017-02-20-10-16-47",
+      "topic_title": "如果在这个软件中增加一个小天使的功能，大家觉得怎么样？",
+      "team_id": 1,
+      "team_name": "WeMeet",
+      "topic_id": 9,
+      "team_logo": "team/info/14833526044794004WechatIMG592.jpeg",
+      "topic_content": "在这个软件中增加一个小天使的功能，当你在忙碌的时候可以激活小天使来帮你，然后可以给小天使一个合理的回报，比如请吃饭，你们觉得怎么样？"
+    }
+  ],
+  "err": "0"
+}
+```
