@@ -1051,15 +1051,39 @@
 - 响应：
 
 ```json
-{"res": {
-        "team": [
-          {
-              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
-              "tid": 1, 
-              "name": "wemeet"
-          }
-        ]
-  },
+{
+  "res": [
+    {
+      "proj_cnt": 0,
+      "tid": 2,
+      "stu_cnt": 0,
+      "labels": [
+        "移动互联网",
+        "电子商务",
+        "医疗健康",
+        "数据安全"
+      ],
+      "name": "cwh",
+      "slogan": "在这里遇见更好的自己",
+      "job_cnt": 0,
+      "logo_path": "team/info/14838461448892128male.jpg"
+    },
+    {
+      "proj_cnt": 12,
+      "tid": 1,
+      "stu_cnt": 0,
+      "labels": [
+        "移动互联网",
+        "电子商务",
+        "医疗健康",
+        "O2O"
+      ],
+      "name": "WeMeet",
+      "slogan": "遇见更好的自己",
+      "job_cnt": 2,
+      "logo_path": "team/info/14833526044794004WechatIMG592.jpeg"
+    }
+  ],
   "err": "0"
 }
 ```
