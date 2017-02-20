@@ -185,7 +185,7 @@ def newest_more(team_type, new_count):
             'job_cnt': Job.objects.filter(team=team).count(),
             'stu_cnt': team.man_cnt,
             'labels': [
-                label.name for label in team.label_set.all
+                label.name for label in team.label_set.all()
             ]
          } for team in teams
         ]
