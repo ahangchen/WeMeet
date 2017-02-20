@@ -111,5 +111,5 @@ def newest_teams(request):
     return HttpResponse(json_helper.dumps_err(SUCCEED, team.newest_teams()))
 
 
-def newes_topic(request):
+def newest_topic(request):
     return HttpResponse(json_helper.dumps_err(SUCCEED, topic.newest()))
