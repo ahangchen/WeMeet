@@ -40,3 +40,19 @@ def team_topics(tid):
             )
         }
         for topic in topics]
+
+
+def newest():
+    topics = Topic.objects.all().order_by('-id')[: 8]
+    return [
+        {
+            'team_logo': topic.team.logo_path,
+            'team_name': topic.team.name,
+            'team_id': topic.team.id,
+            'topic_id': topic.id,
+            'topic_title': topic.title,
+            'topic_content': topic.content,
+            'topic_time': topic.time
+        }
+        for topic in topics
+    ]

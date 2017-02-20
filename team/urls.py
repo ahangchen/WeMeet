@@ -59,4 +59,5 @@ urlpatterns = [
     url(r'^topic/remove/$', topic.remove),
     url(r'^topic/info/$', topic.info),
     url(r'^topic/list/$', topic.list),
+    url(r'^topic/newest/$', search.newest)
 ]
