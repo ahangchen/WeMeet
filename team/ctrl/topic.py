@@ -52,7 +52,9 @@ def newest():
             'topic_id': topic.id,
             'topic_title': topic.title,
             'topic_content': topic.content,
-            'topic_time': topic.time
+            'topic_time': '%04d-%02d-%02d-%02d-%02d-%02d' % (
+                topic.time.year, topic.time.month, topic.time.day, topic.time.hour, topic.time.minute, topic.time.second
+            )
         }
         for topic in topics
     ]
