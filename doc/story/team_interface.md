@@ -1047,7 +1047,7 @@
 
 ### 36 最新团队
 
-- url: http://wemeet.tech:8081/team/team/newest/
+- url: http://wemeet.tech:8081/team/team/newest
 - 响应：
 
 ```json
