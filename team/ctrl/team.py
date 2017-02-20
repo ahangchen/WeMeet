@@ -150,5 +150,5 @@ def new_team_project_job():
 
 
 def newest_teams(team_type):
-    team_dict = team.newest_more(team_type, 9)
+    team_dict = team.newest_more(int(team_type), 9)
     return team_dict
