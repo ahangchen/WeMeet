@@ -187,6 +187,6 @@ def newest_more(team_type, new_count):
             'labels': [
                 label.name for label in team.label_set.all
             ]
-         } for team, labels in teams
+         } for team in teams
         ]
     return team_ret
