@@ -149,6 +149,6 @@ def new_team_project_job():
     return {'teams': team_dict, 'products': product_dict, 'jobs': job_dict}
 
 
-def newest_teams():
-    team_dict = team.newest_more(9)
+def newest_teams(team_type):
+    team_dict = team.newest_more(team_type, 9)
     return team_dict
