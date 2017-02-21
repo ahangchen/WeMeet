@@ -1190,7 +1190,8 @@
 
 - 功能： list所有职位关注
 - Method:get
-- 参数：
+- url 参数：
+    student: 学生Id
 - 返回：
 status： 20x(成功)、4xx（失败）...
 ``` json
@@ -1270,7 +1271,8 @@ status： 20x(成功)、4xx（失败）...
 
 - 功能： list所有团队关注
 - Method:get
-- 参数：
+- url 参数：
+    student: 学生Id
 - 返回：
 status： 20x(成功)、4xx（失败）...
 ``` json
@@ -1340,7 +1342,8 @@ status： 20x(成功)、4xx（失败）...
 
 - 功能： list所有学生关注
 - Method:get
-- 参数：
+- url 参数：
+    student: 学生Id
 - 返回：
 status： 20x(成功)、4xx（失败）...
 ``` json
