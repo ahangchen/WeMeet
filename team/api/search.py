@@ -13,6 +13,7 @@ from student.util import json_helper
 from team.ctrl import team
 from team.ctrl.err_code_msg import *
 from team.models import Team, Product, Job
+from team.util.request import check_post
 
 
 @csrf_exempt
@@ -51,6 +52,7 @@ def hot_team(request):
 
 
 @csrf_exempt
+@check_post
 def search(request):
     """
     搜索职位、团队、项目信息
@@ -62,40 +64,36 @@ def search(request):
     models = {'job': Job, 'team': Team, 'product': Product}
     res = {'err': ERROR_METHOD, 'message': MSG_METHOD_ERR}
 
-    if request.method == 'POST': #  and request.POST.get('model') in models.keys():
+    # logging.debug(model)
+    if not request.POST.get('model'):
+        model = [Job, Team, Product]
+    else:
+        model = [models[request.POST.get('model')]]
+    search_type = request.POST.get('type')
+    content = request.POST.get('keys')
+    keys = content.split(' ')
+    condition = reduce(operator.and_, (Q(content__contains=x) for x in keys))
+    logging.debug(condition)
 
-        # logging.debug(model)
-        if not request.POST.get('model'):
-            model = [Job, Team, Product]
-        else:
-            model = [models[request.POST.get('model')]]
-        search_type = request.POST.get('type')
-        content = request.POST.get('keys')
-        keys = content.split(' ')
-        condition = reduce(operator.and_, (Q(content__contains=x) for x in keys))
-        logging.debug(condition)
+    if search_type:
+        res = SearchQuerySet().filter(typy=int(search_type)).filter(condition).models(*model)
+    else:
+        res = SearchQuerySet().filter(condition).models(*model)
 
-        if search_type:
-            res = SearchQuerySet().filter(typy=int(search_type)).filter(condition).models(*model)
-        else:
-            res = SearchQuerySet().filter(condition).models(*model)
-
-        res_list = []
-        if res.count():
-            for obj in res:
-                obj_dict = {}
-                res_name = (obj.__dict__)['_additional_fields']
-                res_name.append('pk')
-                for k in res_name:
-                    obj_dict[k] = (obj.__dict__)[k]
-                obj_dict['model'] = obj.__dict__['model_name']
-                res_list.append(obj_dict)
-            # res_name = (res[0].__dict__)['_additional_fields']
-            # res_name.append('pk')
-            # res_list = [{k: (obj.__dict__)[k] for k in res_name} for obj in res]
-        res = {'err': SUCCEED, 'message': res_list}
-    elif request.method == 'POST':
-        res['message'] = MSG_ERR_SEARCH_TYPE
+    res_list = []
+    if res.count():
+        for obj in res:
+            obj_dict = {}
+            res_name = (obj.__dict__)['_additional_fields']
+            res_name.append('pk')
+            for k in res_name:
+                obj_dict[k] = (obj.__dict__)[k]
+            obj_dict['model'] = obj.__dict__['model_name']
+            res_list.append(obj_dict)
+        # res_name = (res[0].__dict__)['_additional_fields']
+        # res_name.append('pk')
+        # res_list = [{k: (obj.__dict__)[k] for k in res_name} for obj in res]
+    res = {'err': SUCCEED, 'message': res_list}
 
     res = json.dumps(res, ensure_ascii=False)
     return HttpResponse(res)

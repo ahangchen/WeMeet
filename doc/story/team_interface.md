@@ -1157,3 +1157,225 @@
 ]
 }
 ```
+
+-------------------------------------------------------------------
+
+### 42 职位关注收藏
+- http://wemeet.tech:8081/team/focus/job/
+
+- 功能： list所有职位关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+[
+  {
+    "focuser_id": 0,
+    "focus_id": 2,
+    "job_detail": {
+      "team_logo": "",
+      "team_name": "w",
+      "job_cmd": "",
+      "name": "job1",
+      "min_salary": 0,
+      "max_salary": 0,
+      "j_type": 0
+    }
+  }
+]
+```
+
+- 功能： 添加关注
+- Method:post
+- 参数：
+    focuser_id: 学生id
+    focus_id： Job ID
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+{
+  "focuser_id": 0,
+  "focus_id": 2,
+  "job_detail": {
+    "team_logo": "",
+    "team_name": "w",
+    "job_cmd": "",
+    "name": "job1",
+    "min_salary": 0,
+    "max_salary": 0,
+    "j_type": 0
+  }
+}
+```
+
+- http://wemeet.tech:8081/team/focus/job/{pk}/
+- pk: 关注Id
+
+- 功能： pk所指的职位关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+  {
+    "focuser_id": 0,
+    "focus_id": 2,
+    "job_detail": {
+      "team_logo": "",
+      "team_name": "w",
+      "job_cmd": "",
+      "name": "job1",
+      "min_salary": 0,
+      "max_salary": 0,
+      "j_type": 0
+    }
+  }
+```
+
+- 功能： 添加关注
+- Method: delete
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+
+
+### 43 团队关注收藏
+- http://wemeet.tech:8081/team/focus/team/
+
+- 功能： list所有团队关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+[
+  {
+    "focuser_id": 0,
+    "focus_id": 2,
+    "team_detail": {
+      "name": "",
+      "b_type": "",
+      "slogan": "",
+      "logo_path": "",
+    }
+  }
+]
+```
+
+- 功能： 添加关注
+- Method:post
+- 参数：
+    focuser_id: 学生id
+    focus_id： Team ID
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+{
+"focuser_id": 0,
+"focus_id": 2,
+"team_detail": {
+  "name": "",
+  "b_type": "",
+  "slogan": "",
+  "logo_path": "",
+}
+}
+```
+
+- http://wemeet.tech:8081/team/focus/job/{pk}/
+- pk: 关注Id
+
+- 功能： pk所指的团队关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+{
+"focuser_id": 0,
+"focus_id": 2,
+"team_detail": {
+  "name": "",
+  "b_type": "",
+  "slogan": "",
+  "logo_path": "",
+}
+}
+```
+
+- 功能： 添加关注
+- Method: delete
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+
+### 44 团队关注收藏
+- http://wemeet.tech:8081/team/focus/student/
+
+- 功能： list所有学生关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+[
+  {
+    "focuser_id": 0,
+    "focus_id": 2,
+    "team_detail": {
+      "name": "",
+      "title": "",
+      "avatar_path": "",
+      "skills": "",
+    }
+  }
+]
+```
+
+- 功能： 添加关注
+- Method:post
+- 参数：
+    focuser_id: 学生id
+    focus_id： Student ID
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+{
+    "focuser_id": 0,
+    "focus_id": 2,
+    "team_detail": {
+      "name": "",
+      "title": "",
+      "avatar_path": "",
+      "skills": "",
+    }
+  }
+```
+
+- http://wemeet.tech:8081/team/focus/student/{pk}/
+- pk: 关注Id
+
+- 功能： pk所指的学生关注
+- Method:get
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...
+``` json
+{
+    "focuser_id": 0,
+    "focus_id": 2,
+    "team_detail": {
+      "name": "",
+      "title": "",
+      "avatar_path": "",
+      "skills": "",
+    }
+  }
+```
+
+- 功能： 添加关注
+- Method: delete
+- 参数：
+- 返回：
+status： 20x(成功)、4xx（失败）...

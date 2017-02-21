@@ -3,6 +3,37 @@ from django.conf.urls import url
 from team import views
 from team import ctrl
 from team.api import topic, job, product, account, apply, team, search
+from team.ctrl import focus
+
+focusjob_list = focus.FocusJobList.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+focusjob_detail = focus.FocusJobList.as_view({
+    'get': 'retrieve',
+    'delete': 'destroy'
+})
+
+focusteam_list = focus.FocusTeamList.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+focusteam_detail = focus.FocusTeamList.as_view({
+    'get': 'retrieve',
+    'delete': 'destroy'
+})
+
+focusstu_list = focus.FocusStuList.as_view({
+    'get': 'list',
+    'post': 'create'
+})
+
+focusstu_detail = focus.FocusStuList.as_view({
+    'get': 'retrieve',
+    'delete': 'destroy'
+})
 
 urlpatterns = [
     url(r'^$', views.test, name='index'),
@@ -59,4 +90,10 @@ urlpatterns = [
     url(r'^topic/remove/$', topic.remove),
     url(r'^topic/info/$', topic.info),
     url(r'^topic/list/$', topic.list),
+    url(r'^focus/job/$', focusjob_list),
+    url(r'^focus/job/(?P<pk>[0-9]+)/$', focusjob_detail),
+    url(r'^focus/team/$', focusteam_list),
+    url(r'^focus/team/(?P<pk>[0-9]+)/$', focusteam_detail),
+    url(r'^focus/student/$', focusstu_list),
+    url(r'^focus/student/(?P<pk>[0-9]+)/$', focusstu_detail),
 ]
