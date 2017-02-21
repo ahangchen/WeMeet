@@ -96,4 +96,5 @@ urlpatterns = [
     url(r'^focus/team/(?P<pk>[0-9]+)/$', focusteam_detail),
     url(r'^focus/student/$', focusstu_list),
     url(r'^focus/student/(?P<pk>[0-9]+)/$', focusstu_detail),
+    url(r'^topic/newest/$', search.newest_topic)
 ]

@@ -11,6 +11,7 @@ from haystack.query import SearchQuerySet
 
 from student.util import json_helper
 from team.ctrl import team
+from team.ctrl import topic
 from team.ctrl.err_code_msg import *
 from team.models import Team, Product, Job
 from team.util.request import check_post
@@ -105,4 +106,9 @@ def newest(request):
 
 
 def newest_teams(request):
-    return HttpResponse(json_helper.dumps_err(SUCCEED, team.newest_teams()))
+    team_type = request.GET['type']
+    return HttpResponse(json_helper.dumps_err(SUCCEED, team.newest_teams(team_type)))
+
+
+def newest_topic(request):
+    return HttpResponse(json_helper.dumps_err(SUCCEED, topic.newest()))

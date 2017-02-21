@@ -101,7 +101,6 @@
 * POST
 * 参数：
     * model: job（职位）、team（团队）、项目（product）
-    * type：对应每种model的不同type类型
     * keys:
 * 返回：
     * 成功:
@@ -1047,19 +1046,45 @@
 
 ### 36 最新团队
 
-- url: http://wemeet.tech:8081/team/team/newest/
+- url: http://wemeet.tech:8081/team/team/newest
+- 参数：
+  - type: 团队类型，整数，-1代表全部类型
 - 响应：
 
 ```json
-{"res": {
-        "team": [
-          {
-              "logo_path": "team/info/14708380004627852016-08-10 13:55:47屏幕截图.png", 
-              "tid": 1, 
-              "name": "wemeet"
-          }
-        ]
-  },
+{
+  "res": [
+    {
+      "proj_cnt": 0,
+      "tid": 2,
+      "stu_cnt": 0,
+      "labels": [
+        "移动互联网",
+        "电子商务",
+        "医疗健康",
+        "数据安全"
+      ],
+      "name": "cwh",
+      "slogan": "在这里遇见更好的自己",
+      "job_cnt": 0,
+      "logo_path": "team/info/14838461448892128male.jpg"
+    },
+    {
+      "proj_cnt": 12,
+      "tid": 1,
+      "stu_cnt": 0,
+      "labels": [
+        "移动互联网",
+        "电子商务",
+        "医疗健康",
+        "O2O"
+      ],
+      "name": "WeMeet",
+      "slogan": "遇见更好的自己",
+      "job_cnt": 2,
+      "logo_path": "team/info/14833526044794004WechatIMG592.jpeg"
+    }
+  ],
   "err": "0"
 }
 ```
@@ -1379,3 +1404,36 @@ status： 20x(成功)、4xx（失败）...
 - 参数：
 - 返回：
 status： 20x(成功)、4xx（失败）...
+
+
+### 42 互动社区最新话题
+- http://wemeet.tech:8081/team/topic/newest/
+- get
+- 参数：无
+  
+- 返回：
+```json
+{
+  "res": [
+    {
+      "topic_time": "2017-02-20-11-38-00",
+      "topic_title": "测试一下",
+      "team_id": 1,
+      "team_name": "WeMeet",
+      "topic_id": 11,
+      "team_logo": "team/info/14833526044794004WechatIMG592.jpeg",
+      "topic_content": "就是测试一下"
+    },
+    {
+      "topic_time": "2017-02-20-10-16-47",
+      "topic_title": "如果在这个软件中增加一个小天使的功能，大家觉得怎么样？",
+      "team_id": 1,
+      "team_name": "WeMeet",
+      "topic_id": 9,
+      "team_logo": "team/info/14833526044794004WechatIMG592.jpeg",
+      "topic_content": "在这个软件中增加一个小天使的功能，当你在忙碌的时候可以激活小天使来帮你，然后可以给小天使一个合理的回报，比如请吃饭，你们觉得怎么样？"
+    }
+  ],
+  "err": "0"
+}
+```
