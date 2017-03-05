@@ -108,7 +108,7 @@ def newest(request):
 
 
 def newest_teams(request):
-    team_type = request.GET['type']
+    team_type = request.GET['b_type']
     return HttpResponse(json_helper.dumps_err(SUCCEED, team.newest_teams(team_type)))
 
 

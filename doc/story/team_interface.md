@@ -1048,7 +1048,7 @@
 
 - url: http://wemeet.tech:8081/team/team/newest
 - 参数：
-  - type: 团队类型，整数，-1代表全部类型
+  - b_type: 团队类型，整数，-1代表全部类型
 - 响应：
 
 ```json
