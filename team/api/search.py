@@ -13,7 +13,7 @@ from student.util import json_helper
 from team.ctrl import team
 from team.ctrl import topic
 from team.ctrl.err_code_msg import *
-from team.models import Team, Product, Job
+from team.models import Team, Product, Job, Label
 from team.util.request import check_post
 
 
@@ -94,6 +94,17 @@ def search(request):
         # res_name = (res[0].__dict__)['_additional_fields']
         # res_name.append('pk')
         # res_list = [{k: (obj.__dict__)[k] for k in res_name} for obj in res]
+
+    label_team_id = [ obj['pk'] for obj in res_list if obj['model'] == 'team']
+    if label_team_id:
+        labels = Label.objects.filter(team_id__in = label_team_id).values()
+        label_team_dict = {key:[] for key in label_team_id}
+        logging.debug(label_team_dict)
+        for label in labels:
+            label_team_dict[str(label['team_id'])].append(label['name'])
+        for obj in res_list:
+            if obj['model'] == 'team':
+                obj['team_label'] = label_team_dict[obj['pk']]
     res = {'err': SUCCEED, 'message': res_list}
 
     res = json.dumps(res, ensure_ascii=False)

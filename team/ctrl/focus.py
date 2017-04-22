@@ -24,6 +24,10 @@ class FocusJobList(viewsets.ModelViewSet):
         if stu_id is not None:
             queryset = queryset.filter(focuser_id=stu_id)
 
+        job_id = self.request.query_params.get('job', None)
+        if job_id is not None:
+            queryset = queryset.filter(focus_id=job_id)
+
         return queryset
 
 class FocusTeamList(viewsets.ModelViewSet):
@@ -39,6 +43,10 @@ class FocusTeamList(viewsets.ModelViewSet):
         if stu_id is not None:
             queryset = queryset.filter(focuser_id=stu_id)
 
+        team_id = self.request.query_params.get('team', None)
+        if team_id is not None:
+            queryset = queryset.filter(focus_id=team_id)
+
         return queryset
 
 class FocusStuList(viewsets.ModelViewSet):
@@ -53,5 +61,9 @@ class FocusStuList(viewsets.ModelViewSet):
         stu_id = self.request.query_params.get('student', None)
         if stu_id is not None:
             queryset = queryset.filter(focuser_id=stu_id)
+
+        student_id = self.request.query_params.get('studentfocus', None)
+        if student_id is not None:
+            queryset = queryset.filter(focus_id=student_id)
 
         return queryset
