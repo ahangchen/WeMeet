@@ -118,8 +118,7 @@
             team_id
             team_logo_path
             model='job'
-            team_label = ['label_name', ...]
-
+            
         当model = team时：
             pk:对应的ID
             team_name
@@ -127,6 +126,8 @@
             team_about
             team_type
             model='team'
+            team_label = ['label_name', ...]
+
 
         当model = product时：
             pk:对应的ID
@@ -139,6 +140,8 @@
             team_id
             team_logo_path
             model='team'
+            team_label = ['label_name', ...]
+
 
         当model为空时：
             搜索job/team/project并返回结果
