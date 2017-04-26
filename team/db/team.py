@@ -173,14 +173,20 @@ def newest(new_count):
     return team_ret
 
 
-def newest_more(new_count):
-    teams = Team.objects.all().order_by('-id')[: new_count]
+def newest_more(team_type, new_count):
+    if team_type == -1:
+        teams = Team.objects.all().order_by('-id')[: new_count]
+    else:
+        teams = Team.objects.filter(b_type=team_type).order_by('-id')[: new_count]
     team_ret = [
         {
             'tid': team.id, 'logo_path': team.logo_path, 'name': team.name, 'slogan': team.slogan,
             'proj_cnt': Product.objects.filter(team=team).count(),
             'job_cnt': Job.objects.filter(team=team).count(),
-            'stu_cnt': team.man_cnt
+            'stu_cnt': team.man_cnt,
+            'labels': [
+                label.name for label in team.label_set.all()
+            ]
          } for team in teams
         ]
     return team_ret

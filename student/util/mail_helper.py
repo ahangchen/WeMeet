@@ -2,6 +2,10 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+import sys
+
+from student.util import logger
+
 
 def send_163_mail_attach(user, pwd, to_addr, from_addr, subject, attach_path):
     # 创建一个带附件的实例
@@ -47,3 +51,5 @@ def send_163_mail(user, pwd, from_addr, to_addr, subject, content):
         print('发送成功')
     except smtplib.SMTPConnectError:
         print('SMTPConnectError')
+    except:
+        logger.logger.error(sys.exc_info())

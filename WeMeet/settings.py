@@ -141,13 +141,13 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -160,7 +160,7 @@ MEDIA_URL = '/media/'
 
 HAYSTACK_CONNECTIONS = {
     'default':{
-        'ENGINE': 'whoosh_cn_backend.WhooshEngine',
+        'ENGINE': 'team.whoosh_cn_backend.WhooshEngine',
         'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
     },
 }
