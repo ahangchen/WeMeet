@@ -45,8 +45,12 @@ class StuInfo(models.Model):
     avatar_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
     # 简历文件路径
     resume_path = models.CharField(max_length=PATH_MAX_LENGTH, blank=True, null=True, default='')
-    # 一级标签，0表示工程，1表示文艺，2表示经管，3表示人文 -1 未选
-    label = models.IntegerField(default=0)
+    # 一级标签，工程文艺经管人文，0表示未选1表示已选
+    # label = models.IntegerField(default=0)
+    is_engineering = models.BooleanField(blank=False, null=False, default=False)
+    is_literature = models.BooleanField(blank=False, null=False, default=False)
+    is_management = models.BooleanField(blank=False, null=False, default=False)
+    is_humanity = models.BooleanField(blank=False, null=False, default=False)
     # 人气数
     likes = models.IntegerField(default=0)
 

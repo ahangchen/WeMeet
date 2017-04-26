@@ -426,7 +426,11 @@ def get_info(request):
                 'sex': get_rlt['stu'].sex,
                 'school': get_rlt['stu'].school,
                 'grade': get_rlt['stu'].grade,
-                'label': get_rlt['stu'].label,
+                # 'label': get_rlt['stu'].label,
+                'is_engineering': int(get_rlt['stu'].is_engineering),
+                'is_literature': int(get_rlt['stu'].is_literature),
+                'is_management': int(get_rlt['stu'].is_management),
+                'is_humanity': int(get_rlt['stu'].is_humanity),
                 'likes': get_rlt['stu'].likes
             }))
 
@@ -509,10 +513,15 @@ def update_info(request):
         school = request.POST.get('school')
         grade = request.POST.get('grade')
         avatar_path = request.POST.get('avatar_path')
-        label = request.POST.get('label')
+        is_engineering = request.POST.get('is_engineering')
+        is_literature = request.POST.get('is_literature')
+        is_management = request.POST.get('is_management')
+        is_humanity = request.POST.get('is_humanity')
 
         tag = info.update(stu_id=stu_id, name=name, title=title, personal_signature=personal_signature,
-                          sex=sex, school=school, grade=grade, avatar_path=avatar_path, label=label)
+                          sex=sex, school=school, grade=grade, avatar_path=avatar_path,
+                          is_engineering=is_engineering, is_literature=is_literature,
+                          is_management=is_management, is_humanity=is_humanity)
 
         # 如果更新成功
         if tag == OK_UPDATE_STU_INFO:
@@ -1965,7 +1974,7 @@ def top6_in_label(request):
     失败：返回相应的err和msg的JSON
     """
     if request.method == 'POST':
-        label = request.POST.get('label')
+        label = int(request.POST.get('label'))
         rlt = square.top6_in_label(label)
 
         # 如果获取成功

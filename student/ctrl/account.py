@@ -66,8 +66,9 @@ def invite(acnt):
         return REG_FAIL_EXIST, -1
 
     # 如果账号尚未被注册
-    stu_tag = stu_info.insert(name='', title='', personal_signature='', sex=0, school='',  grade=-1,
-                              avatar_path=DEFAULT_AVATAR, label=-1)
+    stu_tag = stu_info.insert(name='', title='', personal_signature='', sex=0, school='', grade=-1,
+                              avatar_path=DEFAULT_AVATAR, is_engineering=False, is_literature=False,
+                              is_management=False, is_humanity=False)
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:
@@ -137,7 +138,9 @@ def register(acnt, pwd):
     # 如果账号尚未被注册
     stu_tag = stu_info.insert(name='', title='', personal_signature='',
                               sex=-1, school='',
-                              grade=-1, avatar_path=DEFAULT_AVATAR, label=-1)
+                              grade=-1, avatar_path=DEFAULT_AVATAR,
+                              is_engineering=False, is_literature=False,
+                              is_management=False, is_humanity=False)
 
     # 如果插入学生失败
     if stu_tag == ERR_INSERT_DB:

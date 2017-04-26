@@ -22,8 +22,15 @@ def get(stu_id):
     select_rlt = stu_info.select(stu_id=stu_id)
     # 如果学生存在
     if select_rlt['tag'] == OK_SELECT:
-        return {'tag': OK_GET_INFO,
-                'stu': select_rlt['stu']}
+
+        return {
+                'tag': OK_GET_INFO,
+                'stu': select_rlt['stu']
+               }
+                # 'engineering_isSet': select_rlt['engineering_isSet'],
+                # 'literature_isSet': select_rlt['literature_isSet'],
+                # 'management_isSet': select_rlt['management_isSet'],
+                # 'humanity_isSet': select_rlt['humanity_isSet']}
     # 如果学生记录不存在
     elif select_rlt['tag'] == ERR_SELECT_NOTEXIST:
         logger.error('学生不存在，获取学生信息失败')
@@ -34,7 +41,8 @@ def get(stu_id):
         return {'tag': ERR_GET_INFO_DB}
 
 
-def update(stu_id, name, title, personal_signature, sex, school, grade, avatar_path, label):
+def update(stu_id, name, title, personal_signature, sex, school, grade, avatar_path,
+           is_engineering, is_literature, is_management, is_humanity):
     """
     更新学生信息
     成功：返回OK_UPDATE_INFO
@@ -49,7 +57,10 @@ def update(stu_id, name, title, personal_signature, sex, school, grade, avatar_p
                                      school=school,
                                      grade=int(grade),
                                      avatar_path=avatar_path,
-                                     label=int(label))
+                                     is_engineering=is_engineering,
+                                     is_literature=is_literature,
+                                     is_management=is_management,
+                                     is_humanity=is_humanity)
 
     # 如果学生信息更新成功
     if stu_update_tag == OK_UPDATE:

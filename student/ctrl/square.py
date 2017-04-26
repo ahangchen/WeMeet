@@ -32,6 +32,5 @@ def top6_in_label(label):
             'personal_signature': stu.personal_signature,
             'avatar_path': stu.avatar_path,
             'skill_list': [] if skill_rlt['tag'] != ctrl.skill.OK_GET_SKILL else skill_rlt['skill_list']
-
         })
     return {'tag': OK_GET_TOP6, 'top_list': top_list}

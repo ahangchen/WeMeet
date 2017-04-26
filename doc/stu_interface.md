@@ -121,7 +121,10 @@
         　　　　　"sex": sex,  
         　　　　　"school": school,  
         　　　　　"grade": grade,  
-        　　　　　"label": label,     
+        　　　　　"is_engineering": is_engineering,     
+        　　　　　"is_literature": is_literature,     
+        　　　　　"is_management": is_management,     
+        　　　　　"is_humanity": is_humanity,     
         　　　　　"likes": likes  
         　　　　}  
 
@@ -130,7 +133,10 @@
             * title: 头衔 
             * personal_signature：个性签名
             * grade: 年级 -1(未填)，0(大一) 1(大二) 2(大三) 3(大四) 4(研一) 5(研二) 6(研三) 7(博士)
-            * label：标签 -1(未填), 0(工程) 1(文艺) 2(经管) 3(人文)
+            * is_engineering：0(未选) 1(选定)
+            * is_literature 0(未选) 1(选定)
+            * is_management 0(未选) 1(选定)
+            * his_humanity 0(未选) 1(选定)
             * likes： 人气
             
     * 失败：
@@ -170,7 +176,10 @@
     * school:  
     * grade: 年级 -1(未填)，0(大一) 1(大二) 2(大三) 3(大四) 4(研一) 5(研二) 6(研三) 7(博士) 
     * avatar_path  
-    * label: 标签 -1(未填), 0(工程) 1(文艺) 2(经管) 3(人文)
+    * is_engineering: 0(未选) 1(选定)
+    * is_literature： 0(未选) 1(选定)  
+    * is_management： 0(未选) 1(选定)  
+    * is_humanity： 0(未选) 1(选定)  
 * 返回： 
     * 成功：
         * JSON: {"err": err}
