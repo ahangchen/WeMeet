@@ -539,7 +539,7 @@
 ***
 
 ### 24. 增加作品集
-* http://110.64.69.66:8081/student/info/works/add/
+* http://110.64.69.66:8081/student/works/add/
 * POST
 * 参数：
     * stu_id: 学生id
