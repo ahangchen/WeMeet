@@ -95,7 +95,7 @@ def search(request):
         # res_name.append('pk')
         # res_list = [{k: (obj.__dict__)[k] for k in res_name} for obj in res]
 
-    label_team_id = [ obj['pk'] for obj in res_list if obj['model'] == 'team']
+    label_team_id = [ obj['pk'] if obj['model'] == 'team' else obj['team_id'] for obj in res_list]
     if label_team_id:
         labels = Label.objects.filter(team_id__in = label_team_id).values()
         label_team_dict = {key:[] for key in label_team_id}
@@ -105,6 +105,8 @@ def search(request):
         for obj in res_list:
             if obj['model'] == 'team':
                 obj['team_label'] = label_team_dict[obj['pk']]
+            elif obj['model'] == 'job' or obj['model'] == 'product':
+                obj['team_label'] = label_team_dict[obj['team_id']]
     res = {'err': SUCCEED, 'message': res_list}
 
     res = json.dumps(res, ensure_ascii=False)

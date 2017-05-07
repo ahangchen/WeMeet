@@ -118,6 +118,7 @@
             team_id
             team_logo_path
             model='job'
+            team_label = ['label_name', ...]
             
         当model = team时：
             pk:对应的ID
