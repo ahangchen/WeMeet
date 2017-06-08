@@ -24,6 +24,7 @@ class JobIndex(indexes.SearchIndex, indexes.Indexable):
     min_salary = indexes.FloatField(model_attr='min_salary')
     max_salary = indexes.FloatField(model_attr='max_salary')
     job_summary = indexes.CharField(model_attr='summary')
+    job_city = indexes.IntegerField(model_attr='city')
 
     team_id = indexes.CharField(model_attr='team__id')
     team_logo_path = indexes.CharField(model_attr='team__logo_path')
@@ -40,6 +41,7 @@ class ProductIndex(indexes.SearchIndex, indexes.Indexable):
     product_name = indexes.CharField(model_attr='name')
     product_content = indexes.CharField(model_attr='content')
     product_img_path = indexes.CharField(model_attr='img_path')
+    product_reward = indexes.CharField(model_attr='reward')
 
     team_id = indexes.CharField(model_attr='team__id')
     team_logo_path = indexes.CharField(model_attr='team__logo_path')

@@ -55,7 +55,7 @@ def login(mail, pwd):
 
 
 def reset_mail_content(reset_key, mail):
-    return '点此重置密码　http://110.64.69.66:8081/team/fetch?reset_key=%s&mail=%s ' % (reset_key, mail)
+    return '点此重置密码　http://wemeet.tech:8081/team/fetch?reset_key=%s&mail=%s ' % (reset_key, mail)
 
 
 def send_reset_mail(mail):
