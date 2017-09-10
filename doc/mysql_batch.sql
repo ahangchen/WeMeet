@@ -1,7 +1,7 @@
 CREATE DATABASE wemeet;
 
 create user wemeet@localhost identified by 'wmms233';
-grant all *.* to 'wemeet'@'localhost';
+grant all on *.* to 'wemeet'@'localhost';
 create database wemeet;
 ALTER TABLE auth_group CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;
 ALTER TABLE auth_group_permissions CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;

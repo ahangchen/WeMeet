@@ -200,3 +200,10 @@ class StuItem(models.Model):
     title = models.CharField(max_length=SHORT_TEXT_LENGTH)
     content = models.CharField(max_length=LONGTEXT_MAX_LENGTH)
     stu = models.ForeignKey('StuInfo', null=False)
+
+
+class WMToken(models.Model):
+    uid = models.IntegerField(default=-1, blank=False, null=False)
+    token = models.CharField(max_length=SHORT_TEXT_LENGTH, blank=False, null=False)
+    u_type = models.IntegerField(default=0, blank=False, null=False)
+    # u_type: 0: stu, 1: team
