@@ -1,6 +1,7 @@
 from django.core.mail import send_mail
 
 from student.util.encrypt_decrypt import encrypt
+from team.ctrl.sess import gen_token
 
 from team.db import team
 from team.db.team import DB_ACC_NOT_FOUND, DB_OK, is_mail_valid, mail_team
@@ -45,13 +46,14 @@ def login(mail, pwd):
     tid, state = team.team_of_mail_pwd(mail, pwd)
     # 如果账号不存在
     if tid is None:
-        return LOGIN_FAIL_NO_MATCH, -1
+        return LOGIN_FAIL_NO_MATCH, -1, -1
     # 如果账号不可用
     elif state != 0:
-        return ACC_UNABLE, -1
+        return ACC_UNABLE, -1, -1
     # 登陆成功
     else:
-        return ACC_MNG_OK, tid
+        token = gen_token(tid, 1)
+        return ACC_MNG_OK, tid, token
 
 
 def reset_mail_content(reset_key, mail):

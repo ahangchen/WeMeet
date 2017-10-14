@@ -49,6 +49,7 @@ from student.util import date_helper
 
 from django.core.mail import send_mail
 
+from team.ctrl.sess import gen_token
 from team.util.data import random6
 
 
@@ -252,8 +253,11 @@ def login(acnt, pwd):
 
     # 登陆成功
     else:
+        token = gen_token(rlt['acnt'].stu.id, 0)
         return {'tag': OK_LOGIN,
-                'stu_id': rlt['acnt'].stu.id}
+                'stu_id': rlt['acnt'].stu.id,
+                'token': token
+                }
 
 
 def send_reset_mail(acnt):

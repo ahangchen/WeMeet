@@ -8,6 +8,7 @@ from team.ctrl import acc_mng
 from team.ctrl.acc_mng import ACC_MNG_OK, ACC_UNABLE, LOGIN_FAIL_NO_MATCH
 from team.ctrl.err_code_msg import SUCCEED, ERR_UNKNOWN, MSG_FAIL, ERR_STH_NO_MATCH, MSG_SUCC, MSG_RESET_KEY_ERR, \
     ERR_ACC_UNABLE, MSG_ACC_UNABLE, MSG_ACC_PWD_NO_MATCH, MSG_ACC_INV_NO_MATCH, MSG_ACC_NOT_FOUND
+from team.ctrl.sess import gen_token
 from team.ctrl.team import ACC_NO_FOUND
 from team.util.request import is_post, resp_method_err, resp_valid_err, is_valid_ok
 
@@ -45,10 +46,10 @@ def login(request):
     #     return resp_valid_err()
     acnt = request.POST.get('mail')
     pwd = request.POST.get('pwd')
-    ret, tid = acc_mng.login(acnt, pwd)
+    ret, tid, token = acc_mng.login(acnt, pwd)
     # 如果登陆成功
     if ret == ACC_MNG_OK:
-        return HttpResponse(json_helper.dump_err_msg(SUCCEED, str(tid)))
+        return HttpResponse(json_helper.dumps({'err': 0, 'res': tid, 'token': token}))
     # 如果不匹配
     elif ret == LOGIN_FAIL_NO_MATCH:
         return HttpResponse(json_helper.dump_err_msg(ERR_STH_NO_MATCH, MSG_ACC_PWD_NO_MATCH))

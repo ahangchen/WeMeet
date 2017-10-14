@@ -40,16 +40,27 @@ def send_163_mail(user, pwd, from_addr, to_addr, subject, content):
     msg['to'] = to_addr
     msg['from'] = from_addr
     msg['subject'] = subject
-    # 发送邮件
-    try:
-        server = smtplib.SMTP_SSL('smtp.163.com', 465)
-        server.starttls()
-        server.set_debuglevel(1)
-        server.login(user, pwd)  # XXX为用户名，XXXXX为密码
-        server.sendmail(msg['from'], msg['to'], msg.as_string())
-        server.quit()
-        print('发送成功')
-    except smtplib.SMTPConnectError:
-        print('SMTPConnectError')
-    except:
-        logger.logger.error(sys.exc_info())
+    # # 发送邮件
+    # try:
+    #     server = smtplib.SMTP_SSL('smtp.163.com', 465)
+    #     server.set_debuglevel(1)
+    #     server.docmd('EHLO server')
+    #     server.starttls()
+    #     server.login(user, pwd)  # XXX为用户名，XXXXX为密码
+    #     server.sendmail(msg['from'], msg['to'], msg.as_string())
+    #     server.quit()
+    #     print('发送成功')
+    # except smtplib.SMTPConnectError:
+    #     print('SMTPConnectError')
+    # except:
+    #     logger.logger.error(sys.exc_info())
+    server = smtplib.SMTP('smtp.163.com', 25)
+    server.set_debuglevel(1)
+    server.login(user, pwd)
+    server.sendmail(msg['from'], msg['to'], msg.as_string())
+    server.quit()
+
+
+if __name__ == '__main__':
+    send_163_mail('13660106752', 'xuegongban118', '13660106752@163.com', 'ahangchen@qq.com', 'WeMeet注册验证邮件',
+                  '6896905fb3ecaa0fc7e3a7dde7db7e31afe4c87f173eea6fbda66128873c736d')
