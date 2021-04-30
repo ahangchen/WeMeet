@@ -7,9 +7,6 @@
 
 http://underarmy.oschina.io/stroy
 
-## 设计图
-
-百度云 账号 15913903712 密码wemeet2333
 
 ## Notice
 - 模块与Deadline: http://git.oschina.net/underarmy/WeMeet/milestones
